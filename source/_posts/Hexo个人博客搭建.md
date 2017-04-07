@@ -1,9 +1,10 @@
 ---
 title: Hexo个人博客搭建
 categories:
-  - null
+  - 环境搭建
 tags:
-  - null
+  - blog
+  - Hexo
 date: 2017-04-07 16:41:30
 ---
 
