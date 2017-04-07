@@ -5,14 +5,14 @@
         var duoshuoQuery = {short_name:"<%=theme.duoshuo.domain%>"};
         var loadComment = function(){
             var d = document, s = d.createElement('script');
-            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//Longxr.github.io/js/embed.js';
             s.async = true; s.charset = 'UTF-8';
             (d.head || d.body).appendChild(s);
         }
 
         <% if (!theme.preload_comment) { %>
             // Add comment count
-            $(function(){ 
+            $(function(){
                 var jsonUrl = "http://api.duoshuo.com/threads/counts.jsonp?short_name=<%=theme.duoshuo.domain%>&threads=<%=key%>&callback=?";
                 $.getJSON(jsonUrl, function(result){
                     $.each(result.response, function(i, field){
