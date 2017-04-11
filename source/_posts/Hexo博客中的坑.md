@@ -4,6 +4,7 @@ categories:
   - 问题处理
 tags:
   - Hexo
+  - blog
 date: 2017-04-11 08:35:01
 ---
 
