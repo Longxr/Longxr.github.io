@@ -1,4 +1,4 @@
-title: 404 Not Found：该页无法显示
+title: 404 Not Found：这里什么都没有呢
 toc: false
 comments: false
 permalink: /404
@@ -61,6 +61,21 @@ permalink: /404
 	}
 </style>
 
-## 很抱歉,您所访问的地址不存在
+***
+
+<div class="pic">
+<img src="/resources/Mihawk-Wind.gif" title="Mihawk-Wind">
+</div>
+
+<p class="center">很抱歉，您所访问的地址并不存在: </p>
+
+<p class="center"><a href="/">回主页</a> · <a href="/archives">所有文章</a> · <a href="/about">留言板</a></p>
+
+<p class="center">可在边栏搜索框中对本站进行检索，以获取相关信息。</p>
+
+<div style="text-align: center">
+以下是博主喜欢的一些歌曲，可以听听，稍作休息~
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=450 height=300 src="http://music.163.com/outchain/player?type=0&id=81147725&auto=0&height=430"></iframe>
+</div>
 
 
