@@ -63,10 +63,6 @@ permalink: /404
 
 ***
 
-<div class="pic">
-<img src="/resources/Mihawk-Wind.gif" title="Mihawk-Wind">
-</div>
-
 <p class="center">很抱歉，您所访问的地址并不存在: </p>
 
 <p class="center"><a href="/">回主页</a> · <a href="/archives">所有文章</a> · <a href="/about">留言板</a></p>
