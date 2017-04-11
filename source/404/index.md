@@ -71,7 +71,7 @@ permalink: /404
 
 <div style="text-align: center">
 以下是博主喜欢的一些歌曲，可以听听，稍作休息~
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=450 height=300 src="http://music.163.com/outchain/player?type=0&id=81147725&auto=0&height=430"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=440 height=370 src="//music.163.com/outchain/player?type=0&id=121961221&auto=1&height=430"></iframe>
 </div>
 
 
