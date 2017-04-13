@@ -9,9 +9,9 @@ date: 2017-04-13 11:00:32
 ---
 
 <Excerpt in index | 摘要> 
-### 常用快捷键
-### 文件用Sublime打开
-### Finder与终端交互<!-- more -->
+常用快捷键
+文件用Sublime打开
+Finder与终端交互<!-- more -->
 <The rest of contents | 余下全文>
 
 ## 常用快捷键
