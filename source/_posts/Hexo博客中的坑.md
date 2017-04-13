@@ -11,6 +11,8 @@ date: 2017-04-11 08:35:01
 <Excerpt in index | 摘要> 
 记录坑爹瞬间<!-- more -->
 <The rest of contents | 余下全文>
+## 问题：Travis-Ci自动构建图标build status unknown
+解决：原因是构建的分支不是master分支，默认显示缺省分支master的状态，修改图标链接`svg?branch=master`为`svg?branch=blog`
 
 ## 问题：各种在设置_config.yml后出现的问题
 解决：检查冒号后面的空格！！！检查冒号后面的空格！！！检查冒号后面的空格！！！
