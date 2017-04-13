@@ -1,5 +1,5 @@
 
-# Longxr's Blog [![Build Status](https://travis-ci.org/Longxr/Longxr.github.io.svg?branch=master)](https://travis-ci.org/Longxr/Longxr.github.io)
+# Longxr's Blog [![Build Status](https://travis-ci.org/Longxr/Longxr.github.io.svg?branch=blog)](https://travis-ci.org/Longxr/Longxr.github.io)
 
 link->[http://longxuan.ren](http://longxuan.ren)
 
