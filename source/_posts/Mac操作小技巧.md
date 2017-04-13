@@ -9,28 +9,28 @@ date: 2017-04-13 11:00:32
 ---
 
 <Excerpt in index | 摘要> 
-	### 常用快捷键
-	### 文件用Sublime打开
-	### Finder与终端交互<!-- more -->
+### 常用快捷键
+### 文件用Sublime打开
+### Finder与终端交互<!-- more -->
 <The rest of contents | 余下全文>
 
 ## 常用快捷键
 > 有些事情自带快捷键就能做到，不用去配置服务、终端敲代码、另外下软件什么的
 
-	### 快捷键图标
+### 快捷键图标
 ⌘——Command ()
 ⌃ ——Control
 ⌥——Option (Alt)
 ⇧——Shift
 ⇪——Caps Lock
-	#### 终端清屏：command＋K
-	#### 文件预览：空格
-	#### 中文输入法中英文切换：CapsLock
-	#### 拷贝文件路径：Command + Option + C
-	#### 显示/隐藏文件：Command + Shift + .
-	#### 全屏截图：Command+Shift+3
-	#### 指定区域截图：Command+Shift+4
-	#### 指定窗口截图：Command+Shift+4，空格+鼠标单击指定窗口
+#### 终端清屏：command＋K
+#### 文件预览：空格
+#### 中文输入法中英文切换：CapsLock
+#### 拷贝文件路径：Command + Option + C
+#### 显示/隐藏文件：Command + Shift + .
+#### 全屏截图：Command+Shift+3
+#### 指定区域截图：Command+Shift+4
+#### 指定窗口截图：Command+Shift+4，空格+鼠标单击指定窗口
 
 ## 文件用Sublime打开
 > 经常面对各种格式的文本文件，分别设置打开方式太麻烦，统一用Sublime打开，添加到右键菜单功能
@@ -52,10 +52,10 @@ date: 2017-04-13 11:00:32
   如果设置的服务出现在二级菜单，可以在`系统偏好设置`->`键盘`->`快捷键`->`服务`中去掉不需要的选项
 
 ## Finder与终端交互
-	### 终端到Finder
+### 终端到Finder
   终端目录下输入：`open .`
 
-	### Finder到终端
+### Finder到终端
 > 默认的系统偏好设置中的服务中有一个在文件夹当前位置打开终端的选项，但是因为换了[iTerm2](https://www.iterm2.com)，所以并不适用
 
   使用软件：[Go2shell](http://zipzapmac.com/Go2Shell)
@@ -68,8 +68,8 @@ date: 2017-04-13 11:00:32
 
 
 ## 参考文章
-- [把Sublime添加到Mac右键菜单](http://www.jianshu.com/p/e2f897933c56)
+[把Sublime添加到Mac右键菜单](http://www.jianshu.com/p/e2f897933c56)
 
-- [Finder与iTerm2互相打开的方法](http://www.rxna.cn/post/wiki/finderyu-iterm2hu-xiang-da-kai-de-fang-fa)
+[Finder与iTerm2互相打开的方法](http://www.rxna.cn/post/wiki/finderyu-iterm2hu-xiang-da-kai-de-fang-fa)
 
 
