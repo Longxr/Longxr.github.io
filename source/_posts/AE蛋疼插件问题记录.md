@@ -1,5 +1,5 @@
 ---
-title: AE蛋疼问题插件记录
+title: AE蛋疼插件问题记录
 categories:
   - 影视后期
 tags:
