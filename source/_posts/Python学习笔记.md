@@ -1,9 +1,9 @@
 ---
 title: Python学习笔记
 categories:
-  - Python
+  - 语法学习
 tags:
-  - 语法
+  - Python
 date: 2017-04-21 14:39:34
 ---
 
