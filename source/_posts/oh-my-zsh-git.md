@@ -22,7 +22,6 @@ git Alias<!-- more -->
 | gapa                 | git add --patch                                                                                                                         |
 | gb                   | git branch                                                                                                                              |
 | gba                  | git branch -a                                                                                                                           |
-| gbda                 | git branch --merged \| command grep -vE "^(\*\|\s*master\s*$)" \| command xargs -n 1 git branch -d                                      |
 | gbl                  | git blame -b -w                                                                                                                         |
 | gbnm                 | git branch --no-merged                                                                                                                  |
 | gbr                  | git branch --remote                                                                                                                     |
@@ -65,8 +64,7 @@ git Alias<!-- more -->
 | ggpush               | ggp                                                                                                                                     |
 | ggsup                | git branch --set-upstream-to = origin/$(current_branch)                                                                                 |
 | gpsup                | git push --set-upstream origin $(current_branch)                                                                                        |
-| gignore              | git update-index --assume-unchanged                                                                                                     |
-| gignored             | git ls-files -v \| grep "^[[:lower:]]"                                                                                                  |
+| gignore              | git update-index --assume-unchanged                                                                                                                                                                                                     |
 | git-svn-dcommit-push | git svn dcommit && git push github master:svntrunk                                                                                      |
 | gk                   | \gitk --all --branches                                                                                                                  |
 | gke                  | \gitk --all $(git log -g --pretty = format:%h)                                                                                          |
@@ -104,8 +102,7 @@ git Alias<!-- more -->
 | grhh                 | git reset HEAD --hard                                                                                                                   |
 | grmv                 | git remote rename                                                                                                                       |
 | grrm                 | git remote remove                                                                                                                       |
-| grset                | git remote set-url                                                                                                                      |
-| grt                  | cd $(git rev-parse --show-toplevel \|\| echo ".")                                                                                       |
+| grset                | git remote set-url                                                                                                                                                                                                             |
 | gru                  | git reset --                                                                                                                            |
 | grup                 | git remote update                                                                                                                       |
 | grv                  | git remote -v                                                                                                                           |
@@ -126,7 +123,6 @@ git Alias<!-- more -->
 | gsu                  | git submodule update                                                                                                                    |
 | gts                  | git tag -s                                                                                                                              |
 | gunignore            | git update-index --no-assume-unchanged                                                                                                  |
-| gunwip               | git log -n 1 \| grep -q -c "\-\-wip\-\-" && git reset HEAD~1                                                                            |
 | gup                  | git pull --rebase                                                                                                                       |
 | gupv                 | git pull --rebase -v                                                                                                                    |
 | glum                 | git pull upstream master                                                                                                                |
