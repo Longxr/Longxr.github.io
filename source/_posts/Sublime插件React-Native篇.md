@@ -12,6 +12,8 @@ date: 2017-04-24 17:38:57
 作为一个秒开的编辑器，用了就不想换呀，插件库也很强大，稍作配置就可以用了<!-- more -->
 <The rest of contents | 余下全文>
 
+> 作为一个秒开的编辑器，用了就不想换呀，插件库也很强大，稍作配置就可以用了
+
 ## 本体
 Sublime免费的，只是偶尔弹窗一下,所以别折腾什么破解版了
 [官网地址](https://www.sublimetext.com/3),根据你的系统选择下载
@@ -88,42 +90,60 @@ Mac：Cmd+shift+p
 输入：`pci`，选择`Package Control:install package`
 加载出插件列表后，输入`jsfmt`进行安装
 #### 配置
-Preferences -> Package Settings -> Sublime JSFMT，[添加代码](https://github.com/ionutvmi/sublime-jsfmt)：
+* 添加jsx的相关配置
+```
+cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/jsfmt/
+npm i esformatter@latest esformatter-jsx@latest
+```
+
+* Preferences -> Package Settings -> Sublime JSFMT，[添加代码](https://github.com/ionutvmi/sublime-jsfmt)：
 ```
 {
-    // autoformat on save
-    "autoformat": false,
+  // autoformat on save
+  "autoformat": true,
 
-    // array of extensions for autoformat
-    "extensions": ["js", "sublime-settings"],
+  // array of extensions for autoformat
+  "extensions": [
+    "js",
+    "jsx",
+    "sublime-settings"
+  ],
 
-    // options for jsfmt
-    "options": {
-        "preset": "jquery",
-        "indent": {
-            "value": "    "
-        },
-        // plugins included
-        "plugins": [
-            // "esformatter-quotes",
-            // "esformatter-semicolons",
-            // "esformatter-braces",
-            // "esformatter-dot-notation"
-        ]
+  // options for jsfmt
+  "options": {
+    "preset": "jquery",
+    "indent": {
+      "value": "    "
     },
-    "options-JSON": {
-        "plugins": [
-            "esformatter-quotes"
-        ],
-        "quotes": {
-            "type": "double"
-        }
-    },
-    "alert-errors": true,
-    // path to nodejs
-    "node-path": "node",
-    // if true it will format the whole file even if you have a selection active
-    "ignore-selection": false
+    // plugins included
+    "plugins": [
+      "esformatter-jsx",
+    ]
+  },
+
+  "jsx": {
+    "formatJSX": true,
+    // change these to your preferred values
+    // refer to https://github.com/royriojas/esformatter-jsx#best-configuration for more options
+    "attrsOnSameLineAsTag": false,
+    "maxAttrsOnTag": 1,
+    "firstAttributeOnSameLine": false,
+    "alignWithFirstAttribute": true
+  },
+  // other esformatter options
+  "options-JSON": {
+    "plugins": [
+      "esformatter-quotes"
+    ],
+    "quotes": {
+      "type": "double"
+    }
+  },
+  "alert-errors": true,
+  // path to nodejs
+  "node-path": "node",
+  // if true it will format the whole file even if you have a selection active
+  "ignore-selection": false
 }
 ```
 
@@ -335,6 +355,4 @@ Preferences -> Package Settings -> Sublime Linter.sublime-settings
 [详解 ESLint 规则，规范你的代码](http://blog.guowenfh.com/2016/08/07/ESLint-Rules/)
 
 [Sublime text3 jsx支持（eslint）](http://www.jianshu.com/p/b2985ba08ec9)
-
-
 
