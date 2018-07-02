@@ -174,19 +174,19 @@ FinishInit:
 !define MUI_LANGDLL_WINDOWTITLE "$(LangDialog_Title)"
 !define MUI_LANGDLL_INFO "$(LangDialog_Text)"
 !define MUI_LANGDLL_ALLLANGUAGES
-...
+
 ; 安装界面包含的语言设置
 !insertmacro MUI_LANGUAGE "English" ;first language is the default language
 !insertmacro MUI_LANGUAGE "SimpChinese"
-...
+
 
 ; 安装预释放文件
 !insertmacro MUI_RESERVEFILE_LANGDLL
 ;!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
-...
+
 Function .onInit
  !insertmacro MUI_LANGDLL_DISPLAY 
-...
+
 FunctionEnd
 ```
 
