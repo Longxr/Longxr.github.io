@@ -99,7 +99,7 @@ define([], function(){
                         });
                 }
                 else {
-                    $(".switch-btn, .switch-area").fadeToggle(300);
+                    $(".switch-btn, .switch-area, .beian").fadeToggle(300);
                 }
             });
         }
