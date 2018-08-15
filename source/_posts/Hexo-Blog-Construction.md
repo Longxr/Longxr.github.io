@@ -27,7 +27,7 @@ date: 2017-04-07 16:41:30
 
 在账号下新建一个仓库，仓库命名为yourname.github.io。
 
-![github新建仓库.png](http://upload-images.jianshu.io/upload_images/2756183-2f7eb03ffa9cda64.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![github新建仓库.png](https://upload-images.jianshu.io/upload_images/2756183-2f7eb03ffa9cda64.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 > 设置好pages，等会儿Hexo生成博客push到仓库后，浏览器就可以输入yourname.github.io访问了。
 
@@ -101,21 +101,21 @@ Hexo修改主题相当方便，可以下载别人的主题，自己在主题的�
 
 在阿里云的控制台，找到域名->管理，打开域名控制台，DNS地址修改为f1g1ns1.dnspod.net和f1g1ns2.dnspod.net
 
-![域名DNS修改.png](http://upload-images.jianshu.io/upload_images/2756183-ae907eac3f86495b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![域名DNS修改.png](https://upload-images.jianshu.io/upload_images/2756183-ae907eac3f86495b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 然后在本地的博客目录里的source目录下添加一个名字为CNAME的文件，没有后缀。
 
-![添加CNAME.png](http://upload-images.jianshu.io/upload_images/2756183-5e0448b6ef186910.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![添加CNAME.png](https://upload-images.jianshu.io/upload_images/2756183-5e0448b6ef186910.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 在CNAME中添加一行你自己的域名：
 
-![CNAME文件.png](http://upload-images.jianshu.io/upload_images/2756183-435cca9cf4dac131.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![CNAME文件.png](https://upload-images.jianshu.io/upload_images/2756183-435cca9cf4dac131.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 之前看教程说CNAME是放在博客根目录，但是hexo d -g发布的时候不会提交根目录文件...
 
 去[DNSpod](https://www.dnspod.cn/)添加域名记录
 
-![添加域名记录.png](http://upload-images.jianshu.io/upload_images/2756183-9c18581306b8fb2e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![添加域名记录.png](https://upload-images.jianshu.io/upload_images/2756183-9c18581306b8fb2e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 上面俩A记录是github的服务器地址，github 会根据每个项目下的 CNAME 生成缓存，从而自动跳转。
 

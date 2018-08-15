@@ -20,11 +20,11 @@ date: 2017-11-16 21:47:45
 ##  简介
 
 在需要按比例显示数据的时候，进度条是必不可少的。Qt中有一个进度条相关的类QProgressBar，这个类提供了简单的水平或垂直的进度条，可以通过修改qss简单的改变下样式:
-![自带进度条](http://upload-images.jianshu.io/upload_images/2756183-efd3fd24ac527a43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![自带进度条](https://upload-images.jianshu.io/upload_images/2756183-efd3fd24ac527a43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 简单使用的话自带的样式就够看了，但是也有时候设计非要搞些酷炫的效果，没办法只能折腾下了......比如，设计稿非要整个两端椭圆的进度条，qss就没辙了。这篇文章主要总结下Qt在绘制控件方面的经验，画都能画出来了，其他骚操作就随便搞了，下面是折腾出来的栗子：
-![各种进度条](http://upload-images.jianshu.io/upload_images/2756183-84342a857d9e643e.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![各种进度条](https://upload-images.jianshu.io/upload_images/2756183-84342a857d9e643e.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 ##  各种进度条

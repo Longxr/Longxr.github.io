@@ -182,7 +182,7 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
 
 模型的数据和展示都处理好后，运行效果如下：
 
-![listview展示](http://upload-images.jianshu.io/upload_images/2756183-971bece84e07396e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![listview展示](https://upload-images.jianshu.io/upload_images/2756183-971bece84e07396e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 过滤item
 Qt中提供了一个方便处理模型排序和过滤的类`QSortFilterProxyModel`，通过他可以非常方便的处理我们的model。将QListView展示的model设置成代理模型：
@@ -203,7 +203,7 @@ m_proxyModel->setFilterFixedString(QString::number(S_RED));//根据字符串过�
 m_proxyModel->setFilterRegExp(QRegExp("^[0|2]$")); //根据正则表达式过滤
 ```
 
-![过滤模型](http://upload-images.jianshu.io/upload_images/2756183-5f2a4324c47ac469.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![过滤模型](https://upload-images.jianshu.io/upload_images/2756183-5f2a4324c47ac469.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 获取选中item
 对于列表中item的操作，可以是在delegate中处理交互事件，也可以通过QListView获取到所有选中item的QModelIndex，然后对模型本身进行修改。这里我选择的后者:
@@ -258,6 +258,6 @@ QModelIndexList sourceIndexList;
 
 弄完大概是酱紫的：
 
-![最终效果](http://upload-images.jianshu.io/upload_images/2756183-12a31ca99cfca2d1.gif?imageMogr2/auto-orient/strip)
+![最终效果](https://upload-images.jianshu.io/upload_images/2756183-12a31ca99cfca2d1.gif?imageMogr2/auto-orient/strip)
 
 Demo在这里:->[Github链接地址](https://github.com/Longxr/QListViewDemo)。

@@ -25,7 +25,7 @@ Qt多项目管理，pro相关设置<!-- more -->
 * 子目录项目 : 其他项目->子目录项目
 
 首先是先新建一个子目录项目，再根据需要在子目录项目中添加一个应用程序项目以及多个库的项目，子目录项目默认就只有一个.pro文件。
-![工程目录](http://upload-images.jianshu.io/upload_images/2756183-85b0ec6900d21c69.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![工程目录](https://upload-images.jianshu.io/upload_images/2756183-85b0ec6900d21c69.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## pro文件配置
 
