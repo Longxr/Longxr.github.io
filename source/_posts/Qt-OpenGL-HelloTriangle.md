@@ -5,7 +5,7 @@ categories:
 tags:
   - Qt
   - OpenGL
-date: 2019-08-08 15:45：12
+date: 2019-08-08 15:45:12
 ---
 
 <Excerpt in index | 摘要> 
