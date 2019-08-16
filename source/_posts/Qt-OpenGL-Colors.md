@@ -16,7 +16,7 @@ date: 2019-08-13 13:23:33
 ## 对比说明
 ### 教程地址
 [原教程地址](https://learnopengl-cn.github.io/02%20Lighting/01%20Colors/)，相关知识可以点击链接学习。
-[我的工程地址](https://github.com/Longxr/QOpenGLWidgetTest)，每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout 829430e`，喜欢就点个Star吧~
+[我的工程地址](https://github.com/Longxr/LearnopenglQt)，每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout v2.1`，喜欢就点个Star吧~
 
 ### 不同点 (仅列出新增)
 1. 之前程序只有一个shaderProgram、VAO，直接用的shaderProgram的`setAttributeBuffer()`函数绑定VBO数据；现在有两个shaderProgram、VAO，不确定后面shaderProgram和VAO还是不是一对一的关系，还是改成默认的`glVertexAttribPointer()`函数了，两个都能用。（感觉之前的好像VAO没啥用啊，shaderprogram可以直接去绑定VBO）

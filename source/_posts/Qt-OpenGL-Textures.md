@@ -16,7 +16,7 @@ date: 2019-08-08 15:47:23
 ## 对比说明
 ### 教程地址
 [原教程地址](https://learnopengl-cn.github.io/01%20Getting%20started/06%20Textures/)，相关知识可以点击链接学习。
-[我的工程地址](https://github.com/Longxr/QOpenGLWidgetTest)，准备后期每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout 577235e`，喜欢就点个Star吧~
+[我的工程地址](https://github.com/Longxr/LearnopenglQt)，准备后期每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout v1.3`，喜欢就点个Star吧~
 
 ### 不同点 (仅列出新增)
 1. Qt提供了`QOpenGLTexture`类来处理OpenGL中的Texture，并且创建的时候可以直接传递一个QImage给纹理对象，如果使用gl相关函数还要读取图片数据的data再设置，比较麻烦。

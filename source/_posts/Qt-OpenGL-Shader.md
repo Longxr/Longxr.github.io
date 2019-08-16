@@ -16,7 +16,7 @@ date: 2019-08-08 15:46:22
 ## 对比说明
 ### 教程地址
 [原教程地址](https://learnopengl-cn.github.io/01%20Getting%20started/05%20Shaders/)，相关知识可以点击链接学习。
-[我的工程地址](https://github.com/Longxr/QOpenGLWidgetTest)，准备后期每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout 4623abc`，喜欢就点个Star吧~
+[我的工程地址](https://github.com/Longxr/LearnopenglQt)，准备后期每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout v1.2`，喜欢就点个Star吧~
 
 ### 不同点 (仅列出新增)
 1. 我的代码实现的是原教程中练习2的三角形沿着X轴水平移动

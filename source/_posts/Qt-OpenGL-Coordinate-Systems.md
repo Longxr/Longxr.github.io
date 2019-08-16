@@ -16,7 +16,7 @@ date: 2019-08-09 13:36:23
 ## 对比说明
 ### 教程地址
 [原教程地址](https://learnopengl-cn.github.io/01%20Getting%20started/08%20Coordinate%20Systems/)，相关知识可以点击链接学习。
-[我的工程地址](https://github.com/Longxr/QOpenGLWidgetTest)，每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout 0d68676`，喜欢就点个Star吧~
+[我的工程地址](https://github.com/Longxr/LearnopenglQt)，每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout v1.5`，喜欢就点个Star吧~
 
 ### 不同点 (仅列出新增)
 1. view、projection矩阵只需要初始化一次，就放到了`initializeGL()`中。

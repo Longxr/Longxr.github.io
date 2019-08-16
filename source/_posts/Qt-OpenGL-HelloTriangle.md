@@ -16,7 +16,7 @@ date: 2019-08-08 15:45:12
 ## 对比说明
 ### 教程地址
 [原教程地址](https://learnopengl-cn.github.io/01%20Getting%20started/04%20Hello%20Triangle/)，相关知识可以点击链接学习。
-[我的工程地址](https://github.com/Longxr/QOpenGLWidgetTest)，准备后期每篇教程一个commit，查看本篇代码 `git checkout 8e016e1`，喜欢就点个Star吧~
+[我的工程地址](https://github.com/Longxr/LearnopenglQt)，准备后期每篇教程一个commit，查看本篇代码 `git checkout v1.1`，喜欢就点个Star吧~
 
 ### 不同点
 1. 原教程关于ShaderProgram的读取、链接很繁琐，后面教程还专门写了个类`Shader`，这里我直接使用Qt封装好的`addShaderFromSourceFile`函数更方便。
