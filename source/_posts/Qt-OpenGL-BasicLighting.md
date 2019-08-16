@@ -1,5 +1,5 @@
 ---
-title: 基于Qt的OpenGL学习（7）—— 颜色
+title: 基于Qt的OpenGL学习（8）—— 基础光照
 categories:
   - Qt
 tags:
