@@ -302,4 +302,5 @@ CDN:
 
 ## 是否展示备案号
 ### beian: false  # 不开启
-beian: 苏ICP备17029004号
+beian: false
+
