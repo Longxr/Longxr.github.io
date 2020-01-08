@@ -15,14 +15,14 @@ QtCreator支持多种格式化工具， 我使用的是clang-format，这个工�
 如果使用其他插件想要看怎么设置的话可以看Qt的[官方文档](https://doc.qt.io/qtcreator/creator-beautifier.html)，我这里就说下clang-format需要做的步骤。
 1. [下载llvm并安装](http://releases.llvm.org/download.html)，如果除了格式化以外不用的话，安装的时候最好不要加到环境变量
 2. 在Qt Creator的关于插件中启用Beautifier插件，启用插件需要重启下Creator。
-![启用Beautifier插件](https://upload-images.jianshu.io/upload_images/2756183-660e7b3c68401f19.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![启用Beautifier插件](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/QtCreator-Code-Format_01.png)
 
 ## 使用配置
 关于插件的配置在工具->选项->Beautifier中设置， 设置好clang-format的路径 `C:\Program Files\LLVM\bin\clang-format.exe`。
 
 ### 通过.clang-format文件使用
 1. 在插件的配置中*Options*选择*Use predefined style*，下拉选择File。
-![通过文件使用](https://upload-images.jianshu.io/upload_images/2756183-3fa1ab609bcc99dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![通过文件使用](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/QtCreator-Code-Format_02.png)
 2. 写一个.clang-format文件放到项目中和最外层的.pro同一级目录，下面是带中文注释的.code-format，也可以去[clang-format官方说明](http://clang.llvm.org/docs/ClangFormatStyleOptions.html)中查看。
 
 ```
@@ -216,7 +216,7 @@ UseTab:          Never
 ```
 ### 通过在插件中添加代码使用
 使用上面配置文件的话每次都需要拷贝一个文件到对应的目录下，工程多了或者临时想格式化一部分代码不方便，可以直接将配置写到插件的配置中。在插件的配置中*Options*选择*Use customized style*，新建一个配置文件写入配置。
-![在配置中直接写](https://upload-images.jianshu.io/upload_images/2756183-f3b06ac8d2c036eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![在配置中直接写](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/QtCreator-Code-Format_03.png)
 
 由于不能在配置中写中文，并且配置文件中的*BasedOnStyle*可以设置默认样式，只需要写上和默认配置不同的部分，下面是相关配置:
 ```
@@ -246,12 +246,12 @@ IndentWidth:     4
 ```
 ## 快捷键设置
 可以给格式化插件设置快捷键，我是给`Format at Cursor`设置了Alt+Shift+F (和VS Code的格式话相同)，使用的时候需要选中需要格式化的部分。
-![快捷键设置](https://upload-images.jianshu.io/upload_images/2756183-ece006ea98d5701d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![快捷键设置](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/QtCreator-Code-Format_04.png)
 
 至于为啥没有设置`Format Current File`设置，是因为格式化的时候会把带lambda表达式的connect函数整成下图的样子，写成这个样子可能会被打_(:з)∠)_，所以我选择格式化选中的部分。
-![格式化之前](https://upload-images.jianshu.io/upload_images/2756183-ab7fe9157c90d76d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![格式化之前](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/QtCreator-Code-Format_05.png)
 
-![格式化之后](https://upload-images.jianshu.io/upload_images/2756183-a809fb7c3898d2df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![格式化之后](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/QtCreator-Code-Format_06.png)
 
 *如果有什么办法可以改掉connect这种函数里带个lambda的格式的话记得评论和我说下呀*
 
