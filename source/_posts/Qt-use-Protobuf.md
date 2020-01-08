@@ -28,14 +28,14 @@ Protocol Buffer是google 的一种数据交换的格式，它独立于语言，�
 3. configure选好后，就会有下图红色部分的配置信息，其中蓝色的项是确定编译生成动态库还是静态库的，要生成动态库就勾选上，其他配置默认不变。
 4. 点击左下角的Generate，生成VS的工程文件。
 5. 点击左下角的Open Project，打开对应的VS工程。
-![CMake配置](https://upload-images.jianshu.io/upload_images/2756183-970960abd3d94485.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-![Configure选择](https://upload-images.jianshu.io/upload_images/2756183-14d34ffac51bd0ab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![CMake配置](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-use-Protobuf_01.png)
+![Configure选择](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-use-Protobuf_02.png)
 
 ### VS中生成库文件
 1. release还是debug在菜单栏切换
-![releasse、debug切换](https://upload-images.jianshu.io/upload_images/2756183-f36fa4f0640d56ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![releasse、debug切换](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-use-Protobuf_03.png)
 2. 大工程中还包含了些测试工程，必须生成的有两个，也可以偷懒直接右键解决方案->生成解决方案。
-![不同工程](https://upload-images.jianshu.io/upload_images/2756183-2f398ae402708cf6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![不同工程](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-use-Protobuf_04.png)
 3. 生成的文件就在之前设置的CMakebuild目录下的Debug、Release文件夹下。
 
 ## 使用Protocol Buffer
@@ -61,7 +61,7 @@ message Person {
 ```
 protoc --cpp_out=./ person.proto
 ```
-![TIM截图20190704145611.png](https://upload-images.jianshu.io/upload_images/2756183-3fec1db3e5b39b10.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![TIM截图20190704145611.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-use-Protobuf_05.png)
 
 ### Qt中使用Protocol Buffer
 新建一个控制台工程，将上面生成的person.pb.h、person.pb.cc加入工程，并修改main.cpp和.pro文件
@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
     return a.exec();
 }
 ```
-![运行结果](https://upload-images.jianshu.io/upload_images/2756183-4f87c8604802b450.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-use-Protobuf_06.png)
 
 Protocol Buffers数据写入和读取的简单应用就完成了。
 

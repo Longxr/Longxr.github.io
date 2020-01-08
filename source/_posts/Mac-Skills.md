@@ -38,17 +38,17 @@ Finder与终端交互<!-- more -->
 
 1. 打开 `Automator` 这个程序（Finder应用程序中找或者Spotlight直接搜索），在弹出的菜单中选择 __服务__：
 
-  ![打开.png](https://upload-images.jianshu.io/upload_images/2756183-7cae0171e6be0b99.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+  ![打开.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Mac-Skills_01.png)
 2. 在左上角的搜索框搜索 Finder 把打开Finder项目拖动到右边：
 
-  ![拖动.png](https://upload-images.jianshu.io/upload_images/2756183-fb3b74222ac8ac62.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+  ![拖动.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Mac-Skills_02.png)
 3. 右上角服务设置如图：
 
-  ![服务设置.png](https://upload-images.jianshu.io/upload_images/2756183-f46b8a18118e66b5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+  ![服务设置.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Mac-Skills_03.png)
 
 4.效果图：
 
-![右键菜单.png](https://upload-images.jianshu.io/upload_images/2756183-18834771e83a532b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![右键菜单.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Mac-Skills_04.png)
 
   如果设置的服务出现在二级菜单，可以在`系统偏好设置`->`键盘`->`快捷键`->`服务`中去掉不需要的选项
 
@@ -62,9 +62,9 @@ Finder与终端交互<!-- more -->
   使用软件：[Go2shell](http://zipzapmac.com/Go2Shell)
   下载后安装，选择你使用的终端，点下  `install Go2Shell from Finder` 即可:
   
-  ![安装.png](https://upload-images.jianshu.io/upload_images/2756183-7e85a93ff9470903.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+  ![安装.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Mac-Skills_05.png)
 
-  ![gotoshell.png](https://upload-images.jianshu.io/upload_images/2756183-19460211cf401452.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+  ![gotoshell.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Mac-Skills_06.png)
 
 
 

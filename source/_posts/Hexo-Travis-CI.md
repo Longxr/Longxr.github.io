@@ -25,34 +25,34 @@ hexo d
 
 ### 登录Travis CI
 使用Github账号登录[Travis CI官网](https://travis-ci.org/)，登录后在主界面点击`My Repositories`旁边的"+"号:
-![点击加号](https://upload-images.jianshu.io/upload_images/2756183-662937f67676de27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![点击加号](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_01.png)
 
 选择你在Github的放博客源码的仓库，打开左侧的开关：
 
-![仓库选择](https://upload-images.jianshu.io/upload_images/2756183-bff89e51019b2884.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![仓库选择](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_02.png)
 
-![打开开关](https://upload-images.jianshu.io/upload_images/2756183-00a58625582c0099.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![打开开关](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_03.png)
 
 然后点下仓库那里的设置图标，进入设置的界面：
 
-![设置选项](https://upload-images.jianshu.io/upload_images/2756183-4daee2df779202b4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![设置选项](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_04.png)
 
 现在我们就设置好了需要构建的仓库了，Github的仓库指定的分支有commit后就会触发构建，但是目前还没有权限将构建的结果push到Github的仓库，这就需要在Github配置下Access Token了
 
 ### 配置Github的Access Token
 转到[Github页面](https://github.com/)，在`Setting`界面下选择`Personal access tokens`:
 
-![Personal access tokens](https://upload-images.jianshu.io/upload_images/2756183-1e5840d238f365ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Personal access tokens](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_05.png)
 
 生成一个新的tokens，设置如下：
 
-![token配置](https://upload-images.jianshu.io/upload_images/2756183-a115b8f42cde18ce.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![token配置](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_06.png)
 
 > 生成的时候先别急着关页面，配置信息随时可以更改，但是token只在这时候显示一次，页面关了之后找不到的，要的话只能重新生成一个
 
 将复制的token添加到`Travis CI`的环境变量中：
 
-![添加环境变量](https://upload-images.jianshu.io/upload_images/2756183-6917780498430ec8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![添加环境变量](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_07.png)
 
 这样`Travis CI`就有了访问Github的权限了
 
@@ -64,7 +64,7 @@ hexo d
 
 由于Github的要求，要作为博客显示的分支必须是master，所以源码就另起了一个分支`blog`。
 
-![另一分支](https://upload-images.jianshu.io/upload_images/2756183-0e200b578a5c9f4f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![另一分支](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_08.png)
 
 #### 添加.travis.yml文件
 在blog根目录新建一个.travis.yml文件，添加如下内容：
@@ -105,7 +105,7 @@ env:
 ## 逼格添加
 自动化构建服务还可以在README.md中加上一个构建状态的图标：
 
-![build Stauts](https://upload-images.jianshu.io/upload_images/2756183-5bfabdee4c15e855.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![build Stauts](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_09.png)
 
 在自己的README.md中加一行：
 `[![Build Status](https://travis-ci.org/Longxr/Longxr.github.io.svg?branch=blog)](https://travis-ci.org/Longxr/Longxr.github.io)`
@@ -113,7 +113,7 @@ env:
 
 也可以在界面点击仓库名后面的状态图标获取链接代码，默认是master分支，记得改成你监测的分支，不然就会显示`unknown`
 
-![获取状态图标链接](https://upload-images.jianshu.io/upload_images/2756183-0ab45a0ed124f24f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![获取状态图标链接](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Travis-CI_11.png)
 
 > 补充说明: blog分支README.md放在根目录就行，master分支README.md要放在博客目录的/source中
 

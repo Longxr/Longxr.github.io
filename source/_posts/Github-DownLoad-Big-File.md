@@ -16,7 +16,7 @@ date: 2018-10-28 12:58:12
 1. 先fork需要下载的仓库
 2. 在[码云](https://gitee.com)中绑定自己的[Github](https://github.com)账号
 3. 点击码云页面右上角的"+"==>从Github导入项目，就可以同步fork的仓库了
-![导入项目](https://upload-images.jianshu.io/upload_images/2756183-008f666a511e238a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![导入项目](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Github-DownLoad-Big-File_01.png)
 
 4. 点击进入项目==>右侧的克隆/下载就能下载打包好的zip了
 

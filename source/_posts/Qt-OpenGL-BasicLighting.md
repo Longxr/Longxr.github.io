@@ -22,7 +22,7 @@ date: 2019-08-14 16:14:11
 1. 主要是着色器中光照的各种计算，看原教程慢慢理解。
 
 ## 运行结果
-![运行结果](https://upload-images.jianshu.io/upload_images/2756183-bd49740a52793b7e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-BasicLighting_01.png)
 
 
 ## 修改的文件

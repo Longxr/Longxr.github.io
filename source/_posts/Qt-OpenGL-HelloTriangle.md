@@ -23,7 +23,7 @@ date: 2019-08-08 15:45:12
 2. Qt提供了`QOpenGLShaderProgram`、`QOpenGLVertexArrayObject`、`QOpenGLBuffer`这些类来处理OpenGL中的`program`、`VAO`、`VBO`。
 
 ## 运行结果
-![运行结果](https://upload-images.jianshu.io/upload_images/2756183-31c2f6f124d14ee0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-HelloTriangle_01.png)
 
 
 ## 使用OpenGL函数版

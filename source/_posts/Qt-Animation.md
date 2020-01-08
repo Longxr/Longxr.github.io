@@ -13,7 +13,7 @@ date: 2017-08-16 22:20:49
 
 ## 动画框架结构
 
-![动画框架结构](https://upload-images.jianshu.io/upload_images/2756183-7aadfddf8ab4e1cc.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![动画框架结构](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Animation_01.png)
 
 动画框架由基类QAbstractAnimation以及它的两个子类QVariantAnimation、QAnimationGroup组成。基础动画由QVariantAnimation的子类QPropertyAnimation来设置，再通过将多个QPropertyAnimation和QPauseAnimation组合成为动画组（QParallelAnimationGroup、QSequentialAnimationGroup），完成一个连续的动画。
 
@@ -57,7 +57,7 @@ Qt的控件没有单独的透明度属性，要修改控件的透明度可以通
 ### 动画曲线
 动画还可以设置时间的插值曲线，默认是linear，即线性运动，通过设置QEasingCurve即可。Qt提供了40种已经定义好的曲线（如果有需要也可以自定义曲线）：
 
-![动画曲线](https://upload-images.jianshu.io/upload_images/2756183-93a4e973c0096e6c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![动画曲线](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Animation_02.png)
 
 ```
 pScaleAnimation1->setEasingCurve(QEasingCurve::InOutQuad);
@@ -98,6 +98,6 @@ m_group->setDirection(QAbstractAnimation::Backward);
 ## 动画效果
 综合几个小栗子：
 
-![动画效果](https://upload-images.jianshu.io/upload_images/2756183-0756901906a0faa2.gif?imageMogr2/auto-orient/strip)
+![动画效果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Animation_03.gif)
 
 举个栗子:->[Github链接地址](https://github.com/Longxr/QtAnimationDemo)

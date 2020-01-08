@@ -22,9 +22,9 @@ date: 2019-08-15 10:52:11
 1. 之后对于增量型的教程可能就多篇合成一篇了，可自行切换commit查看，修改文件只贴出最后版。
 
 ## 运行结果
-![材质运行结果](https://upload-images.jianshu.io/upload_images/2756183-adc6aa4738b81802.gif?imageMogr2/auto-orient/strip)
+![材质运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-LightingMaps_01.gif)
 
-![光照贴图结果](https://upload-images.jianshu.io/upload_images/2756183-db2e2e51144b3e53.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![光照贴图结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-LightingMaps_02.png)
 
 
 

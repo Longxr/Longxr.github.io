@@ -27,7 +27,7 @@ date: 2017-04-07 16:41:30
 
 在账号下新建一个仓库，仓库命名为yourname.github.io。
 
-![github新建仓库.png](https://upload-images.jianshu.io/upload_images/2756183-2f7eb03ffa9cda64.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![github新建仓库.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Blog-Construction_01.png)
 
 > 设置好pages，等会儿Hexo生成博客push到仓库后，浏览器就可以输入yourname.github.io访问了。
 
@@ -99,21 +99,21 @@ Hexo修改主题相当方便，可以下载别人的主题，自己在主题的�
 
 在阿里云的控制台，找到域名->管理，打开域名控制台，DNS地址修改为dns9.hichina.com和dns10.hichina.com (默认就是这俩)
 
-![DNS修改](https://upload-images.jianshu.io/upload_images/2756183-db117749baf12430.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![DNS修改](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Blog-Construction_02.png)
 
 然后在本地的博客目录里的source目录下添加一个名字为CNAME的文件，没有后缀。
 
-![添加CNAME.png](https://upload-images.jianshu.io/upload_images/2756183-5e0448b6ef186910.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![添加CNAME.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Blog-Construction_03.png)
 
 在CNAME中添加一行你自己的域名：
 
-![CNAME文件.png](https://upload-images.jianshu.io/upload_images/2756183-435cca9cf4dac131.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![CNAME文件.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Blog-Construction_04.png)
 
 之前看教程说CNAME是放在博客根目录，但是hexo d -g发布的时候不会提交根目录文件...于是就放到source文件夹下了
 
 在控制台左侧选择域名解析，添加解析记录：
 
-![域名解析](https://upload-images.jianshu.io/upload_images/2756183-2c90cd84e854bafc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![域名解析](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Blog-Construction_05.png)
 
 上面的A记录是github的服务器地址，github 会根据每个项目下的 CNAME 生成缓存，从而自动跳转。
 
@@ -122,9 +122,9 @@ Hexo修改主题相当方便，可以下载别人的主题，自己在主题的�
 ### 支持https
 github在2018年5月就支持给自定义域名添加https了，虽然我8月才发现......在github的博客项目页面点击Settings，找到下面的GitHub Pages：
 
-![https访问支持](https://upload-images.jianshu.io/upload_images/2756183-f4f566be4891a546.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![https访问支持](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Blog-Construction_06.png)
 
 最底下的选项勾上就可以支持https了。如果该选项是灰色的，提示你的域名不支持的话，可以把再把项目里的CNAME文件删掉提交一次，Custom domain那里删掉然后Save，等几分钟后再重新提交一次CNAME文件。这时候可能提示你暂时还不支持，申请证书在24小时内完成，不过我就等了1个小时就好了。
 
-![支持https](https://upload-images.jianshu.io/upload_images/2756183-2a46fd24441c4b38.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![支持https](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Hexo-Blog-Construction_07.png)
 

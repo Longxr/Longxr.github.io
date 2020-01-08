@@ -33,7 +33,7 @@ import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe0
 
 #### 使用
 快捷键：**Ctrl+Shift+P**，调出菜单，输入`pci`，再输入你要安装的插件名字即可
-![Package Control](https://upload-images.jianshu.io/upload_images/2756183-2fe340849ca16f6c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Package Control](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Sublime-Common-Plugin_01.png)
 
 
 ### 插件安装
@@ -51,7 +51,7 @@ import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe0
 
 ### 个人配置
 Sublime的配置有default和user，前者是默认配置，一般个人修改都是将修改内容粘贴到对应的user配置中即可
-![配置修改](https://upload-images.jianshu.io/upload_images/2756183-b8d1f2926750aff3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![配置修改](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Sublime-Common-Plugin_02.png)
 
 
 #### 全局设置
@@ -248,7 +248,7 @@ Sublime的配置有default和user，前者是默认配置，一般个人修改�
 
 - 变量前输入/**按Enter，补全变量多行注释
 
-![注释插件.gif](https://upload-images.jianshu.io/upload_images/2756183-b028b5d25627f5d6.gif?imageMogr2/auto-orient/strip)
+![注释插件.gif](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Sublime-Common-Plugin_03.gif)
 
 
 如果输入了一个行注释，再按Ctrl+Enter，注释将变成酱紫

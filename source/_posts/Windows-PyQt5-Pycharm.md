@@ -26,7 +26,7 @@ date: 2018-08-06 17:57:13
 
 ##### 多个版本Python
 有的小伙伴可能需要安装多个版本的Python，在Linux和Mac上可能需要啥管理工具啥的，具体可以看看[Python版本管理](https://www.jianshu.com/p/60f361822a7e)。**如果你是Windows，直接安装就可以了，具体要用哪个版本的Python只要加上对应的环境变量即可。**
-![添加环境变量](https://upload-images.jianshu.io/upload_images/2756183-6d6693a9ce151157.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![添加环境变量](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_01.png)
 
 也不用装什么版本管理工具，就是这么简单。还有也可以[通过命令行切换Python版本](https://www.zhihu.com/question/21653286)，但是敲命令行有时候老是忘记，不折腾自己了，可以了解下。
 
@@ -44,10 +44,10 @@ date: 2018-08-06 17:57:13
 ```
 ##### 添加pip.ini
 在`C:\Users\Administrator`下新建一个`pip`文件夹，在文件夹中新建一个pip.ini文件：
-![创建pip文件夹](https://upload-images.jianshu.io/upload_images/2756183-3c225e0add0beefd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![创建pip文件夹](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_02.png)
 
 在pip.ini中添加以下内容，之后再用pip下载包就可以体验飞速下载了：
-![添加镜像源](https://upload-images.jianshu.io/upload_images/2756183-2575beafce4e786d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![添加镜像源](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_03.png)
 
 ### PyQt5安装
 环境变量加上了Python对应的文件夹后，就可以通过pip安装PyQt5。默认安装最新的版本，在命令行输入：
@@ -74,14 +74,14 @@ PyQt5有对应的[这个工具](https://pypi.org/project/pyqt5-tools/)，包含d
 
 ##### Pycharm配置
 打开Pycharm，Files->Settings->External Tools，添加两个tools，Qt Designer、PyUIC：
-![添加Tools](https://upload-images.jianshu.io/upload_images/2756183-f195d7d5596015f9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![添加Tools](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_04.png)
 
-![添加Qt Designer](https://upload-images.jianshu.io/upload_images/2756183-53a07e1bd2360e95.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![添加Qt Designer](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_05.png)
 
 1. `Programs:`的地方找到你自己的designer.exe所在的位置
 2. `Working directory:`的地方填上`$ProjectFileDir$` (填`$FileDir$`好像也行)。
 
-![添加PyUIC](https://upload-images.jianshu.io/upload_images/2756183-442bc6377f6e2f62.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![添加PyUIC](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_06.png)
 
 1. `Programs:`的地方找到你自己的python.exe所在的位置
 2. `Arguments:`的地方填上`-m PyQt5.uic.pyuic  $FileName$ -o $FileNameWithoutExtension$.py`
@@ -91,21 +91,21 @@ PyQt5有对应的[这个工具](https://pypi.org/project/pyqt5-tools/)，包含d
 环境搭建好了，来实际编写一个项目试试
 
 ##### 新建Python项目
-![新建Python项目](https://upload-images.jianshu.io/upload_images/2756183-a403b6174c1098ed.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![新建Python项目](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_07.png)
 
 这里注意，上面的New environment using是在项目下添加一个Python的环境，如果要使用PyQt5的话要将底下两个勾选框勾上；也可以使用自己本地的Python，就选择底下的Existing interpreter，指定Python.exe位置即可。
 
 ##### 创建ui文件
-![创建ui文件](https://upload-images.jianshu.io/upload_images/2756183-6087c27e9feb5a96.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![创建ui文件](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_08.png)
 
 按照图示选择Qt Designer就会启动Qt的designer.exe了，你也可以直接到Qt的目录下运行程序。然后就是愉快的拖控件时间：
-![ui文件生成](https://upload-images.jianshu.io/upload_images/2756183-6cba3a2246c67322.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![ui文件生成](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_09.png)
 
 界面设计完毕，将ui文件保存到Python工程所在的目录下即可，PyCharm中的项目可以看到对应的ui文件。
 
 ##### ui文件生成py文件
 在ui文件上点击右键，External Tools->PyUIC，就能生成对应的py文件了：
-![生成py文件](https://upload-images.jianshu.io/upload_images/2756183-210efd90455b6ed6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![生成py文件](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_10.png)
 
 ##### 添加main.py
 给程序添加一个入口，在工程目录下新建一个main.py，在其中添加代码：
@@ -122,13 +122,13 @@ if __name__ == '__main__':
     sys.exit(app.exec_())
 ```
 
-![main.py](https://upload-images.jianshu.io/upload_images/2756183-0de8952a9dd4b3d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![main.py](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_11.png)
 
 ##### 运行
 在main.py中，点击右键->Run main，即可运行程序。
-![运行](https://upload-images.jianshu.io/upload_images/2756183-922da50c66b0251e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![运行](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_12.png)
 
-![运行界面](https://upload-images.jianshu.io/upload_images/2756183-d58441e8fd4a7bb5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![运行界面](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_13.png)
 
 #### 总结
 搭建PyQt5的相关环境其实也不复杂，这其中有很多可以根据自己的环境修改的地方，比如：
