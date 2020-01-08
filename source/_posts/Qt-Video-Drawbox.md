@@ -304,7 +304,7 @@ int InitFilters(const char *filters_descr)
 ## 运行效果
 绿的QPainter绘制，红的OpenGL绘制，蓝色AVFilter绘制
 
-![运行效果](https://upload-images.jianshu.io/upload_images/2756183-fa7eb9cb6ebc0c6f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![运行效果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Video-Drawbox_01.png)
 
 
 ## 参考资料

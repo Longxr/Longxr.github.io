@@ -16,7 +16,7 @@ date: 2019-03-02 17:00:17
 
 ## 构建程序
 源代码通过编译生成exe的过程就是构建了，写代码的时候IDE的绿色小三角点击之后就会编译你写好的程序，没有错误的话还会顺便将生成的程序运行起来。这一过程用脚本来做的话就是自动构建了，其实IDE也是通过命令调用编译程序的，可以点击`项目->构建设置`查看。
-![构建设置](https://upload-images.jianshu.io/upload_images/2756183-82e263a8fc323721.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![构建设置](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Continuous-integration-of-Qt-programs_01.png)
 
 
 ### Qt-mingw 构建参数
