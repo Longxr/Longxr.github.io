@@ -52,6 +52,6 @@ Qt翻译文件处理工具,根据源文本生成excel文件，可调用有道云
 * 然后可以结合功能二来更新翻译文件(ts)，之后就可以愉快地发布出(qm)给程序用了
 
 ## 小工具代码下载地址
-github仓库->[下载地址](https://github.com/Longxr/TSFileEditor) ，喜欢的话给个star吧~
+github仓库->[下载地址](https://github.com/Longxr/TSFileEditor/releases) ，喜欢的话给个star吧~
   ​
 
