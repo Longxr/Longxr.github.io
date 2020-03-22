@@ -1,5 +1,5 @@
 ---
-title: ffmpeg将多个flv文件合成为mp4（python版）
+title: ffmpeg将多个flv文件合成为mp4（golang版）
 categories:
   - 音视频
 tags:
@@ -161,4 +161,4 @@ func main() {
 ## 运行结果
 ![flvs2mp4-go-2020-3-22-22-55-44.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/flvs2mp4-go-2020-3-22-22-55-44.png)
 
-11个30s左右的flv合成mp4不用groutine需要时间5.74秒，开启groutine只要3.2秒
+11个30s左右的flv合成mp4不用groutine需要时间5.74秒，开启groutine只要3.2秒，确实快了不少
