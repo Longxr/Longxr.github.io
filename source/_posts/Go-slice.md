@@ -8,23 +8,27 @@ tags:
 date: 2020-05-12 15:09:02
 ---
 
-<Excerpt in index | 摘要> 
+<Excerpt in index | 摘要>
 针对切片的理解，通过几个例子来掌握切片相关内容<!-- more -->
 <The rest of contents | 余下全文>
 
-# 切片定义
+## 切片定义
+
 切片（Slice）是一个拥有相同类型元素的可变长度的序列。它是基于数组类型做的一层封装。它非常灵活，支持自动扩容。切片是一个引用类型，它的内部结构包含地址、长度和容量。切片一般用于快速地操作一块数据集合。
 
-# 数组与切片
+## 数组与切片
+
 切片的数据实际是通过数组来保存的，每个切片都有三个信息：底层数组的指针、切片的长度（len）和切片的容量（cap）。
-举个栗子，底层数组a := [8]int{0, 1, 2, 3, 4, 5, 6, 7}；
-* 切片s1 := a[:5]，切片和数组对应关系：
-![Go-slice-2020-05-12-15-23-13](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Go-slice-2020-05-12-15-23-13.png)
+举个栗子，底层数组 a := [8]int{0, 1, 2, 3, 4, 5, 6, 7}；
 
-* 切片s2 := a[3:6]，切片和数组对应关系：
-![Go-slice-2020-05-12-15-44-43](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Go-slice-2020-05-12-15-44-43.png)
+- 切片 s1 := a[:5]，切片和数组对应关系：
+  ![Go-slice-2020-05-12-15-23-13](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Go-slice-2020-05-12-15-23-13.png)
 
-# 指向同一个底层数组的切片修改值
+- 切片 s2 := a[3:6]，切片和数组对应关系：
+  ![Go-slice-2020-05-12-15-44-43](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Go-slice-2020-05-12-15-44-43.png)
+
+## 指向同一个底层数组的切片修改值
+
 切片是指向底层数组的引用类型，指向同一个底层数组的切片底层数据存放都是在同一个位置，修改某个切片会影响到在同一个范围的切片
 
 ```go
@@ -52,11 +56,12 @@ func TestSliceShareMemory(t *testing.T) {
 // PASS
 ```
 
-# 切片表达式
-切片表达式从字符串、数组、指向数组或切片的指针构造子字符串或切片。它有两种变体：一种指定low和high两个索引界限值的简单的形式，另一种是除了low和high索引界限值外还指定容量的完整的形式：
+## 切片表达式
 
-1. 切片len()是可访问长度，容量cap()是总空间大小。通过数组生成的切片， len为首尾索引之差，cap为从切片首索引到数组末尾长度
-2. 切片s[low:high:max]，从切片s的low处到high处所获得的切片，len=high-low，cap=max-low
+切片表达式从字符串、数组、指向数组或切片的指针构造子字符串或切片。它有两种变体：一种指定 low 和 high 两个索引界限值的简单的形式，另一种是除了 low 和 high 索引界限值外还指定容量的完整的形式：
+
+1. 切片 len()是可访问长度，容量 cap()是总空间大小。通过数组生成的切片， len 为首尾索引之差，cap 为从切片首索引到数组末尾长度
+2. 切片 s[low:high:max]，从切片 s 的 low 处到 high 处所获得的切片，len=high-low，cap=max-low
 
 ```go
 func TestSliceExpression(t *testing.T) {
@@ -71,7 +76,8 @@ func TestSliceExpression(t *testing.T) {
 // PASS
 ```
 
-# 切片不能比较
+## 切片不能比较
+
 两个切片不能直接比较，会报错:
 
 ```go
@@ -87,12 +93,14 @@ func TestSliceCompare(t *testing.T) {
 // FAIL
 ```
 
-# 切片的append
-切片通过append()添加元素时，未超过newcap时底层数组地址不变，超过的话底层数组会申请新的内存地址。新申请的容量大小计算分成了两步，有关append的源码在`$GOROOT/src/runtime/slice.go`，可以自己去分析。
+## 切片的 append
 
-## 计算逻辑newcap
-1. new cap > old * 2直接申请新容量大小;
-2. 小于2倍时，len<1024翻倍，len>1024加上1/4
+切片通过 append()添加元素时，未超过 newcap 时底层数组地址不变，超过的话底层数组会申请新的内存地址。新申请的容量大小计算分成了两步，有关 append 的源码在`$GOROOT/src/runtime/slice.go`，可以自己去分析。
+
+### 计算逻辑 newcap
+
+1. new cap > old \* 2 直接申请新容量大小;
+2. 小于 2 倍时，len<1024 翻倍，len>1024 加上 1/4
 
 ```go
 //$GOROOT/src/runtime/slice.go
@@ -116,7 +124,7 @@ if cap > doublecap {
     }
   }
 }
-  
+
 //...略
 lenmem = uintptr(old.len)
 newlenmem = uintptr(cap)
@@ -125,8 +133,10 @@ overflow = uintptr(newcap) > maxAlloc
 newcap = int(capmem)
 //...略
 ```
-## 实际申请内存大小
-上面先算了个逻辑上的newcap，实际申请内存的时候，由于内存对齐的关系不会直接就用newcap。上面的代码就是在算好了newcap后会调用`roundupsize()`得到实际的大小。
+
+### 实际申请内存大小
+
+上面先算了个逻辑上的 newcap，实际申请内存的时候，由于内存对齐的关系不会直接就用 newcap。上面的代码就是在算好了 newcap 后会调用`roundupsize()`得到实际的大小。
 
 ```go
 //$GOROOT/src/runtime/msize.go
@@ -146,7 +156,7 @@ func roundupsize(size uintptr) uintptr {
 }
 ```
 
-在`roundupsize()`中的class_to_size、size_to_class8是存了具体大小的数组，根据传入的newcap来算出下标，拿到对应的大小值。这些数组在`//$GOROOT/src/runtime/sizeclasses.go`，这个文件又是`//$GOROOT/src/runtime/mksizeclasses.go.go`生成的，生成规则就先不去看了。
+在`roundupsize()`中的 class_to_size、size_to_class8 是存了具体大小的数组，根据传入的 newcap 来算出下标，拿到对应的大小值。这些数组在`//$GOROOT/src/runtime/sizeclasses.go`，这个文件又是`//$GOROOT/src/runtime/mksizeclasses.go.go`生成的，生成规则就先不去看了。
 
 ```go
 //$GOROOT/src/runtime/sizeclasses.go
@@ -158,6 +168,7 @@ var size_to_class8 = [smallSizeMax/smallSizeDiv + 1]uint8{0, 1, 2, 3, 3, 4, 4, 5
 ```
 
 了解了上面的内容之后就可以理解下面的几个例子了：
+
 ```go
 func TestSliceAppend(t *testing.T) {
 	var a = make([]int, 5, 10)
@@ -221,7 +232,8 @@ func TestSliceAppend3(t *testing.T) {
 // PASS
 ```
 
-# 切片元素删除
+## 切片元素删除
+
 在要删除的元素左右切两下：a1 = append(a1[:1], a1[2:]...)，删除其实是将所删元素后面的往前挪。
 
 ```go
@@ -237,7 +249,8 @@ func TestSliceDelete(t *testing.T) {
 // PASS
 ```
 
-# 参考内容
-* [Go语言基础之切片](https://www.liwenzhou.com/posts/Go/06_slice/)
-* golang源码
-* [测试的几个例子](https://github.com/Longxr/go_learn/blob/master/go_test/slice_test/slice_test.go)
+## 参考内容
+
+- [Go 语言基础之切片](https://www.liwenzhou.com/posts/Go/06_slice/)
+- golang 源码
+- [测试的几个例子](https://github.com/Longxr/go_learn/blob/master/go_test/slice_test/slice_test.go)
