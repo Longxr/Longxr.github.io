@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="超详细Windows + Python + PyQt5 + Pycharm 环境搭建，走过路过不要错过~~">
+<meta name="keywords" content="Qt,Python,Windows,PyQt5,Pycharm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="超详细Windows + Python + PyQt5 + Pycharm 环境搭建">
+<meta property="og:url" content="http://longxuan.ren/2018/08/06/Windows-PyQt5-Pycharm/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="超详细Windows + Python + PyQt5 + Pycharm 环境搭建，走过路过不要错过~~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_01.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_02.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_03.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_04.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_05.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_06.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_07.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_08.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_09.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_10.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_11.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_12.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_13.png">
+<meta property="og:updated_time" content="2021-07-24T16:43:08.661Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="超详细Windows + Python + PyQt5 + Pycharm 环境搭建">
+<meta name="twitter:description" content="超详细Windows + Python + PyQt5 + Pycharm 环境搭建，走过路过不要错过~~">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_01.png">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>超详细Windows + Python + PyQt5 + Pycharm 环境搭建 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Windows-PyQt5-Pycharm" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/08/06/Windows-PyQt5-Pycharm/" class="article-date">
+      <time datetime="2018-08-06T17:57:13.000Z" itemprop="datePublished">2018-08-06</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      超详细Windows + Python + PyQt5 + Pycharm 环境搭建
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Qt/">Qt</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Qt/">Qt</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>超详细Windows + Python + PyQt5 + Pycharm 环境搭建，走过路过不要错过~~ <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<blockquote>
+<p>之前一直用Qt写C++，最近想玩玩Python，参考了好几个教程，每个教程都有点坑。于是自己整理了下可能会碰到的问题，方便其他想用PyQt5 (GPL) 的小伙伴吧。如果想用PySide2 (LGPL) 过程也基本类似，就把PyQt5的相关内容替换下就行。</p>
+</blockquote>
+<h3 id="Python安装"><a href="#Python安装" class="headerlink" title="Python安装"></a>Python安装</h3><h4 id="Python主程序安装"><a href="#Python主程序安装" class="headerlink" title="Python主程序安装"></a>Python主程序安装</h4><h5 id="单个版本Python"><a href="#单个版本Python" class="headerlink" title="单个版本Python"></a>单个版本Python</h5><p><a href="https://www.python.org/downloads/" target="_blank" rel="noopener">Python官网下载地址</a>，目前最新的是Python3.7，我用的是Python3.6，没用最新的主要是担心PyQt那边没更新</p>
+<h5 id="多个版本Python"><a href="#多个版本Python" class="headerlink" title="多个版本Python"></a>多个版本Python</h5><p>有的小伙伴可能需要安装多个版本的Python，在Linux和Mac上可能需要啥管理工具啥的，具体可以看看<a href="https://www.jianshu.com/p/60f361822a7e" target="_blank" rel="noopener">Python版本管理</a>。<strong>如果你是Windows，直接安装就可以了，具体要用哪个版本的Python只要加上对应的环境变量即可。</strong><br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_01.png" alt="添加环境变量"></p>
+<p>也不用装什么版本管理工具，就是这么简单。还有也可以<a href="https://www.zhihu.com/question/21653286" target="_blank" rel="noopener">通过命令行切换Python版本</a>，但是敲命令行有时候老是忘记，不折腾自己了，可以了解下。</p>
+<h4 id="给Python添加镜像源"><a href="#给Python添加镜像源" class="headerlink" title="给Python添加镜像源"></a>给Python添加镜像源</h4><p>不管是用npm还是pip等包管理工具的时候，国内最好都是换下相关的镜像源，要不然你就只能龟速下载了…</p>
+<h5 id="可用镜像源"><a href="#可用镜像源" class="headerlink" title="可用镜像源"></a>可用镜像源</h5><pre><code>清华：https://pypi.tuna.tsinghua.edu.cn/simple
+阿里云：http://mirrors.aliyun.com/pypi/simple/
+中国科技大学：https://pypi.mirrors.ustc.edu.cn/simple/
+华中理工大学：http://pypi.hustunique.com/
+山东理工大学：http://pypi.sdutlinux.org/
+豆瓣：http://pypi.douban.com/simple/
+</code></pre><h5 id="添加pip-ini"><a href="#添加pip-ini" class="headerlink" title="添加pip.ini"></a>添加pip.ini</h5><p>在<code>C:\Users\Administrator</code>下新建一个<code>pip</code>文件夹，在文件夹中新建一个pip.ini文件：<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_02.png" alt="创建pip文件夹"></p>
+<p>在pip.ini中添加以下内容，之后再用pip下载包就可以体验飞速下载了：<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_03.png" alt="添加镜像源"></p>
+<h3 id="PyQt5安装"><a href="#PyQt5安装" class="headerlink" title="PyQt5安装"></a>PyQt5安装</h3><p>环境变量加上了Python对应的文件夹后，就可以通过pip安装PyQt5。默认安装最新的版本，在命令行输入：</p>
+<pre><code>pip install PyQt5
+</code></pre><p>如果需要安装指定版本的QyQt5，改成输入：</p>
+<pre><code>pip install PyQt5==5.10.1
+</code></pre><h3 id="界面工具安装"><a href="#界面工具安装" class="headerlink" title="界面工具安装"></a>界面工具安装</h3><p>PyQt5只用到了Qt的designer.exe，这是用来设计界面的一个工具，生成的界面文件是.ui的，PyQt5的作用就是把这个ui文件转换成py文件。</p>
+<h4 id="pyqt5-tools"><a href="#pyqt5-tools" class="headerlink" title="pyqt5-tools"></a>pyqt5-tools</h4><p>PyQt5有对应的<a href="https://pypi.org/project/pyqt5-tools/" target="_blank" rel="noopener">这个工具</a>，包含designer.exe。但是官方只更新到了Qt5.9的，而且我也装有Qt，就不考虑此方案了。</p>
+<h4 id="Qt安装"><a href="#Qt安装" class="headerlink" title="Qt安装"></a>Qt安装</h4><p>安装哪个版本基本上都没啥差别，只要有designer.exe，可以生成ui文件就行。附上<a href="https://download.qt.io/" target="_blank" rel="noopener">Qt下载地址</a>。</p>
+<h4 id="Pycharm安装"><a href="#Pycharm安装" class="headerlink" title="Pycharm安装"></a>Pycharm安装</h4><p>这个公司有很多IDE都挺好用的，而且还有一个非常好的福利，<strong>对于有教育邮箱的用户，可以免费使用一年</strong>。附上<a href="https://www.imsxm.com/2018/02/jetbrain-education-license.html" target="_blank" rel="noopener">通过教育邮箱激活Pycharm</a>。</p>
+<h5 id="Pycharm配置"><a href="#Pycharm配置" class="headerlink" title="Pycharm配置"></a>Pycharm配置</h5><p>打开Pycharm，Files-&gt;Settings-&gt;External Tools，添加两个tools，Qt Designer、PyUIC：<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_04.png" alt="添加Tools"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_05.png" alt="添加Qt Designer"></p>
+<ol>
+<li><code>Programs:</code>的地方找到你自己的designer.exe所在的位置</li>
+<li><code>Working directory:</code>的地方填上<code>$ProjectFileDir$</code> (填<code>$FileDir$</code>好像也行)。</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_06.png" alt="添加PyUIC"></p>
+<ol>
+<li><code>Programs:</code>的地方找到你自己的python.exe所在的位置</li>
+<li><code>Arguments:</code>的地方填上<code>-m PyQt5.uic.pyuic  $FileName$ -o $FileNameWithoutExtension$.py</code></li>
+<li><code>Working directory:</code>的地方填上<code>$FileDir$</code></li>
+</ol>
+<h4 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h4><p>环境搭建好了，来实际编写一个项目试试</p>
+<h5 id="新建Python项目"><a href="#新建Python项目" class="headerlink" title="新建Python项目"></a>新建Python项目</h5><p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_07.png" alt="新建Python项目"></p>
+<p>这里注意，上面的New environment using是在项目下添加一个Python的环境，如果要使用PyQt5的话要将底下两个勾选框勾上；也可以使用自己本地的Python，就选择底下的Existing interpreter，指定Python.exe位置即可。</p>
+<h5 id="创建ui文件"><a href="#创建ui文件" class="headerlink" title="创建ui文件"></a>创建ui文件</h5><p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_08.png" alt="创建ui文件"></p>
+<p>按照图示选择Qt Designer就会启动Qt的designer.exe了，你也可以直接到Qt的目录下运行程序。然后就是愉快的拖控件时间：<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_09.png" alt="ui文件生成"></p>
+<p>界面设计完毕，将ui文件保存到Python工程所在的目录下即可，PyCharm中的项目可以看到对应的ui文件。</p>
+<h5 id="ui文件生成py文件"><a href="#ui文件生成py文件" class="headerlink" title="ui文件生成py文件"></a>ui文件生成py文件</h5><p>在ui文件上点击右键，External Tools-&gt;PyUIC，就能生成对应的py文件了：<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_10.png" alt="生成py文件"></p>
+<h5 id="添加main-py"><a href="#添加main-py" class="headerlink" title="添加main.py"></a>添加main.py</h5><p>给程序添加一个入口，在工程目录下新建一个main.py，在其中添加代码：</p>
+<pre><code>import sys
+import HelloWorld
+from PyQt5.QtWidgets import QApplication, QMainWindow
+if __name__ == &#39;__main__&#39;:
+    app = QApplication(sys.argv)
+    MainWindow = QMainWindow()
+    ui = HelloWorld.Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+</code></pre><p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_11.png" alt="main.py"></p>
+<h5 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h5><p>在main.py中，点击右键-&gt;Run main，即可运行程序。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_12.png" alt="运行"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Windows-PyQt5-Pycharm_13.png" alt="运行界面"></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>搭建PyQt5的相关环境其实也不复杂，这其中有很多可以根据自己的环境修改的地方，比如：</p>
+<ul>
+<li>你需要用PySide2，就换掉PyQt5的内容</li>
+<li>你有Qt的话，就不用再额外安装designer.exe</li>
+<li>IDE也不一定用PyCharm，你用<a href="https://blog.csdn.net/m0_37606112/article/details/78675610" target="_blank" rel="noopener">VS2017写Python</a>也行</li>
+</ul>
+<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><ul>
+<li><a href="https://www.jianshu.com/p/344bdf61e69e" target="_blank" rel="noopener">Python3.6 PyQt5 pycharm 环境搭建</a></li>
+<li><a href="https://www.jianshu.com/p/094928ac0b73" target="_blank" rel="noopener">Python3 PyQt5 pycharm 环境搭建</a></li>
+<li><a href="https://www.qcgzxw.cn/2789.html" target="_blank" rel="noopener">PIP安装模块下载慢或者无法下载</a></li>
+<li><a href="https://www.jianshu.com/p/042324342bf4" target="_blank" rel="noopener">PyCharm安装及使用</a></li>
+<li><a href="https://www.imsxm.com/2018/02/jetbrain-education-license.html" target="_blank" rel="noopener">申请JetBrains学生免费注册码</a></li>
+<li><a href="https://blog.csdn.net/leemboy/article/details/80490675" target="_blank" rel="noopener">PyCharm 无法识别PyQt5的两种解决办法</a></li>
+<li><a href="https://blog.csdn.net/m0_37606112/article/details/78675610" target="_blank" rel="noopener">宇宙最强VisualStudio2017配置pyQt5用于python3.6的UI界面工具</a></li>
+</ul>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>1,254</p>
+        <p><span>发布时间:</span>2018-08-06, 17:57:13</p>
+        <p><span>最后更新:</span>2021-07-24, 16:43:08</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/08/06/Windows-PyQt5-Pycharm/" title="超详细Windows + Python + PyQt5 + Pycharm 环境搭建">http://longxuan.ren/2018/08/06/Windows-PyQt5-Pycharm/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://longxuan.ren/2018/08/06/Windows-PyQt5-Pycharm/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">
+                    ffmpeg音频采集、编码
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/07/27/Qt-Mingw-ffmpeg/">
+                    Qt-Mingw-ffmpeg
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Python安装"><span class="toc-number">1.</span> <span class="toc-text">Python安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Python主程序安装"><span class="toc-number">1.1.</span> <span class="toc-text">Python主程序安装</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#单个版本Python"><span class="toc-number">1.1.1.</span> <span class="toc-text">单个版本Python</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#多个版本Python"><span class="toc-number">1.1.2.</span> <span class="toc-text">多个版本Python</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#给Python添加镜像源"><span class="toc-number">1.2.</span> <span class="toc-text">给Python添加镜像源</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#可用镜像源"><span class="toc-number">1.2.1.</span> <span class="toc-text">可用镜像源</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#添加pip-ini"><span class="toc-number">1.2.2.</span> <span class="toc-text">添加pip.ini</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PyQt5安装"><span class="toc-number">2.</span> <span class="toc-text">PyQt5安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#界面工具安装"><span class="toc-number">3.</span> <span class="toc-text">界面工具安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pyqt5-tools"><span class="toc-number">3.1.</span> <span class="toc-text">pyqt5-tools</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Qt安装"><span class="toc-number">3.2.</span> <span class="toc-text">Qt安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Pycharm安装"><span class="toc-number">3.3.</span> <span class="toc-text">Pycharm安装</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Pycharm配置"><span class="toc-number">3.3.1.</span> <span class="toc-text">Pycharm配置</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Hello-World"><span class="toc-number">3.4.</span> <span class="toc-text">Hello World</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#新建Python项目"><span class="toc-number">3.4.1.</span> <span class="toc-text">新建Python项目</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#创建ui文件"><span class="toc-number">3.4.2.</span> <span class="toc-text">创建ui文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#ui文件生成py文件"><span class="toc-number">3.4.3.</span> <span class="toc-text">ui文件生成py文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#添加main-py"><span class="toc-number">3.4.4.</span> <span class="toc-text">添加main.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#运行"><span class="toc-number">3.4.5.</span> <span class="toc-text">运行</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.5.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参考链接"><span class="toc-number">3.6.</span> <span class="toc-text">参考链接</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"超详细Windows + Python + PyQt5 + Pycharm 环境搭建　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/" title="上一篇: ffmpeg音频采集、编码">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/07/27/Qt-Mingw-ffmpeg/" title="下一篇: Qt-Mingw-ffmpeg">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2021 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>73.2k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>

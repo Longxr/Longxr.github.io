@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="H264 是属于视频的编码层的标准格式，平时用 ffmpeg 只是指定下参数就完事了，并没有仔细了解，今天来分析下 H264 码流具体的内容。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="H264码流分析">
+<meta property="og:url" content="http://longxuan.ren/2020/05/28/H264-Analyze/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="H264 是属于视频的编码层的标准格式，平时用 ffmpeg 只是指定下参数就完事了，并没有仔细了解，今天来分析下 H264 码流具体的内容。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-11-19-46.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-11-31-18.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-12-32-45.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-12-57-26.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-17-28-25.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-17-07-27.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-17-19-09.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-16-24-28.jpg">
+<meta property="og:updated_time" content="2021-07-24T16:43:08.661Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="H264码流分析">
+<meta name="twitter:description" content="H264 是属于视频的编码层的标准格式，平时用 ffmpeg 只是指定下参数就完事了，并没有仔细了解，今天来分析下 H264 码流具体的内容。">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-11-19-46.jpg">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>H264码流分析 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-H264-Analyze" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/05/28/H264-Analyze/" class="article-date">
+      <time datetime="2020-05-28T19:07:27.000Z" itemprop="datePublished">2020-05-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      H264码流分析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>H264 是属于视频的编码层的标准格式，平时用 ffmpeg 只是指定下参数就完事了，并没有仔细了解，今天来分析下 H264 码流具体的内容。<a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<h1 id="ffmpeg-中使用-H264-编码"><a href="#ffmpeg-中使用-H264-编码" class="headerlink" title="ffmpeg 中使用 H264 编码"></a>ffmpeg 中使用 H264 编码</h1><p>ffmpeg 已经有实现好了编码器，调用的时候指定<code>AV_CODEC_ID_H264</code>，会使用 x264 的软编码；如果需要硬编码将查找编码器改为<code>avcodec_find_encoder_by_name(&quot;h264_qsv&quot;)</code>。</p>
+<pre><code class="C++">int size;
+int in_w = mWidth;
+int in_h = mHeight;
+
+//x264软编码初始化
+pCodec = avcodec_find_encoder(AV_CODEC_ID_H264);
+if(!pCodec) {
+  fprintf(stderr, &quot;h264 codec not found&quot;);
+  return false;
+}
+
+//qsv硬编码
+// pCodec = avcodec_find_encoder_by_name(&quot;h264_qsv&quot;);
+// if(Q_NULLPTR == pCodec){
+//     qDebug(&quot;avcodec_find_encoder failed!&quot;);
+//     return false;
+// }
+
+pCodecCtx = avcodec_alloc_context3(pCodec);
+pCodecCtx-&gt;codec_id = AV_CODEC_ID_H264;
+pCodecCtx-&gt;codec_type = AVMEDIA_TYPE_VIDEO;
+pCodecCtx-&gt;pix_fmt = PIX_FMT_YUV420P;
+pCodecCtx-&gt;width = in_w;
+pCodecCtx-&gt;height = in_h;
+pCodecCtx-&gt;time_base.num = 1;
+pCodecCtx-&gt;time_base.den = 25;//帧率
+pCodecCtx-&gt;bit_rate = mBitRate; //比特率
+pCodecCtx-&gt;gop_size=25;
+
+···
+
+//读取编码后数据，在AVPacket中
+if(0 != avcodec_send_frame(m_pEncodeContext, m_pSwsFrame)) {
+    qDebug(&quot;avcodec_send_frame failed&quot;);
+    return false;
+}
+while(0 == avcodec_receive_packet(m_pEncodeContext, m_pDstPacket)) {
+    if(m_pCallback) {
+        if (m_pDstPacket-&gt;flags &amp; AV_PKT_FLAG_KEY) {
+            qDebug(&quot;encode a key frame&quot;);
+        }
+
+        m_pCallback-&gt;onVideoEncodeFinished(m_pDstPacket-&gt;data, m_pDstPacket-&gt;size);
+
+    }
+
+    av_packet_unref(m_pDstPacket);
+}
+</code></pre>
+<h1 id="H264-原始码流结构"><a href="#H264-原始码流结构" class="headerlink" title="H264 原始码流结构"></a>H264 原始码流结构</h1><p>在 H.264/AVC 视频编码标准中，整个系统框架被分为两层，VCL(视频编码层 video coding layer) 和 NAL(网络提取层 network abstraction layer)：</p>
+<ol>
+<li>VCL：核心算法引擎，块，宏块及片的语法级别的定义，负责高效的视频内容表示，通俗的讲就是编码器直接编码之后的数据，这部分数据还不能直接用于保存和网络传输，否则在解析上存在困难。</li>
+<li>NAL：负责格式化数据并提供头信息，以保证数据适合各种信道和存储介质上的传输，通俗的讲 NAL 就是 VCL 加了一些头部信息封装了一下。</li>
+</ol>
+<p>H264 码流数据由 NALU 序列组成，相邻的 NALU 由起始码 StartCode 隔开，起始码 StartCode 的两种形式：3 字节的 0x000001 和 4 字节的 0x00000001。3 字节的 起始码只有在一个完整的帧被编为多个 slice（片）的时候，从第二个 slice 开始，使用 3 字节起始码。<br>NALU 是一个 NAL 单元，NALU = 字节的头信息（NALU Header） + 原始字节序列载荷（RBSP）（实际为扩展字节序列载荷（EBSP）的字节流）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-11-19-46.jpg" alt="H264-Analyze-2020-06-07-11-19-46"></p>
+<h2 id="NALU-Header"><a href="#NALU-Header" class="headerlink" title="NALU Header"></a>NALU Header</h2><p>NALU Header 由 3 部分组成，NALU Header = forbidden_bit(1bit) + nal_reference_bit(2bit) + nal_unit_type(5bit)，共占用 1 个字节</p>
+<ol>
+<li>forbidden_bit 禁止位：编码中默认值为 0，当网络识别此单元中存在比特错误时，可将其设为 1，以便接收方丢掉该单元，主要用于适应不同种类的网络环境</li>
+<li>nal_reference_bit 重要性指示位：用于在重构过程中标记一个 NAL 单元的重要性，值越大，越重要。尤其是当前 NALU 为图像参数集、序列参数集或 IDR 图像时，或者为参考图像条带（片/Slice），或者为参考图像的条带数据分割时，nal_ref_idc 值肯定不为 0。</li>
+<li>nal_unit_type：NALU 类型位: 可以表示 NALU 的 32 种不同类型特征，类型 1 ～ 12 是 H.264 定义的，类型 24 ～ 31 是用于 H.264 以外的，RTP 负荷规范使用这其中的一些值来定义包聚合和分裂，其他值为 H.264 保留。</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-11-31-18.png" alt="H264-Analyze-2020-06-07-11-31-18"></p>
+<p>判断起始码后的第一个字节的后 5bit 就可以判断出这个 NALU 的类型，例如：<code>00 00 00 01 67: 0x67&amp;0x1f = 0x07 :SPS</code>。另外说下重要的类型：</p>
+<ul>
+<li>al_unit_type=5：表示当前 NAL 是 IDR 图像的一个片，在这种情况下，IDR 图像中的每个片的 nal_unit_type 都应该等于 5。注意，IDR 图像不能使用分区。</li>
+<li>nal_unit_type=7：SPS，包括一个图像序列的所有信息，即两个IDR图像间的所有图像信息，如标识符 seq_parameter_set_id、帧数及 POC 的约束、参考帧数目、解码图像尺寸和帧场编码模式选择标识等等。</li>
+<li>nal_unit_type=8：PPS，PPS对应的是一个序列中某一幅图像或者某几幅图像，包括一个图像的所有slice的所有相关信息，如图像类型、序列号、标识符 pic_parameter_set_id、可选的 seq_parameter_set_id、熵编码模式选择标识、片组数目、初始量化参数和去方块滤波系数调整标识等等，解码时某些序列号的丢失可用来校验信息包的丢失与否。</li>
+</ul>
+<h2 id="RBSP"><a href="#RBSP" class="headerlink" title="RBSP"></a>RBSP</h2><p>NALU 的主体部分需要先介绍下面 3 个名词。</p>
+<ol>
+<li>SODB: String Of Data Bits  原始数据比特流，编码后的原始数据，即VCL数据。</li>
+<li>RBSP: 原始字节序列载荷。由于 SODB 长度不一定是 8 的倍数，为了字节对齐，在 SODB 的后面填加了结尾比特（rbsp_trailing_bits）就得到了 RBSP。rbsp_trailing_bits = rbsp_stop_one_bit（值为 1，1bit）+ rbsp_alignment_zero_bit(若干个 0，字节对齐填充)</li>
+<li>EBSP: 扩展字节序列载荷。NALU 之间是通过 StartCode 来隔开的，如果编码后的原始数据含有 0x000001，就无法知道这个到底是不是 StartCode，因此为了使 NALU 主体中不包括与开始码相冲突的数据，在 RBSP 数据中每遇到两个字节连续为 0，就插入一个字节的 0x03，这样就得到了 EBSP。</li>
+</ol>
+<p>所以，SODB + 添加尾部字节对齐 ==&gt; RBSP + 碰到 0x0000 插入 0x03 ==&gt; EBSP。<br>VCL层是对核心算法引擎、块、宏块及片的语法级别的定义，最终输出压缩编码后的数据 SODB。VCL数据在传输或存储之前，先被映射或封装进NAL单元中。NAL层将SODB打包成RBSP然后加上NALU Header，组成一个NALU。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-12-32-45.png" alt="H264-Analyze-2020-06-07-12-32-45"></p>
+<p>相应的 RBSP 数据类型描述如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-12-57-26.png" alt="H264-Analyze-2020-06-07-12-57-26"></p>
+<h2 id="视频帧"><a href="#视频帧" class="headerlink" title="视频帧"></a>视频帧</h2><p>从宏观上来说，SPS、PPS、IDR 帧（包含一个或多个 I-Slice）、P 帧（包含一个或多个 P-Slice ）、B 帧（包含一个或多个 B-Slice ）组成的视频序列构成了 H264 的码流。<br>包含具体视频数据的帧有：<br>| 类型 | 意义                                                                                                                    |<br>| —- | ———————————————————————————————————————– |<br>| I 帧 | I 帧通常是每个 GOP（MPEG 所使用的一种视频压缩技术）的第一个帧，经过适度地压缩，做为随机访问的参考点，可以当成图象。     |<br>| P 帧 | 通过充分将低于图像序列中前面已编码帧的时间冗余信息来压缩传输数据量的编码图像，也叫预测帧                                |<br>| B 帧 | 既考虑与源图像序列前面已编码帧，也顾及源图像序列后面已编码帧之间的时间冗余信息来压缩传输数据量的编码图像,也叫双向预测帧 |</p>
+<p>一个视频序列的第一帧又叫 IDR 帧。IDR 帧的作用是立刻刷新，使错误不致传播，从 IDR 帧开始，重新算一个新的序列开始编码。<br>I 帧可以不依赖其他帧就解码出一幅完整的图像，而 P 帧、B 帧不行。P 帧需要依赖视频流中排在它前面的帧才能解码出图像，B 帧则需要依赖视频流中排在它前面或后面的帧才能解码出图像。在视频流中，先到来的 B 帧无法立即解码，需要等待它依赖的后面的 P 帧先解码，播放时间与解码时间不一致，这时就需要DTS和PTS了。</p>
+<ul>
+<li>DTS（Decoding Time Stamp）：解码时间戳，这个时间戳的意义在于告诉播放器该在什么时候解码这一帧的数据。</li>
+<li>PTS（Presentation Time Stamp）：显示时间戳，这个时间戳用来告诉播放器该在什么时候显示这一帧的数据。</li>
+</ul>
+<p>在没有B帧的时候，DTS、PTS顺序是一致的，比如直播等延迟要求小的使用场景。音频也有PTS、DTS，但是音频没有类似视频的 B 帧，不需要双向预测，所以音频帧的 DTS、PTS 顺序是一致的。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-17-28-25.png" alt="H264-Analyze-2020-06-07-17-28-25"></p>
+<h2 id="slice"><a href="#slice" class="headerlink" title="slice"></a>slice</h2><p>帧图像可编码成一个或者多个片（slice），分片的目的是为了限制误码的扩散和传输，使编码片相互间保持独立。<br>每一个 slice 总体来看都由两部分组成，一部分作为 slice header，用于保存 slice 的总体信息（如当前 slice 的类型等），另一部分为 slice body，通常是一组连续的宏块结构。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-17-07-27.png" alt="H264-Analyze-2020-06-07-17-07-27"></p>
+<p>slice 的类型如下：<br>| 类型     | 意义                                    |<br>| ——– | ————————————— |<br>| I slice  | 只包含 I 宏块                           |<br>| P slice  | 包含 P 和 I 宏块                        |<br>| B slice  | 包含 B 和 I 宏块                        |<br>| SP slice | 包含 P 或 I 宏块,用于不同码流之间的切换 |<br>| SI slice | 一种特殊类型的编码宏块                  |</p>
+<h2 id="宏块"><a href="#宏块" class="headerlink" title="宏块"></a>宏块</h2><p>宏块是视频信息的主要承载者。一个编码图像通常划分为多个宏块组成.包含着每一个像素的亮度和色度信息。视频解码最主要的工作则是提供高效的方式从码流中获得宏块中像素阵列。<br>一个宏块由一个 16×16 亮度像素和附加的一个 8×8 Cb 和一个 8×8 Cr 彩色像素块组成。宏块分类如下：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I 宏块</td>
+<td>利用从当前片中已解码的像素作为参考进行帧内预测</td>
+</tr>
+<tr>
+<td>P 宏块</td>
+<td>利用前面已编码图像作为参考进行帧内预测</td>
+</tr>
+<tr>
+<td>B 宏块</td>
+<td>利用双向的参考图像（当前和未来的已编码图像帧）进行帧内预测</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-17-19-09.png" alt="H264-Analyze-2020-06-07-17-19-09"></p>
+<h1 id="H264-解析流程"><a href="#H264-解析流程" class="headerlink" title="H264 解析流程"></a>H264 解析流程</h1><p>拿到 RBSP 或 SODB 之后，根据对应的 NALU Header 类型来解析编码的数据，解析流程如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/H264-Analyze-2020-06-07-16-24-28.jpg" alt="H264-Analyze-2020-06-07-16-24-28"></p>
+<p>使用 ffmpeg 的话一般是不会自己去解析的，因为数据都在对应的结构体变量中，比如判断一帧是否是 I 帧：</p>
+<pre><code class="C++">if (m_pDstPacket-&gt;flags &amp; AV_PKT_FLAG_KEY) {
+    qDebug(&quot;encode a key frame&quot;);
+}
+</code></pre>
+<h1 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h1><ul>
+<li><a href="https://www.itu.int/rec/T-REC-H.264-200503-S/en" target="_blank" rel="noopener">H264 协议文档</a></li>
+<li><a href="https://www.bilibili.com/video/av37424012" target="_blank" rel="noopener">“视频”是怎么来的？H.264、码率这些词又是什么意思？</a></li>
+<li><a href="https://www.jianshu.com/p/8edb448cf22e" target="_blank" rel="noopener">H264 基础简介</a></li>
+<li><a href="https://www.jianshu.com/p/a2dc69c8bf70" target="_blank" rel="noopener">h264 码流格式与 NALU 详解一</a></li>
+<li><a href="https://blog.csdn.net/qq214517703/article/details/80359911" target="_blank" rel="noopener">H.264 数据解析</a></li>
+<li><a href="https://blog.csdn.net/qq_19923217/article/details/83348095" target="_blank" rel="noopener">H264 编解码协议详解</a></li>
+</ul>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2020/05/28/H264-Analyze/">H264码流分析</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>2,444</p>
+        <p><span>发布时间:</span>2020-05-28, 19:07:27</p>
+        <p><span>最后更新:</span>2021-07-24, 16:43:08</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2020/05/28/H264-Analyze/" title="H264码流分析">http://longxuan.ren/2020/05/28/H264-Analyze/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://longxuan.ren/2020/05/28/H264-Analyze/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2020/06/06/Qt-Global-Shortcut/">
+                    Qt全局热键实现
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2020/05/26/Windows-ScreenCapture/">
+                    windows桌面采集（GDI、DSHOW、DXGI对比）
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ffmpeg-中使用-H264-编码"><span class="toc-number">1.</span> <span class="toc-text">ffmpeg 中使用 H264 编码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#H264-原始码流结构"><span class="toc-number">2.</span> <span class="toc-text">H264 原始码流结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#NALU-Header"><span class="toc-number">2.1.</span> <span class="toc-text">NALU Header</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RBSP"><span class="toc-number">2.2.</span> <span class="toc-text">RBSP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#视频帧"><span class="toc-number">2.3.</span> <span class="toc-text">视频帧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#slice"><span class="toc-number">2.4.</span> <span class="toc-text">slice</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#宏块"><span class="toc-number">2.5.</span> <span class="toc-text">宏块</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#H264-解析流程"><span class="toc-number">3.</span> <span class="toc-text">H264 解析流程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考链接："><span class="toc-number">4.</span> <span class="toc-text">参考链接：</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"H264码流分析　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2020/06/06/Qt-Global-Shortcut/" title="上一篇: Qt全局热键实现">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2020/05/26/Windows-ScreenCapture/" title="下一篇: windows桌面采集（GDI、DSHOW、DXGI对比）">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2021 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>73.2k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>
