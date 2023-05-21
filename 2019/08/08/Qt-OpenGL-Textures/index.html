@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="要学习OpenGL的话，强烈安利这个教程JoeyDeVries的learnopengl，这里是中文翻译好的版本。教程中使用OpenGL是通过GLFW这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的Ope">
+<meta name="keywords" content="Qt,OpenGL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Qt的OpenGL学习（3）—— 纹理">
+<meta property="og:url" content="http://longxuan.ren/2019/08/08/Qt-OpenGL-Textures/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="要学习OpenGL的话，强烈安利这个教程JoeyDeVries的learnopengl，这里是中文翻译好的版本。教程中使用OpenGL是通过GLFW这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的Ope">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-Textures_01.png">
+<meta property="og:updated_time" content="2023-05-21T17:36:27.231Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于Qt的OpenGL学习（3）—— 纹理">
+<meta name="twitter:description" content="要学习OpenGL的话，强烈安利这个教程JoeyDeVries的learnopengl，这里是中文翻译好的版本。教程中使用OpenGL是通过GLFW这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的Ope">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-Textures_01.png">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>基于Qt的OpenGL学习（3）—— 纹理 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PS5/">PS5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Qt-OpenGL-Textures" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/08/08/Qt-OpenGL-Textures/" class="article-date">
+      <time datetime="2019-08-08T15:47:23.000Z" itemprop="datePublished">2019-08-08</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      基于Qt的OpenGL学习（3）—— 纹理
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Qt/">Qt</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Qt/">Qt</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<h2 id="对比说明"><a href="#对比说明" class="headerlink" title="对比说明"></a>对比说明</h2><h3 id="教程地址"><a href="#教程地址" class="headerlink" title="教程地址"></a>教程地址</h3><p><a href="https://learnopengl-cn.github.io/01%20Getting%20started/06%20Textures/" target="_blank" rel="noopener">原教程地址</a>，相关知识可以点击链接学习。<br><a href="https://github.com/Longxr/LearnopenglQt" target="_blank" rel="noopener">我的工程地址</a>，准备后期每篇教程一个commit，可以切换着看，查看本篇代码 <code>git checkout v1.3</code>，喜欢就点个Star吧~</p>
+<h3 id="不同点-仅列出新增"><a href="#不同点-仅列出新增" class="headerlink" title="不同点 (仅列出新增)"></a>不同点 (仅列出新增)</h3><ol>
+<li>Qt提供了<code>QOpenGLTexture</code>类来处理OpenGL中的Texture，并且创建的时候可以直接传递一个QImage给纹理对象，如果使用gl相关函数还要读取图片数据的data再设置，比较麻烦。</li>
+</ol>
+<h2 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h2><p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-Textures_01.png" alt="运行结果"></p>
+<h2 id="使用OpenGL函数版"><a href="#使用OpenGL函数版" class="headerlink" title="使用OpenGL函数版"></a>使用OpenGL函数版</h2><h3 id="CoreFunctionWidget-h"><a href="#CoreFunctionWidget-h" class="headerlink" title="CoreFunctionWidget.h"></a>CoreFunctionWidget.h</h3><pre><code>#ifndef COREFUNCTIONWIDGET_H
+#define COREFUNCTIONWIDGET_H
+
+#include &lt;QOpenGLWidget&gt;
+#include &lt;QOpenGLExtraFunctions&gt;
+#include &lt;QOpenGLFunctions_3_3_Core&gt;
+#include &lt;QOpenGLShader&gt;
+#include &lt;QOpenGLShaderProgram&gt;
+
+class CoreFunctionWidget : public QOpenGLWidget
+                           , protected /*QOpenGLExtraFunctions*/QOpenGLFunctions_3_3_Core
+{
+    Q_OBJECT
+public:
+    explicit CoreFunctionWidget(QWidget *parent = nullptr);
+    ~CoreFunctionWidget();
+
+protected:
+    virtual void initializeGL();
+    virtual void resizeGL(int w, int h);
+    virtual void paintGL();
+
+private:
+    QOpenGLShaderProgram shaderProgram;
+
+//    QTimer* m_pTimer = nullptr;
+//    float m_uniformValue = 0.0f;
+};
+
+#endif // COREFUNCTIONWIDGET_H
+
+</code></pre><h3 id="CoreFunctionWidget-cpp"><a href="#CoreFunctionWidget-cpp" class="headerlink" title="CoreFunctionWidget.cpp"></a>CoreFunctionWidget.cpp</h3><pre><code>#include &quot;CoreFunctionWidget.h&quot;
+#include &lt;QDebug&gt;
+#include &lt;QTimer&gt;
+
+static GLuint VBO, VAO, EBO, texture1, texture2;
+
+CoreFunctionWidget::CoreFunctionWidget(QWidget *parent) : QOpenGLWidget(parent)
+{
+//    m_pTimer = new QTimer(this);
+//    m_pTimer-&gt;setInterval(200);
+
+//    connect(m_pTimer, &amp;QTimer::timeout, this, [=]{
+//        m_uniformValue += 0.1f;
+
+//        if (m_uniformValue &gt; 1.5f) {
+//            m_uniformValue = -1.5f;
+//        }
+
+//        update();
+//    });
+
+//    m_pTimer-&gt;start();
+}
+
+CoreFunctionWidget::~CoreFunctionWidget()
+{
+    glDeleteVertexArrays(1, &amp;VAO);
+    glDeleteBuffers(1, &amp;VBO);
+    glDeleteBuffers(1, &amp;EBO);
+}
+
+void CoreFunctionWidget::initializeGL(){
+    this-&gt;initializeOpenGLFunctions();
+
+    bool success = shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, &quot;:/textures.vert&quot;);
+    if (!success) {
+        qDebug() &lt;&lt; &quot;shaderProgram addShaderFromSourceFile failed!&quot; &lt;&lt; shaderProgram.log();
+        return;
+    }
+
+    success = shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, &quot;:/textures.frag&quot;);
+    if (!success) {
+        qDebug() &lt;&lt; &quot;shaderProgram addShaderFromSourceFile failed!&quot; &lt;&lt; shaderProgram.log();
+        return;
+    }
+
+    success = shaderProgram.link();
+    if(!success) {
+        qDebug() &lt;&lt; &quot;shaderProgram link failed!&quot; &lt;&lt; shaderProgram.log();
+    }
+
+    //VAO，VBO data
+    float vertices[] = {
+        // positions          // colors           // texture coords
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+    };
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,  // first Triangle
+        1, 2, 3   // second Triangle
+    };
+
+    glGenVertexArrays(1, &amp;VAO);
+    glGenBuffers(1, &amp;VBO);
+    glGenBuffers(1, &amp;EBO);
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    // texture coord attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    // texture 1
+    // ---------
+    glGenTextures(1, &amp;texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+     // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   // set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    QImage img1 = QImage(&quot;:/container.jpg&quot;).convertToFormat(QImage::Format_RGB888);
+    if (!img1.isNull()) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img1.width(), img1.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, img1.bits());
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
+    // texture 2
+    // ---------
+    glGenTextures(1, &amp;texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   // set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    QImage img2 = QImage(&quot;:/awesomeface.png&quot;).convertToFormat(QImage::Format_RGBA8888).mirrored(true, true);
+    if (!img2.isNull()) {
+        // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img2.width(), img2.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img2.bits());
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
+    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+    shaderProgram.bind();   // don&#39;t forget to activate/use the shader before setting uniforms!
+    glUniform1i(shaderProgram.uniformLocation(&quot;texture1&quot;), 0);
+    glUniform1i(shaderProgram.uniformLocation(&quot;texture2&quot;), 1);
+    shaderProgram.release();
+
+//    glBindBuffer(GL_ARRAY_BUFFER, 0);//取消VBO的绑定
+
+//    remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+//    You can unbind the VAO afterwards so other VAO calls won&#39;t accidentally modify this VAO, but this rarely happens. Modifying other
+//    VAOs requires a call to glBindVertexArray anyways so we generally don&#39;t unbind VAOs (nor VBOs) when it&#39;s not directly necessary.
+//    glBindVertexArray(0);   //取消VAO绑定
+
+    //线框模式，QOpenGLExtraFunctions没这函数, 3_3_Core有
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+
+void CoreFunctionWidget::resizeGL(int w, int h){
+    glViewport(0, 0, w, h);
+}
+
+void CoreFunctionWidget::paintGL(){
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    shaderProgram.bind();
+    {
+        // bind textures on corresponding texture units
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+
+        // render container
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    }
+    shaderProgram.release();
+}
+
+</code></pre><h2 id="使用Qt相关函数版"><a href="#使用Qt相关函数版" class="headerlink" title="使用Qt相关函数版"></a>使用Qt相关函数版</h2><h3 id="QtFunctionWidget-h"><a href="#QtFunctionWidget-h" class="headerlink" title="QtFunctionWidget.h"></a>QtFunctionWidget.h</h3><pre><code>#ifndef QTFUNCTIONWIDGET_H
+#define QTFUNCTIONWIDGET_H
+
+#include &lt;QOpenGLWidget&gt;
+
+
+#include &lt;QOpenGLWidget&gt;
+#include &lt;QOpenGLShader&gt;
+#include &lt;QOpenGLShaderProgram&gt;
+#include &lt;QOpenGLFunctions&gt;
+#include &lt;QOpenGLVertexArrayObject&gt;
+#include &lt;QOpenGLBuffer&gt;
+#include &lt;QOpenGLTexture&gt;
+
+class QtFunctionWidget : public QOpenGLWidget, protected QOpenGLFunctions
+{
+public:
+    QtFunctionWidget(QWidget *parent = nullptr);
+    ~QtFunctionWidget() Q_DECL_OVERRIDE;
+
+protected:
+    virtual void initializeGL() Q_DECL_OVERRIDE;
+    virtual void resizeGL(int w, int h) Q_DECL_OVERRIDE;
+    virtual void paintGL() Q_DECL_OVERRIDE;
+
+private:
+    QOpenGLShaderProgram shaderProgram;
+    QOpenGLBuffer vbo, ebo;
+    QOpenGLVertexArrayObject vao;
+    QOpenGLTexture *texture1 = nullptr;
+    QOpenGLTexture *texture2 = nullptr;
+
+//    QTimer* m_pTimer = nullptr;
+//    float m_uniformValue = 0.0f;
+};
+
+#endif // QTFUNCTIONWIDGET_H
+
+</code></pre><h3 id="QtFunctionWidget-cpp"><a href="#QtFunctionWidget-cpp" class="headerlink" title="QtFunctionWidget.cpp"></a>QtFunctionWidget.cpp</h3><pre><code>#include &quot;QtFunctionWidget.h&quot;
+#include &lt;QDebug&gt;
+#include &lt;QTimer&gt;
+
+QtFunctionWidget::QtFunctionWidget(QWidget *parent) : QOpenGLWidget (parent),
+    vbo(QOpenGLBuffer::VertexBuffer),
+    ebo(QOpenGLBuffer::IndexBuffer)
+{
+//    m_pTimer = new QTimer(this);
+//    m_pTimer-&gt;setInterval(200);
+
+//    connect(m_pTimer, &amp;QTimer::timeout, this, [=]{
+//        m_uniformValue += 0.1f;
+
+//        if (m_uniformValue &gt; 1.5f) {
+//            m_uniformValue = -1.5f;
+//        }
+
+//        update();
+//    });
+
+//    m_pTimer-&gt;start();
+}
+
+QtFunctionWidget::~QtFunctionWidget(){
+    makeCurrent();
+
+    vbo.destroy();
+    ebo.destroy();
+    vao.destroy();
+
+    delete texture1;
+    delete texture2;
+
+    doneCurrent();
+}
+
+void QtFunctionWidget::initializeGL(){
+    this-&gt;initializeOpenGLFunctions();
+
+    bool success = shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, &quot;:/textures.vert&quot;);
+    if (!success) {
+        qDebug() &lt;&lt; &quot;shaderProgram addShaderFromSourceFile failed!&quot; &lt;&lt; shaderProgram.log();
+        return;
+    }
+
+    success = shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, &quot;:/textures.frag&quot;);
+    if (!success) {
+        qDebug() &lt;&lt; &quot;shaderProgram addShaderFromSourceFile failed!&quot; &lt;&lt; shaderProgram.log();
+        return;
+    }
+
+    success = shaderProgram.link();
+    if(!success) {
+        qDebug() &lt;&lt; &quot;shaderProgram link failed!&quot; &lt;&lt; shaderProgram.log();
+    }
+
+    //VAO，VBO data
+    float vertices[] = {
+        // positions          // colors           // texture coords
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+    };
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,  // first Triangle
+        1, 2, 3   // second Triangle
+    };
+
+    QOpenGLVertexArrayObject::Binder vaoBind(&amp;vao);
+
+    vbo.create();
+    vbo.bind();
+    vbo.allocate(vertices, sizeof(vertices));
+
+    ebo.create();
+    ebo.bind();
+    ebo.allocate(indices, sizeof(indices));
+
+    // position attribute
+    int attr = -1;
+    attr = shaderProgram.attributeLocation(&quot;aPos&quot;);
+    shaderProgram.setAttributeBuffer(attr, GL_FLOAT, 0, 3, sizeof(GLfloat) * 8);
+    shaderProgram.enableAttributeArray(attr);
+    // color attribute
+    attr = shaderProgram.attributeLocation(&quot;aColor&quot;);
+    shaderProgram.setAttributeBuffer(attr, GL_FLOAT, sizeof(GLfloat) * 3, 3, sizeof(GLfloat) * 8);
+    shaderProgram.enableAttributeArray(attr);
+    // texture coord attribute
+    attr = shaderProgram.attributeLocation(&quot;aTexCoord&quot;);
+    shaderProgram.setAttributeBuffer(attr, GL_FLOAT, sizeof(GLfloat) * 6, 2, sizeof(GLfloat) * 8);
+    shaderProgram.enableAttributeArray(attr);
+
+    // texture 1
+    // ---------
+    texture1 = new QOpenGLTexture(QImage(&quot;:/container.jpg&quot;), QOpenGLTexture::GenerateMipMaps); //直接生成绑定一个2d纹理, 并生成多级纹理MipMaps
+    if(!texture1-&gt;isCreated()){
+        qDebug() &lt;&lt; &quot;Failed to load texture&quot;;
+    }
+    // set the texture wrapping parameters
+    texture1-&gt;setWrapMode(QOpenGLTexture::DirectionS, QOpenGLTexture::Repeat);// 等于glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    texture1-&gt;setWrapMode(QOpenGLTexture::DirectionT, QOpenGLTexture::Repeat);//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    texture1-&gt;setMinificationFilter(QOpenGLTexture::Linear);   //等价于glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    texture1-&gt;setMagnificationFilter(QOpenGLTexture::Linear);
+
+    // texture 2
+    // ---------
+    texture2 = new QOpenGLTexture(QImage(&quot;:/awesomeface.png&quot;).mirrored(true, true), QOpenGLTexture::GenerateMipMaps); //直接生成绑定一个2d纹理, 并生成多级纹理MipMaps
+    if(!texture2-&gt;isCreated()){
+        qDebug() &lt;&lt; &quot;Failed to load texture&quot;;
+    }
+    // set the texture wrapping parameters
+    texture2-&gt;setWrapMode(QOpenGLTexture::DirectionS, QOpenGLTexture::Repeat);// 等于glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    texture2-&gt;setWrapMode(QOpenGLTexture::DirectionT, QOpenGLTexture::Repeat);//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    texture2-&gt;setMinificationFilter(QOpenGLTexture::Linear);   //等价于glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    texture1-&gt;setMagnificationFilter(QOpenGLTexture::Linear);
+
+    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+    shaderProgram.bind();   // don&#39;t forget to activate/use the shader before setting uniforms!
+    shaderProgram.setUniformValue(&quot;texture1&quot;, 0);
+    shaderProgram.setUniformValue(&quot;texture2&quot;, 1);
+    shaderProgram.release();
+
+    vbo.release();
+//    remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+//    ebo.release();
+
+}
+
+void QtFunctionWidget::resizeGL(int w, int h){
+    glViewport(0, 0, w, h);
+}
+
+void QtFunctionWidget::paintGL(){
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    shaderProgram.bind();
+    {
+        glActiveTexture(GL_TEXTURE0);
+        texture1-&gt;bind();
+//        glBindTexture(GL_TEXTURE_2D, texture1-&gt;textureId());
+        glActiveTexture(GL_TEXTURE1);
+        texture2-&gt;bind();
+//        glBindTexture(GL_TEXTURE_2D, texture2-&gt;textureId());
+
+        // render container
+        QOpenGLVertexArrayObject::Binder vaoBind(&amp;vao);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+        texture1-&gt;release();
+        texture2-&gt;release();
+    }
+    shaderProgram.release();
+}
+
+</code></pre><h2 id="GLSL"><a href="#GLSL" class="headerlink" title="GLSL"></a>GLSL</h2><h3 id="textures-vert"><a href="#textures-vert" class="headerlink" title="textures.vert"></a>textures.vert</h3><pre><code>#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aTexCoord;
+
+out vec3 ourColor;
+out vec2 TexCoord;
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+    ourColor = aColor;
+    TexCoord = aTexCoord;
+}
+</code></pre><h3 id="textures-frag"><a href="#textures-frag" class="headerlink" title="textures.frag"></a>textures.frag</h3><pre><code>#version 330 core
+out vec4 FragColor;
+
+in vec3 ourColor;
+in vec2 TexCoord;
+
+uniform sampler2D texture1;
+uniform sampler2D texture2;
+
+void main()
+{
+    //FragColor = texture(texture1, TexCoord) * vec4(ourColor, 1.0);
+    FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2);
+}
+
+</code></pre><h2 id="main-cpp"><a href="#main-cpp" class="headerlink" title="main.cpp"></a>main.cpp</h2><pre><code>#include &lt;QApplication&gt;
+#include &quot;MainWindow.h&quot;
+#include &quot;QtFunctionWidget.h&quot;
+#include &quot;CoreFunctionWidget.h&quot;
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+
+//    MainWindow w;
+    QtFunctionWidget w1;
+    CoreFunctionWidget w2;
+
+    w1.setWindowTitle(QObject::tr(&quot;QtFunction&quot;));
+    w2.setWindowTitle(QObject::tr(&quot;CoreFunction&quot;));
+
+    w1.show();
+    w2.show();
+
+    return a.exec();
+}
+
+</code></pre></the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>1,855</p>
+        <p><span>发布时间:</span>2019-08-08, 15:47:23</p>
+        <p><span>最后更新:</span>2023-05-21, 17:36:27</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/08/Qt-OpenGL-Textures/" title="基于Qt的OpenGL学习（3）—— 纹理">http://longxuan.ren/2019/08/08/Qt-OpenGL-Textures/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://longxuan.ren/2019/08/08/Qt-OpenGL-Textures/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2019/08/09/Qt-OpenGL-Transform/">
+                    基于Qt的OpenGL学习（4）—— 变换
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2019/08/08/Qt-OpenGL-Shader/">
+                    基于Qt的OpenGL学习（2）—— 着色器
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#对比说明"><span class="toc-number">1.</span> <span class="toc-text">对比说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#教程地址"><span class="toc-number">1.1.</span> <span class="toc-text">教程地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不同点-仅列出新增"><span class="toc-number">1.2.</span> <span class="toc-text">不同点 (仅列出新增)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行结果"><span class="toc-number">2.</span> <span class="toc-text">运行结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用OpenGL函数版"><span class="toc-number">3.</span> <span class="toc-text">使用OpenGL函数版</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CoreFunctionWidget-h"><span class="toc-number">3.1.</span> <span class="toc-text">CoreFunctionWidget.h</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CoreFunctionWidget-cpp"><span class="toc-number">3.2.</span> <span class="toc-text">CoreFunctionWidget.cpp</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Qt相关函数版"><span class="toc-number">4.</span> <span class="toc-text">使用Qt相关函数版</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#QtFunctionWidget-h"><span class="toc-number">4.1.</span> <span class="toc-text">QtFunctionWidget.h</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QtFunctionWidget-cpp"><span class="toc-number">4.2.</span> <span class="toc-text">QtFunctionWidget.cpp</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GLSL"><span class="toc-number">5.</span> <span class="toc-text">GLSL</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#textures-vert"><span class="toc-number">5.1.</span> <span class="toc-text">textures.vert</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#textures-frag"><span class="toc-number">5.2.</span> <span class="toc-text">textures.frag</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#main-cpp"><span class="toc-number">6.</span> <span class="toc-text">main.cpp</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"基于Qt的OpenGL学习（3）—— 纹理　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2019/08/09/Qt-OpenGL-Transform/" title="上一篇: 基于Qt的OpenGL学习（4）—— 变换">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2019/08/08/Qt-OpenGL-Shader/" title="下一篇: 基于Qt的OpenGL学习（2）—— 着色器">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2023/05/21/Game_PS5_Remote_Play/">PS5 远程玩游戏</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2023 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>73.7k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>

@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="教练，我要写爬虫！">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python学习笔记">
+<meta property="og:url" content="http://longxuan.ren/2017/04/21/PythonLearn/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="教练，我要写爬虫！">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2023-05-21T17:36:27.231Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python学习笔记">
+<meta name="twitter:description" content="教练，我要写爬虫！">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Python学习笔记 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PS5/">PS5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-PythonLearn" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/04/21/PythonLearn/" class="article-date">
+      <time datetime="2017-04-21T14:39:34.000Z" itemprop="datePublished">2017-04-21</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python学习笔记
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/语法学习/">语法学习</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>教练，我要写爬虫！<a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<blockquote>
+<p>Python是动态语言，本身变量类型不固定 </p>
+</blockquote>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h3 id="输入、输出："><a href="#输入、输出：" class="headerlink" title="输入、输出："></a>输入、输出：</h3><ul>
+<li>input()函数：<code>name = input(“请输入...&quot;)</code> </li>
+<li>print()函数：输出括号中的指定字符串，可以输出多个字符串，用逗号”,”隔开<br>格式化输出：%d:整数; %f:浮点数; %s:字符串; %x:十六进制数 </li>
+</ul>
+<h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><p>通常全部用大写的变量名表示常量，只是习惯，不是规定，仍然可以改<br><code>PI = 3.14159265359</code> </p>
+<h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h3><ul>
+<li>list, 有序可变列表: l = [’Tom’, ‘Micheal’] </li>
+<li>tuple, 有序不可变元组: t = (’Tom’, ‘Jhon’) </li>
+</ul>
+<h3 id="函数定义"><a href="#函数定义" class="headerlink" title="函数定义"></a>函数定义</h3><pre><code>def my_abs(x): 
+if x &gt;= 0: 
+        return x 
+    else: 
+        return -x 
+</code></pre><ul>
+<li><p>位置参数：<code>def power(x, n):</code> </p>
+</li>
+<li><p>默认参数：<code>def power(x, n=2):</code> </p>
+</li>
+<li><p>可变参数：<code>def calc(*numbers):</code>  接收的参数是tuple </p>
+</li>
+<li><p>关键字参数：<code>def person(name, age, **kw):</code>  接收的参数是dict  </p>
+</li>
+<li><p>命名关键字参数：<code>def person(name, age, *, city, job):</code>  限制关键字参数名字为city和job </p>
+</li>
+</ul>
+<pre><code> print(name, age, city, job) 
+&gt;&gt;&gt; person(‘Jack’, 24, city=‘Beijing’, job=‘Engineer’) 
+</code></pre><blockquote>
+<p>Python的函数具有非常灵活的参数形态，既可以实现简单的调用，又可以传入非常复杂的参数。 </p>
+</blockquote>
+<blockquote>
+<p>默认参数一定要用不可变对象，如果是可变对象，程序运行时会有逻辑错误！ </p>
+</blockquote>
+<blockquote>
+<p>要注意定义可变参数和关键字参数的语法： </p>
+</blockquote>
+<blockquote>
+<p>*args是可变参数，args接收的是一个tuple； </p>
+</blockquote>
+<blockquote>
+<p>**kw是关键字参数，kw接收的是一个dict。 </p>
+</blockquote>
+<blockquote>
+<p>以及调用函数时如何传入可变参数和关键字参数的语法： </p>
+</blockquote>
+<blockquote>
+<p>可变参数既可以直接传入：func(1, 2, 3)，又可以先组装list或tuple，再通过<em>args传入：func(</em>(1, 2, 3))； </p>
+</blockquote>
+<blockquote>
+<p>关键字参数既可以直接传入：func(a=1, b=2)，又可以先组装dict，再通过<strong>kw传入：func(</strong>{‘a’: 1, ‘b’: 2})。 </p>
+</blockquote>
+<blockquote>
+<p>使用*args和**kw是Python的习惯写法，当然也可以用其他参数名，但最好使用习惯用法。 </p>
+</blockquote>
+<blockquote>
+<p>命名的关键字参数是为了限制调用者可以传入的参数名，同时可以提供默认值。 </p>
+</blockquote>
+<blockquote>
+<p>定义命名的关键字参数在没有可变参数的情况下不要忘了写分隔符*，否则定义的将是位置参数。 </p>
+</blockquote>
+<h2 id="高级特性"><a href="#高级特性" class="headerlink" title="高级特性"></a>高级特性</h2><h3 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h3><pre><code>&gt;&gt;&gt;L[:10]        前10个数 
+&gt;&gt;&gt;L[:10:2]     前10个数，每2个取一个 
+</code></pre><h3 id="列表生成式"><a href="#列表生成式" class="headerlink" title="列表生成式"></a>列表生成式</h3><pre><code>&gt;&gt;&gt; list(range(1, 11)) 
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+&gt;&gt;&gt; [x * x for x in range(1, 11)] 
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100] 
+&gt;&gt;&gt; [m + n for m in ‘ABC’ for n in ‘XYZ’] 
+[‘AX’, ‘AY’, ‘AZ’, ‘BX’, ‘BY’, ‘BZ’, ‘CX’, ‘CY’, ‘CZ’] 
+</code></pre><h3 id="斐波那契数列：-列表生成式-函数"><a href="#斐波那契数列：-列表生成式-函数" class="headerlink" title="斐波那契数列：(列表生成式+函数)"></a>斐波那契数列：(列表生成式+函数)</h3><pre><code>def fib(max): 
+    n, a, b = 0, 0, 1 
+while n &lt; max: 
+        print(b) 
+        a, b = b, a + b 
+        n = n + 1 
+return &#39;done&#39; 
+</code></pre><h2 id="函数式编程"><a href="#函数式编程" class="headerlink" title="函数式编程"></a>函数式编程</h2><h3 id="map"><a href="#map" class="headerlink" title="map()"></a>map()</h3><p>map将传入的函数依次作用到序列的每个元素，并把结果作为新的Iterator返回<br>map()传入的第一个参数是f，即函数对象本身。由于结果r是一个Iterator，Iterator是惰性序列，因此通过list()函数让它把整个序列都计算出来并返回一个list。 </p>
+<h3 id="reduce"><a href="#reduce" class="headerlink" title="reduce()"></a>reduce()</h3><p>reduce()把一个函数作用在一个序列[x1, x2, x3, …]上，这个函数必须接收两个参数，reduce把结果继续和序列的下一个元素做累积计算，其效果就是：<br><code>reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)</code></p>
+<h4 id="结合起来写个字符串转数字的函数："><a href="#结合起来写个字符串转数字的函数：" class="headerlink" title="结合起来写个字符串转数字的函数："></a>结合起来写个字符串转数字的函数：</h4><pre><code>from functools import reduce 
+
+def str2int(s): 
+def fn(x, y): 
+return x * 10 + y 
+    def char2num(s): 
+return {&#39;0&#39;: 0, &#39;1&#39;: 1, &#39;2&#39;: 2, &#39;3&#39;: 3, &#39;4&#39;: 4, &#39;5&#39;: 5, &#39;6&#39;: 6, &#39;7&#39;: 7, &#39;8&#39;: 8, &#39;9&#39;: 9}[s] 
+    return reduce(fn, map(char2num, s)) 
+</code></pre><h3 id="fliter"><a href="#fliter" class="headerlink" title="fliter()"></a>fliter()</h3><p>filter()也接收一个函数和一个序列。和map()不同的是，filter()把传入的函数依次作用于每个元素，然后根据返回值是True还是False决定保留还是丢弃该元素</p>
+<h4 id="生成1000以内的素数"><a href="#生成1000以内的素数" class="headerlink" title="生成1000以内的素数"></a>生成1000以内的素数</h4><pre><code>def _odd_iter():  #生成一个从3开始的奇数序列
+    n = 1
+    while True:
+        n = n + 2
+        yield n
+
+def _not_divisible(n):  ##定义一个筛选函数
+    return lambda x: x % n &gt; 0
+
+def primes():
+    yield 2
+    it = _odd_iter() #初始序列
+    while True:
+        n = next(it) #返回序列的第一个数
+        yield n
+        it = filter(_not_divisible(n), it)
+
+for n in primes():
+    if n &lt; 1000:
+        print(n)
+    else:
+        break
+</code></pre><h3 id="sorted"><a href="#sorted" class="headerlink" title="sorted()"></a>sorted()</h3><p>内置排序算法，默认是升序</p>
+<blockquote>
+<p>key指定的函数将作用于list的每一个元素上</p>
+</blockquote>
+<pre><code>&gt;&gt;&gt; sorted([36, 5, -12, 9, -21], key=abs)
+[5, 9, -12, -21, 36]
+</code></pre><blockquote>
+<p>要进行反向排序，不必改动key函数，可以传入第三个参数<code>reverse=True</code></p>
+</blockquote>
+<pre><code>&gt;&gt;&gt; sorted([&#39;bob&#39;, &#39;about&#39;, &#39;Zoo&#39;, &#39;Credit&#39;], key=str.lower, reverse=True)
+[&#39;Zoo&#39;, &#39;Credit&#39;, &#39;bob&#39;, &#39;about&#39;]
+</code></pre><h3 id="匿名函数lambda"><a href="#匿名函数lambda" class="headerlink" title="匿名函数lambda"></a>匿名函数lambda</h3><p><code>lambda x: x * x</code>等价于：</p>
+<pre><code>def f(x):
+    return x * x
+</code></pre><h3 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h3><blockquote>
+<p>假设我们要增强now()函数的功能，比如，在函数调用前后自动打印日志，但又不希望修改now()函数的定义，这种在代码运行期间动态增加功能的方式，称之为“装饰器”（Decorator）</p>
+</blockquote>
+<h4 id="利用decorator打印出函数调用前和调用后的日志"><a href="#利用decorator打印出函数调用前和调用后的日志" class="headerlink" title="利用decorator打印出函数调用前和调用后的日志"></a>利用decorator打印出函数调用前和调用后的日志</h4><pre><code>import functools
+
+def log(text):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            print(&quot;%s begin call %s()&quot; % (text, func.__name__))
+            ret = func(*args, **kw)
+            print(&quot;%s end call %s()&quot; % (text, func.__name__))
+            return ret
+        return wrapper
+    if isinstance(text, str):
+        return decorator
+    else:
+        f = text
+        text = &#39;&#39;
+        return decorator(f)
+
+@log#(&#39;excute&#39;)
+def f():
+    print(&quot;soso!&quot;)
+f()
+</code></pre><h3 id="偏函数"><a href="#偏函数" class="headerlink" title="偏函数"></a>偏函数</h3><blockquote>
+<p>Python的functools模块提供了很多有用的功能，其中一个就是偏函数(Partial function).functools.partial就是帮助我们创建一个偏函数的.</p>
+</blockquote>
+<pre><code>&gt;&gt;&gt; import functools
+&gt;&gt;&gt; int2 = functools.partial(int, base=2)
+&gt;&gt;&gt; int2(&#39;1000000&#39;)
+64
+&gt;&gt;&gt; int2(&#39;1010101&#39;)
+85
+</code></pre><h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><blockquote>
+<p>在Python中，一个.py文件就称之为一个模块（Module）</p>
+</blockquote>
+<h3 id="模块标准模版"><a href="#模块标准模版" class="headerlink" title="模块标准模版"></a>模块标准模版</h3><pre><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+&#39; a test module &#39;
+
+__author__ = &#39;Longxr&#39;
+</code></pre><h3 id="安装第三方模块"><a href="#安装第三方模块" class="headerlink" title="安装第三方模块"></a>安装第三方模块</h3><blockquote>
+<p>Python Imaging Library，这是Python下非常强大的处理图像的工具库</p>
+</blockquote>
+<h4 id="安装PIL库"><a href="#安装PIL库" class="headerlink" title="安装PIL库"></a>安装PIL库</h4><p><code>pip install Pillow</code></p>
+<h4 id="生成缩略图"><a href="#生成缩略图" class="headerlink" title="生成缩略图"></a>生成缩略图</h4><pre><code>&gt;&gt;&gt; from PIL import Image
+&gt;&gt;&gt; im = Image.open(&#39;test.png&#39;)
+&gt;&gt;&gt; print(im.format, im.size, im.mode)
+PNG (400, 300) RGB
+&gt;&gt;&gt; im.thumbnail((200, 100))
+&gt;&gt;&gt; im.save(&#39;thumb.jpg&#39;, &#39;JPEG&#39;)
+</code></pre><h2 id="面向对象编程"><a href="#面向对象编程" class="headerlink" title="面向对象编程"></a>面向对象编程</h2><h3 id="类的定义"><a href="#类的定义" class="headerlink" title="类的定义"></a>类的定义</h3><blockquote>
+<p>在类中定义的函数只有一点不同，就是第一个参数永远是实例变量self，并且，调用时，不用传递该参数</p>
+</blockquote>
+<pre><code>class Student(object):
+
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score
+
+    def print_score(self):
+        print(&#39;%s: %s&#39; % (self.name, self.score))
+</code></pre><h3 id="访问限制"><a href="#访问限制" class="headerlink" title="访问限制"></a>访问限制</h3><p>如果要让内部属性不被外部访问，可以把属性的名称前加上两个下划线<strong>，在Python中，实例的变量名如果以</strong>开头，就变成了一个私有变量（private）</p>
+<blockquote>
+<p>在Python中，变量名类似<strong>xxx</strong>的，也就是以双下划线开头，并且以双下划线结尾的，是特殊变量，特殊变量是可以直接访问的，不是private变量，所以，不能用<strong>name</strong>、<strong>score</strong>这样的变量名。<br>有些时候，你会看到以一个下划线开头的实例变量名，比如_name，这样的实例变量外部是可以访问的，但是，按照约定俗成的规定，当你看到这样的变量时，意思就是，“虽然我可以被访问，但是，请把我视为私有变量，不要随意访问”。双下划线开头的实例变量是不是一定不能从外部访问呢？其实也不是。不能直接访问<strong>name是因为Python解释器对外把</strong>name变量改成了_Student__name，所以，仍然可以通过_Student__name来访问__name变量</p>
+</blockquote>
+<h3 id="使用property"><a href="#使用property" class="headerlink" title="使用property"></a>使用property</h3><pre><code>class Student(object):
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, value):
+        if not isinstance(value, int):
+            raise ValueError(&#39;score must be an integer!&#39;)
+        if value &lt; 0 or value &gt; 100:
+            raise ValueError(&#39;score must between 0 ~ 100!&#39;)
+        self._score = value
+</code></pre><p>不能直接访问属性，会调用对应的getter()、setter()方法</p>
+<pre><code>&gt;&gt;&gt; s = Student()
+&gt;&gt;&gt; s.score = 60 # OK，实际转化为s.set_score(60)
+&gt;&gt;&gt; s.score # OK，实际转化为s.get_score()
+60
+&gt;&gt;&gt; s.score = 9999
+Traceback (most recent call last):
+  ...
+ValueError: score must between 0 ~ 100!
+</code></pre><h2 id="错误、调试、测试"><a href="#错误、调试、测试" class="headerlink" title="错误、调试、测试"></a>错误、调试、测试</h2><h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>try…except…finally…</p>
+<blockquote>
+<p>当我们认为某些代码可能会出错时，就可以用try来运行这段代码，如果执行出错，则后续代码不会继续执行，而是直接跳转至错误处理代码，即except语句块，执行完except后，如果有finally语句块，则执行finally语句块，至此，执行完毕</p>
+</blockquote>
+<pre><code>try:
+    print(&#39;try...&#39;)
+    r = 10 / 0
+    print(&#39;result:&#39;, r)
+except ZeroDivisionError as e:
+    print(&#39;except:&#39;, e)
+finally:
+    print(&#39;finally...&#39;)
+print(&#39;END&#39;)
+</code></pre><h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h3><h4 id="print"><a href="#print" class="headerlink" title="print()"></a>print()</h4><p>打印出变量的信息</p>
+<h4 id="断言"><a href="#断言" class="headerlink" title="断言"></a>断言</h4><p>凡是用print()来辅助查看的地方，都可以用断言（assert）来替代。在启动Python解释器时可以用-o参数来关闭assert，<code>assert</code>语句会被当成<code>pass</code>看</p>
+<h4 id="logging"><a href="#logging" class="headerlink" title="logging"></a>logging</h4><p>把print()替换为logging是第3种方式，和assert比，logging不会抛出错误，而且可以输出到文件</p>
+<h4 id="单步调试"><a href="#单步调试" class="headerlink" title="单步调试"></a>单步调试</h4><ul>
+<li>qdb</li>
+<li>IDE，比如<a href="http://www.jetbrains.com/pycharm/" target="_blank" rel="noopener">PyCharm</a></li>
+</ul>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
+<li>单元测试是用来对一个模块、一个函数或者一个类来进行正确性检验的测试工作</li>
+<li>Python内置的“文档测试”（doctest）模块可以直接提取注释中的代码并执行测试。<br>doctest严格按照Python交互式命令行的输入和输出来判断测试结果是否正确。只有测试异常的时候，可以用…表示中间一大段烦人的输出</li>
+</ul>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/04/21/PythonLearn/">Python学习笔记</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>2,242</p>
+        <p><span>发布时间:</span>2017-04-21, 14:39:34</p>
+        <p><span>最后更新:</span>2023-05-21, 17:36:27</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/04/21/PythonLearn/" title="Python学习笔记">http://longxuan.ren/2017/04/21/PythonLearn/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://longxuan.ren/2017/04/21/PythonLearn/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/04/24/Sublime-React-Native/">
+                    Sublime插件React-Native篇
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/04/20/AE-Plugns-Notes/">
+                    AE蛋疼插件问题记录
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#基础"><span class="toc-number">1.</span> <span class="toc-text">基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#输入、输出："><span class="toc-number">1.1.</span> <span class="toc-text">输入、输出：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常量"><span class="toc-number">1.2.</span> <span class="toc-text">常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列表"><span class="toc-number">1.3.</span> <span class="toc-text">列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数定义"><span class="toc-number">1.4.</span> <span class="toc-text">函数定义</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高级特性"><span class="toc-number">2.</span> <span class="toc-text">高级特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#切片"><span class="toc-number">2.1.</span> <span class="toc-text">切片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列表生成式"><span class="toc-number">2.2.</span> <span class="toc-text">列表生成式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#斐波那契数列：-列表生成式-函数"><span class="toc-number">2.3.</span> <span class="toc-text">斐波那契数列：(列表生成式+函数)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#函数式编程"><span class="toc-number">3.</span> <span class="toc-text">函数式编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#map"><span class="toc-number">3.1.</span> <span class="toc-text">map()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reduce"><span class="toc-number">3.2.</span> <span class="toc-text">reduce()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#结合起来写个字符串转数字的函数："><span class="toc-number">3.2.1.</span> <span class="toc-text">结合起来写个字符串转数字的函数：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fliter"><span class="toc-number">3.3.</span> <span class="toc-text">fliter()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#生成1000以内的素数"><span class="toc-number">3.3.1.</span> <span class="toc-text">生成1000以内的素数</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sorted"><span class="toc-number">3.4.</span> <span class="toc-text">sorted()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#匿名函数lambda"><span class="toc-number">3.5.</span> <span class="toc-text">匿名函数lambda</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#装饰器"><span class="toc-number">3.6.</span> <span class="toc-text">装饰器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#利用decorator打印出函数调用前和调用后的日志"><span class="toc-number">3.6.1.</span> <span class="toc-text">利用decorator打印出函数调用前和调用后的日志</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#偏函数"><span class="toc-number">3.7.</span> <span class="toc-text">偏函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模块"><span class="toc-number">4.</span> <span class="toc-text">模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#模块标准模版"><span class="toc-number">4.1.</span> <span class="toc-text">模块标准模版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装第三方模块"><span class="toc-number">4.2.</span> <span class="toc-text">安装第三方模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装PIL库"><span class="toc-number">4.2.1.</span> <span class="toc-text">安装PIL库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#生成缩略图"><span class="toc-number">4.2.2.</span> <span class="toc-text">生成缩略图</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#面向对象编程"><span class="toc-number">5.</span> <span class="toc-text">面向对象编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#类的定义"><span class="toc-number">5.1.</span> <span class="toc-text">类的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#访问限制"><span class="toc-number">5.2.</span> <span class="toc-text">访问限制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用property"><span class="toc-number">5.3.</span> <span class="toc-text">使用property</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#错误、调试、测试"><span class="toc-number">6.</span> <span class="toc-text">错误、调试、测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#错误处理"><span class="toc-number">6.1.</span> <span class="toc-text">错误处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调试"><span class="toc-number">6.2.</span> <span class="toc-text">调试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#print"><span class="toc-number">6.2.1.</span> <span class="toc-text">print()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#断言"><span class="toc-number">6.2.2.</span> <span class="toc-text">断言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#logging"><span class="toc-number">6.2.3.</span> <span class="toc-text">logging</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#单步调试"><span class="toc-number">6.2.4.</span> <span class="toc-text">单步调试</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试"><span class="toc-number">6.3.</span> <span class="toc-text">测试</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Python学习笔记　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/04/24/Sublime-React-Native/" title="上一篇: Sublime插件React-Native篇">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/04/20/AE-Plugns-Notes/" title="下一篇: AE蛋疼插件问题记录">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2023/05/21/Game_PS5_Remote_Play/">PS5 远程玩游戏</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2023 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>73.7k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>

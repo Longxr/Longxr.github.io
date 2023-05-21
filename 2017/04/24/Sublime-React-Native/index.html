@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="作为一个秒开的编辑器，用了就不想换呀，插件库也很强大，稍作配置就可以用了">
+<meta name="keywords" content="Sublime,React-Native">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sublime插件React-Native篇">
+<meta property="og:url" content="http://longxuan.ren/2017/04/24/Sublime-React-Native/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="作为一个秒开的编辑器，用了就不想换呀，插件库也很强大，稍作配置就可以用了">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2023-05-21T17:36:27.231Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sublime插件React-Native篇">
+<meta name="twitter:description" content="作为一个秒开的编辑器，用了就不想换呀，插件库也很强大，稍作配置就可以用了">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Sublime插件React-Native篇 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PS5/">PS5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Sublime-React-Native" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/04/24/Sublime-React-Native/" class="article-date">
+      <time datetime="2017-04-24T17:38:57.000Z" itemprop="datePublished">2017-04-24</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Sublime插件React-Native篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/环境搭建/">环境搭建</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Sublime/">Sublime</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>作为一个秒开的编辑器，用了就不想换呀，插件库也很强大，稍作配置就可以用了<a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<blockquote>
+<p>作为一个秒开的编辑器，用了就不想换呀，插件库也很强大，稍作配置就可以用了</p>
+</blockquote>
+<h2 id="本体"><a href="#本体" class="headerlink" title="本体"></a>本体</h2><p>Sublime免费的，只是偶尔弹窗一下,所以别折腾什么破解版了<br><a href="https://www.sublimetext.com/3" target="_blank" rel="noopener">官网地址</a>,根据你的系统选择下载</p>
+<h2 id="Package-Control"><a href="#Package-Control" class="headerlink" title="Package Control"></a>Package Control</h2><p>安装插件之前要先装下Package Control</p>
+<h3 id="自动安装"><a href="#自动安装" class="headerlink" title="自动安装"></a>自动安装</h3><p>使用Ctrl+`快捷键或者通过View-&gt;Show Console菜单打开终端，粘贴如下代码：</p>
+<pre><code>import urllib.request,os,hashlib; h = &#39;df21e130d211cfc94d9b0905775a7c0f&#39; + &#39;1e3d39e33b79698005270310898eea76&#39;; pf = &#39;Package Control.sublime-package&#39;; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( &#39;http://packagecontrol.io/&#39; + pf.replace(&#39; &#39;, &#39;%20&#39;)).read(); dh = hashlib.sha256(by).hexdigest(); print(&#39;Error validating download (got %s instead of %s), please try manual install&#39; % (dh, h)) if dh != h else open(os.path.join( ipp, pf), &#39;wb&#39; ).write(by)
+</code></pre><p>如果终端安装报错的话，就改用手动安装</p>
+<h3 id="手动安装"><a href="#手动安装" class="headerlink" title="手动安装"></a>手动安装</h3><ol>
+<li>点击<code>Preferences &gt; Browse Packages</code>菜单</li>
+<li>进入打开的目录的上层目录，然后再进入<code>Installed Packages/</code>目录</li>
+<li>下载<a href="https://packagecontrol.io/Package%20Control.sublime-package" target="_blank" rel="noopener">Package Control.sublime-package</a>并复制到<code>Installed Packages/</code>目录</li>
+<li>重启Sublime Text</li>
+</ol>
+<h2 id="插件安装"><a href="#插件安装" class="headerlink" title="插件安装"></a>插件安装</h2><h3 id="Babel"><a href="#Babel" class="headerlink" title="Babel"></a>Babel</h3><blockquote>
+<p>支持ES6， React.js, jsx代码高亮，对 JavaScript, jQuery 也有很好的扩展</p>
+</blockquote>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>PC：Ctrl+shift+p<br>Mac：Cmd+shift+p<br>输入：<code>pci</code>，选择Package <code>Control:install package</code><br>加载出插件列表后，输入babel进行安装</p>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><ol>
+<li>打开.js, .jsx 后缀的文件;</li>
+<li>找到菜单栏的view -&gt; Syntax -&gt; Open all with current extension as… -&gt; Babel -&gt; JavaScript (Babel)，选择babel为默认 javascript 打开syntax</li>
+</ol>
+<h3 id="React-ES6-Snippets"><a href="#React-ES6-Snippets" class="headerlink" title="React ES6 Snippets"></a>React ES6 Snippets</h3><blockquote>
+<p>为react语法提示，sublime-react-es6支持es6语法, 另一个类似的插件ReactJS貌似是ES5的，敲出来的代码块方法都有function</p>
+</blockquote>
+<h4 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h4><p>PC：Ctrl+shift+p<br>Mac：Cmd+shift+p<br>输入：<code>pci</code>，选择<code>Package Control:install package</code><br>加载出插件列表后，输入<code>React ES6 Snippets</code>进行安装</p>
+<h4 id="支持的代码片段"><a href="#支持的代码片段" class="headerlink" title="支持的代码片段"></a>支持的代码片段</h4><pre><code>cdm→  componentDidMount: fn() { ... } 
+cdup→  componentDidUpdate: fn(pp, ps) { ... } 
+cs→  var cx = React.addons.classSet; 
+cwm→  componentWillMount: fn() { ... } 
+cwr→  componentWillReceiveProps: fn(np) { ... } 
+cwu→  componentWillUpdate: fn(np, ns) { ... } 
+cwun→  componentWillUnmount: fn() { ... } 
+cx→  cx({ ... }) 
+fdn→  React.findDOMNode(...) 
+fup→  forceUpdate(...) 
+gdp→  getDefaultProps: fn() { return {...} } 
+gis→  getInitialState: fn() { return {...} } 
+ism→  isMounted() 
+props→  this.props. 
+pt→  propTypes { ... } 
+rcc→  component skeleton 
+refs→  this.refs. 
+ren→  render: fn() { return ... } 
+scu→  shouldComponentUpdate: fn(np, ns) { ... } 
+sst→  this.setState({ ... }) 
+state→  this.state. 
+</code></pre><h3 id="jsfmt"><a href="#jsfmt" class="headerlink" title="jsfmt"></a>jsfmt</h3><blockquote>
+<p>格式化JS代码，jsformat也支持jsx格式化，但是在import的地方老是换行挺烦</p>
+</blockquote>
+<h4 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h4><p>PC：Ctrl+shift+p<br>Mac：Cmd+shift+p<br>输入：<code>pci</code>，选择<code>Package Control:install package</code><br>加载出插件列表后，输入<code>jsfmt</code>进行安装</p>
+<h4 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h4><ul>
+<li><p>添加jsx的相关配置</p>
+<pre><code>cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/jsfmt/
+npm i esformatter@latest esformatter-jsx@latest
+</code></pre></li>
+<li><p>Preferences -&gt; Package Settings -&gt; Sublime JSFMT，<a href="https://github.com/ionutvmi/sublime-jsfmt" target="_blank" rel="noopener">添加代码</a>：</p>
+<pre><code>{
+// autoformat on save
+&quot;autoformat&quot;: true,
+
+// array of extensions for autoformat
+&quot;extensions&quot;: [
+  &quot;js&quot;,
+  &quot;jsx&quot;,
+  &quot;sublime-settings&quot;
+],
+
+// options for jsfmt
+&quot;options&quot;: {
+  &quot;preset&quot;: &quot;jquery&quot;,
+  &quot;indent&quot;: {
+    &quot;value&quot;: &quot;    &quot;
+  },
+  // plugins included
+  &quot;plugins&quot;: [
+    &quot;esformatter-jsx&quot;,
+  ]
+},
+
+&quot;jsx&quot;: {
+  &quot;formatJSX&quot;: true,
+  // change these to your preferred values
+  // refer to https://github.com/royriojas/esformatter-jsx#best-configuration for more options
+  &quot;attrsOnSameLineAsTag&quot;: false,
+  &quot;maxAttrsOnTag&quot;: 1,
+  &quot;firstAttributeOnSameLine&quot;: false,
+  &quot;alignWithFirstAttribute&quot;: true
+},
+// other esformatter options
+&quot;options-JSON&quot;: {
+  &quot;plugins&quot;: [
+    &quot;esformatter-quotes&quot;
+  ],
+  &quot;quotes&quot;: {
+    &quot;type&quot;: &quot;double&quot;
+  }
+},
+&quot;alert-errors&quot;: true,
+// path to nodejs
+&quot;node-path&quot;: &quot;node&quot;,
+// if true it will format the whole file even if you have a selection active
+&quot;ignore-selection&quot;: false
+}
+</code></pre></li>
+</ul>
+<h4 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h4><p>打开 Preferences -&gt; Key Bindings - User，添加代码：<br><code>{&quot;keys&quot;:[&quot;ctrl+q&quot;],&quot;command&quot;:&quot;format_javascript&quot;}</code></p>
+<h3 id="SublimeLinter-ESLint"><a href="#SublimeLinter-ESLint" class="headerlink" title="SublimeLinter-ESLint"></a>SublimeLinter-ESLint</h3><blockquote>
+<p>ESLint 由 JavaScript 红宝书 作者 Nicholas C. Zakas 编写， 2013 年发布第一个版本。 NCZ 的初衷不是重复造一个轮子，而是在实际需求得不到 JSHint 团队响应 的情况下做出的选择：以可扩展、每条规则独立、不内置编码风格为理念编写一个 lint 工具</p>
+</blockquote>
+<h4 id="安装eslint"><a href="#安装eslint" class="headerlink" title="安装eslint"></a>安装eslint</h4><p>终端输入：</p>
+<pre><code>npm install -g eslint@latest 
+npm install -g babel-eslint@latest 
+npm install -g eslint-plugin-react 
+</code></pre><p>验证是否安装成功：<br><code>eslint -v</code></p>
+<h4 id="ESLint配置rules"><a href="#ESLint配置rules" class="headerlink" title="ESLint配置rules"></a>ESLint配置rules</h4><p>在home目录(windows下即为：c:\usrs\用户名 )下新建 .eslintrc,添加代码：</p>
+<pre><code>{
+// I want to use babel-eslint for parsing!
+&quot;parser&quot;: &quot;babel-eslint&quot;,
+&quot;env&quot;: {
+ // I write for browser
+ &quot;browser&quot;: true,
+ // in CommonJS
+ &quot;node&quot;: true
+},
+// To give you an idea how to override rule options:
+&quot;rules&quot;: {
+
+    ////////////////
+    // 可能的错误  //
+    ////////////////
+    // 禁止条件表达式中出现赋值操作符
+    &quot;no-cond-assign&quot;: 2,
+    // 禁用 console
+    &quot;no-console&quot;: 0,
+    // 禁止在条件中使用常量表达式
+    // if (false) {
+    //     doSomethingUnfinished();
+    // } //cuowu
+    &quot;no-constant-condition&quot;: 2,
+    // 禁止在正则表达式中使用控制字符 ：new RegExp(&quot;\x1f&quot;)
+    &quot;no-control-regex&quot;: 2,
+    // 数组和对象键值对最后一个逗号， never参数：不能带末尾的逗号, always参数：必须带末尾的逗号，
+    // always-multiline：多行模式必须带逗号，单行模式不能带逗号
+    //&quot;comma-dangle&quot;: [1, &quot;never&quot;],
+    // 禁用 debugger
+    &quot;no-debugger&quot;: 2,
+    // 禁止 function 定义中出现重名参数
+    &quot;no-dupe-args&quot;: 2,
+    // 禁止对象字面量中出现重复的 key
+    &quot;no-dupe-keys&quot;: 2,
+    // 禁止重复的 case 标签
+    &quot;no-duplicate-case&quot;: 2,
+    // 禁止空语句块
+    &quot;no-empty&quot;: 2,
+    // 禁止在正则表达式中使用空字符集 (/^abc[]/)
+    &quot;no-empty-character-class&quot;: 2,
+    // 禁止对 catch 子句的参数重新赋值
+    &quot;no-ex-assign&quot;: 2,
+    // 禁止不必要的布尔转换
+    &quot;no-extra-boolean-cast&quot;: 2,
+    //  禁止不必要的括号 //(a * b) + c;//报错
+    &quot;no-extra-parens&quot;: 0,
+    // 禁止不必要的分号
+    &quot;no-extra-semi&quot;: 2,
+    // 禁止对 function 声明重新赋值
+    &quot;no-func-assign&quot;: 2,
+    //  禁止在嵌套的块中出现 function 或 var 声明
+    &quot;no-inner-declarations&quot;: [2, &quot;functions&quot;],
+    // 禁止 RegExp 构造函数中无效的正则表达式字符串
+    &quot;no-invalid-regexp&quot;: 2,
+    // 禁止在字符串和注释之外不规则的空白
+    &quot;no-irregular-whitespace&quot;: 2,
+    // 禁止在 in 表达式中出现否定的左操作数
+    &quot;no-negated-in-lhs&quot;: 2,
+    //   禁止把全局对象 (Math 和 JSON) 作为函数调用  错误：var math = Math();
+    &quot;no-obj-calls&quot;: 2,
+    // 禁止直接使用 Object.prototypes 的内置属性
+    &quot;no-prototype-builtins&quot;:0,
+    // 禁止正则表达式字面量中出现多个空格
+    &quot;no-regex-spaces&quot;: 2,
+    // 禁用稀疏数组
+    &quot;no-sparse-arrays&quot;: 2,
+    // 禁止出现令人困惑的多行表达式
+    &quot;no-unexpected-multiline&quot;: 2,
+    // 禁止在return、throw、continue 和 break语句之后出现不可达代码
+    /*
+        function foo() {
+        return true;
+        console.log(&quot;done&quot;);
+        }//错误
+    */
+    &quot;no-unreachable&quot;: 2,
+    // 要求使用 isNaN() 检查 NaN
+    &quot;use-isnan&quot;: 2,
+    // 强制使用有效的 JSDoc 注释
+    &quot;valid-jsdoc&quot;: 1,
+    // 强制 typeof 表达式与有效的字符串进行比较
+    // typeof foo === &quot;undefimed&quot; 错误
+    &quot;valid-typeof&quot;: 2,
+
+    //////////////
+    // 风格指南  //
+    //////////////
+
+     //&quot;quotes&quot;: [2, &quot;single&quot;],
+     &quot;eol-last&quot;: [0],
+     &quot;no-mixed-requires&quot;: [0],
+     &quot;no-underscore-dangle&quot;: [0],
+
+     //////////////
+    // ES6.相关 //
+    //////////////
+
+    //&quot;arrow-spacing&quot;:[2,{ &quot;before&quot;: true, &quot;after&quot;: true }],
+    // 强制在子类构造函数中用super()调用父类构造函数，TypeScrip的编译器也会提示
+    &quot;constructor-super&quot;: 0,
+    // 强制 generator 函数中 * 号周围使用一致的空格
+    &quot;generator-star-spacing&quot;: [2, { &quot;before&quot;: true, &quot;after&quot;: true }],
+    // 禁止修改类声明的变量
+    &quot;no-class-assign&quot;:2,
+    // 不允许箭头功能，在那里他们可以混淆的比较
+    &quot;no-confusing-arrow&quot;:0,
+    // 禁止修改 const 声明的变量
+    &quot;no-const-assign&quot;:2,
+    // 禁止类成员中出现重复的名称
+    &quot;no-dupe-class-members&quot;:2,
+    // 不允许复制模块的进口
+    &quot;no-duplicate-imports&quot;:0,
+    // 禁止 Symbol  的构造函数
+    &quot;no-new-symbol&quot;:2,
+    // 允许指定模块加载时的进口
+    &quot;no-restricted-imports&quot;:0,
+    // 禁止在构造函数中，在调用 super() 之前使用 this 或 super
+    &quot;no-this-before-super&quot;: 2,
+    // 禁止不必要的计算性能键对象的文字
+    &quot;no-useless-computed-key&quot;:0,
+    // 要求使用 let 或 const 而不是 var
+    &quot;no-var&quot;: 0,
+    // 要求或禁止对象字面量中方法和属性使用简写语法
+    &quot;object-shorthand&quot;: 0,
+    // 要求使用箭头函数作为回调
+    &quot;prefer-arrow-callback&quot;:0,
+    // 要求使用 const 声明那些声明后不再被修改的变量
+    &quot;prefer-const&quot;: 0,
+    // 要求在合适的地方使用 Reflect 方法
+    &quot;prefer-reflect&quot;:0,
+    // 要求使用扩展运算符而非 .apply()
+    &quot;prefer-spread&quot;:0,
+    // 要求使用模板字面量而非字符串连接
+    &quot;prefer-template&quot;:0,
+    // Suggest using the rest parameters instead of arguments
+    &quot;prefer-rest-params&quot;:0,
+    // 要求generator 函数内有 yield
+    &quot;require-yield&quot;:0,
+    // enforce spacing between rest and spread operators and their expressions
+    &quot;rest-spread-spacing&quot;:0,
+    // 强制模块内的 import 排序
+    &quot;sort-imports&quot;:0,
+    // 要求或禁止模板字符串中的嵌入表达式周围空格的使用
+    &quot;template-curly-spacing&quot;:1,
+    // 强制在 yield* 表达式中 * 周围使用空格
+    &quot;yield-star-spacing&quot;:2
+
+},
+&quot;plugins&quot;:[
+&quot;react&quot;
+]
+}
+</code></pre><h4 id="Sublime配置"><a href="#Sublime配置" class="headerlink" title="Sublime配置"></a>Sublime配置</h4><p>安装插件<br>PC：Ctrl+shift+p<br>Mac：Cmd+shift+p<br>输入：<code>pci</code>，选择<code>Package Control:install package</code><br>输入<code>SublimeLinter</code>进行安装<br>输入<code>SublimeLinter-contrib-eslint</code>进行安装</p>
+<h4 id="default-path设置"><a href="#default-path设置" class="headerlink" title="default path设置"></a>default path设置</h4><p>Preferences -&gt; Package Settings -&gt; Sublime Linter.sublime-settings<br>，添加代码：</p>
+<pre><code>&quot;paths&quot;: { 
+            &quot;osx&quot;: [ 
+                &quot;/usr/local/lib&quot; 
+            ] 
+        }, 
+        &quot;python_paths&quot;: { 
+            &quot;osx&quot;: [ 
+                &quot;/usr/local/lib&quot; 
+            ] 
+        }, 
+</code></pre><h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="http://www.jianshu.com/p/ecf6c802fdc5" target="_blank" rel="noopener">Sublime Text3关于react的插件——react语法提示&amp;代码格式化</a></p>
+<p><a href="https://segmentfault.com/a/1190000003698071" target="_blank" rel="noopener">Sublime Text 3 搭建 React.js 开发环境</a></p>
+<p><a href="http://blog.guowenfh.com/2016/08/07/ESLint-Rules/" target="_blank" rel="noopener">详解 ESLint 规则，规范你的代码</a></p>
+<p><a href="http://www.jianshu.com/p/b2985ba08ec9" target="_blank" rel="noopener">Sublime text3 jsx支持（eslint）</a></p>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>2,057</p>
+        <p><span>发布时间:</span>2017-04-24, 17:38:57</p>
+        <p><span>最后更新:</span>2023-05-21, 17:36:27</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/04/24/Sublime-React-Native/" title="Sublime插件React-Native篇">http://longxuan.ren/2017/04/24/Sublime-React-Native/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://longxuan.ren/2017/04/24/Sublime-React-Native/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/04/25/oh-my-zsh-git/">
+                    oh-my-zsh git
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/04/21/PythonLearn/">
+                    Python学习笔记
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#本体"><span class="toc-number">1.</span> <span class="toc-text">本体</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Package-Control"><span class="toc-number">2.</span> <span class="toc-text">Package Control</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#自动安装"><span class="toc-number">2.1.</span> <span class="toc-text">自动安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手动安装"><span class="toc-number">2.2.</span> <span class="toc-text">手动安装</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#插件安装"><span class="toc-number">3.</span> <span class="toc-text">插件安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Babel"><span class="toc-number">3.1.</span> <span class="toc-text">Babel</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装"><span class="toc-number">3.1.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置"><span class="toc-number">3.1.2.</span> <span class="toc-text">配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#React-ES6-Snippets"><span class="toc-number">3.2.</span> <span class="toc-text">React ES6 Snippets</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装-1"><span class="toc-number">3.2.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#支持的代码片段"><span class="toc-number">3.2.2.</span> <span class="toc-text">支持的代码片段</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jsfmt"><span class="toc-number">3.3.</span> <span class="toc-text">jsfmt</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装-2"><span class="toc-number">3.3.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置-1"><span class="toc-number">3.3.2.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#快捷键"><span class="toc-number">3.3.3.</span> <span class="toc-text">快捷键</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SublimeLinter-ESLint"><span class="toc-number">3.4.</span> <span class="toc-text">SublimeLinter-ESLint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装eslint"><span class="toc-number">3.4.1.</span> <span class="toc-text">安装eslint</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ESLint配置rules"><span class="toc-number">3.4.2.</span> <span class="toc-text">ESLint配置rules</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Sublime配置"><span class="toc-number">3.4.3.</span> <span class="toc-text">Sublime配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#default-path设置"><span class="toc-number">3.4.4.</span> <span class="toc-text">default path设置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文章"><span class="toc-number">4.</span> <span class="toc-text">参考文章</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Sublime插件React-Native篇　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/04/25/oh-my-zsh-git/" title="上一篇: oh-my-zsh git">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/04/21/PythonLearn/" title="下一篇: Python学习笔记">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2023/05/21/Game_PS5_Remote_Play/">PS5 远程玩游戏</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2023 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>73.7k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>

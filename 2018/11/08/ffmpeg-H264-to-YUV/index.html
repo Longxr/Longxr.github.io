@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="视频画面的传输中，由于原始数据过大，实际传输的数据是已经编码好的数据，一般是H264, 当客户端收到后就需要解码并显示出来。">
+<meta name="keywords" content="ffmpeg,H264,YUV">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ffmpeg解码H264裸流为YUV数据">
+<meta property="og:url" content="http://longxuan.ren/2018/11/08/ffmpeg-H264-to-YUV/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="视频画面的传输中，由于原始数据过大，实际传输的数据是已经编码好的数据，一般是H264, 当客户端收到后就需要解码并显示出来。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_01.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_02.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_03.png">
+<meta property="og:updated_time" content="2023-05-21T17:36:27.235Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ffmpeg解码H264裸流为YUV数据">
+<meta name="twitter:description" content="视频画面的传输中，由于原始数据过大，实际传输的数据是已经编码好的数据，一般是H264, 当客户端收到后就需要解码并显示出来。">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_01.jpg">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>ffmpeg解码H264裸流为YUV数据 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PS5/">PS5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-ffmpeg-H264-to-YUV" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/11/08/ffmpeg-H264-to-YUV/" class="article-date">
+      <time datetime="2018-11-08T13:58:56.000Z" itemprop="datePublished">2018-11-08</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ffmpeg解码H264裸流为YUV数据
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Qt/">Qt</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/H264/">H264</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/YUV/">YUV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>视频画面的传输中，由于原始数据过大，实际传输的数据是已经编码好的数据，一般是H264, 当客户端收到后就需要解码并显示出来。<a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<h3 id="裸流解析成AVPacket"><a href="#裸流解析成AVPacket" class="headerlink" title="裸流解析成AVPacket"></a>裸流解析成AVPacket</h3><h4 id="AVCodecParser"><a href="#AVCodecParser" class="headerlink" title="AVCodecParser"></a>AVCodecParser</h4><p>AVCodecParser用于解析输入的数据流并把它分成一帧一帧的压缩编码数据。就像是你把肉塞进火腿，再交给它负责帮你切片，够一个完整的帧就返回给你处理。</p>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><pre><code>int parser_len = 0;
+
+while(parser_len &lt; buffer.length()){
+    parser_len += av_parser_parse2(m_pVideoParserContext, m_pVideoDecoder-&gt;GetCodecContext(),
+                                   &amp;pParsePacket-&gt;data, &amp;pParsePacket-&gt;size,
+                                   (uint8_t *)(buffer.data() + parser_len), buffer.length() - parser_len,
+                                   AV_NOPTS_VALUE, AV_NOPTS_VALUE, AV_NOPTS_VALUE);
+
+    if(0 == pParsePacket-&gt;size){
+        continue;
+    }
+
+    switch(m_pVideoParserContext-&gt;pict_type){
+        case AV_PICTURE_TYPE_I: qDebug(&quot;Type:I\t&quot;);break;
+        case AV_PICTURE_TYPE_P: qDebug(&quot;Type:P\t&quot;);break;
+        case AV_PICTURE_TYPE_B: qDebug(&quot;Type:B\t&quot;);break;
+    default: qDebug(&quot;Type:Other\t&quot;);break;
+}
+    //pParsePacket就是一帧的数据包AVPacket，这里可以保存作为录像
+    NotifyReceiveVideoPacket(pParsePacket);
+
+    //丢给解码器处理
+    m_pVideoDecoder-&gt;Decode(pParsePacket);
+
+    av_packet_unref(pParsePacket);
+} // parse H264 packet while
+</code></pre><p>每次塞给AVCodecParser的数据是buffer中的数据，其中可能包含多个帧，所以内部会有一个while循环，parser_len是已经解析了的数据的长度，直到解析完一次的buffer，再塞新的数据到buffer继续处理。</p>
+<h3 id="解码为AVFrame"><a href="#解码为AVFrame" class="headerlink" title="解码为AVFrame"></a>解码为AVFrame</h3><pre><code>if(0 != avcodec_send_packet(pCodecContext, pPacket)){
+    qDebug(&quot;avcodec_send_packet failed&quot;);
+    return false;
+}
+
+while(0 == avcodec_receive_frame(pCodecContext, pFrame)){
+    //pFrame包含了解码后的YUV数据
+    ...
+}
+</code></pre><p>由于AVFrame是ffmpeg的数据结构，要分别提取出Y、U、V三个通道的数据才能用于显示。</p>
+<h3 id="YUV数据格式"><a href="#YUV数据格式" class="headerlink" title="YUV数据格式"></a>YUV数据格式</h3><p>RGB来表示颜色大家都不陌生，R(红色)、G(绿色)、B(蓝色)，通过这三基色就可以组合成其他需要的颜色。YUV也是一种表示颜色的方式，其中Y(亮度)、U(色度)、V(浓度)。YUV根据采样方式的不同又有YUV444、YUV422、YUV420等多种格式。这里主要介绍YUV420采样格式。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_01.jpg" alt="YUV格式"></p>
+<h4 id="YUV420"><a href="#YUV420" class="headerlink" title="YUV420"></a>YUV420</h4><p>YUV420格式是指，每个像素都保留一个Y分量 (亮度全抽样)，而在水平方向上，不是每行都取U和V分量，而是一行只取U分量，接着一行就只取V分量，以此重复(即4:2:0, 4:0:2, 4:2:0, 4:0:2 …….)。所以420不是指没有V，而是指一行采样只取U，另一行采样只取V。从4x4矩阵列来看，每4个矩阵点Y区域中，只有一个U和V，所以它们的比值是4:1。</p>
+<h4 id="数据大小"><a href="#数据大小" class="headerlink" title="数据大小"></a>数据大小</h4><h5 id="对于1个像素的信息存储"><a href="#对于1个像素的信息存储" class="headerlink" title="对于1个像素的信息存储"></a>对于1个像素的信息存储</h5><ol>
+<li>RGB格式：R、G、B各占8位，共24位，即3byte</li>
+<li>YUV420格式： Y占8位，U、V每4个点共有一个，共8 + 8 / 4 + 8 / 4  = 12位，即3 / 2byte</li>
+</ol>
+<h5 id="对于一张图像的数据大小"><a href="#对于一张图像的数据大小" class="headerlink" title="对于一张图像的数据大小"></a>对于一张图像的数据大小</h5><ol>
+<li>RGB格式：width <em> height </em> 3byte</li>
+<li>YUV420格式：width <em> height </em> 3 / 2 byte</li>
+</ol>
+<p>所以采取YUV420来存储图像数据比RGB格式节省了一半的空间。</p>
+<h4 id="YUV420P"><a href="#YUV420P" class="headerlink" title="YUV420P"></a>YUV420P</h4><p>采样好了数据，在存储YUV数据的时候，对于YUV不同的存储方式又有YUV420P(YV12)、YUV420SP(NV12)等分类。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_02.png" alt="yv12"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_03.png" alt="nv12"></p>
+<p>从图上可以看出，YUV420P和NV12的区别就是一个是UV交替存储，一个是先存U再存V。这个在解码的时候就看你解码格式指定的是哪个了，默认解码是YUV420P。</p>
+<h3 id="从AVFrame中获取YUV数据"><a href="#从AVFrame中获取YUV数据" class="headerlink" title="从AVFrame中获取YUV数据"></a>从AVFrame中获取YUV数据</h3><p>YUV420P在AVFrame中的存储，data[0]存Y分量，data[1]存U分量，data[2]存V分量。<strong>其中，图像每一行Y、U、V数据的大小分别是linesize[0]、linesize[1]、linesize[2]，除了实际的图像数据，还有一些填充数据是不需要的。</strong>填充数据应该是为了内存对齐，保留的话可能会导致花屏，具体可以看<a href="https://blog.csdn.net/dancing_night/article/details/80830920" target="_blank" rel="noopener">这里的分析</a>。</p>
+<p>所以，获取实际的图像YUV数据代码为：</p>
+<pre><code>for(int i = 0; i &lt; pFrame-&gt;height; i++)
+  memcpy(m_pBuffer + pFrame-&gt;width * i, pFrame-&gt;data[0]  + pFrame-&gt;linesize[0] * i, pFrame-&gt;width);
+
+for(int j = 0; j &lt; pFrame-&gt;height / 2; j++)
+  memcpy(m_pBuffer + pFrame-&gt;width / 2 * j + ysize, pFrame-&gt;data[1]  + pFrame-&gt;linesize[1] * j, pFrame-&gt;width / 2);
+
+for(int k = 0; k &lt; pFrame-&gt;height / 2; k++)
+  memcpy(m_pBuffer + pFrame-&gt;width / 2 * k + ysize * 5 / 4, pFrame-&gt;data[2]  + pFrame-&gt;linesize[2] * k, pFrame-&gt;width / 2);
+</code></pre><p>我是直接用一个pBuffer来保存YUV数据了，记住偏移量就行，想分开存也没问题。这里的数据就可以直接交给渲染部分来显示图像了。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://blog.csdn.net/leixiaohua1020/article/details/42181571" target="_blank" rel="noopener">最简单的基于FFmpeg的解码器-纯净版（不包含libavformat）</a></li>
+<li><a href="https://www.jianshu.com/p/a91502c00fb0" target="_blank" rel="noopener">YUV颜色编码解析</a></li>
+<li><a href="https://blog.csdn.net/dancing_night/article/details/80830920" target="_blank" rel="noopener">AVFrame存储YUV420P对齐分析</a></li>
+<li><a href="https://blog.csdn.net/Evankaka/article/details/38176025" target="_blank" rel="noopener">NV12与YV12，YUV的主要格式</a></li>
+</ul>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>1,074</p>
+        <p><span>发布时间:</span>2018-11-08, 13:58:56</p>
+        <p><span>最后更新:</span>2023-05-21, 17:36:27</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/11/08/ffmpeg-H264-to-YUV/" title="ffmpeg解码H264裸流为YUV数据">http://longxuan.ren/2018/11/08/ffmpeg-H264-to-YUV/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://longxuan.ren/2018/11/08/ffmpeg-H264-to-YUV/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/12/30/Qt5-12-0-VS2017-environment/">
+                    Qt5.12.0 + VS2017 环境搭建
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/10/28/Github-DownLoad-Big-File/">
+                    Github仓库过大、文件过多下载方案
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#裸流解析成AVPacket"><span class="toc-number">1.</span> <span class="toc-text">裸流解析成AVPacket</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AVCodecParser"><span class="toc-number">1.1.</span> <span class="toc-text">AVCodecParser</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用"><span class="toc-number">1.2.</span> <span class="toc-text">使用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解码为AVFrame"><span class="toc-number">2.</span> <span class="toc-text">解码为AVFrame</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#YUV数据格式"><span class="toc-number">3.</span> <span class="toc-text">YUV数据格式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#YUV420"><span class="toc-number">3.1.</span> <span class="toc-text">YUV420</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据大小"><span class="toc-number">3.2.</span> <span class="toc-text">数据大小</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#对于1个像素的信息存储"><span class="toc-number">3.2.1.</span> <span class="toc-text">对于1个像素的信息存储</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#对于一张图像的数据大小"><span class="toc-number">3.2.2.</span> <span class="toc-text">对于一张图像的数据大小</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#YUV420P"><span class="toc-number">3.3.</span> <span class="toc-text">YUV420P</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#从AVFrame中获取YUV数据"><span class="toc-number">4.</span> <span class="toc-text">从AVFrame中获取YUV数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参考资料"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"ffmpeg解码H264裸流为YUV数据　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/12/30/Qt5-12-0-VS2017-environment/" title="上一篇: Qt5.12.0 + VS2017 环境搭建">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/10/28/Github-DownLoad-Big-File/" title="下一篇: Github仓库过大、文件过多下载方案">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2023/05/21/Game_PS5_Remote_Play/">PS5 远程玩游戏</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2023 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>73.7k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>

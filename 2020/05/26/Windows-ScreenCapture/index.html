@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="windows 下 3 种桌面采集方式的对比">
+<meta name="keywords" content="ffmpeg,windows,GDI,DSHOW,DXGI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="windows桌面采集（GDI、DSHOW、DXGI对比）">
+<meta property="og:url" content="http://longxuan.ren/2020/05/26/Windows-ScreenCapture/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="windows 下 3 种桌面采集方式的对比">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2023-05-21T17:36:27.235Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="windows桌面采集（GDI、DSHOW、DXGI对比）">
+<meta name="twitter:description" content="windows 下 3 种桌面采集方式的对比">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>windows桌面采集（GDI、DSHOW、DXGI对比） | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PS5/">PS5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Windows-ScreenCapture" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/05/26/Windows-ScreenCapture/" class="article-date">
+      <time datetime="2020-05-26T20:08:04.000Z" itemprop="datePublished">2020-05-26</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      windows桌面采集（GDI、DSHOW、DXGI对比）
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/C/">C++</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GDI/">GDI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>windows 下 3 种桌面采集方式的对比<a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<p>桌面采集就是定时截取桌面的画面，并且将截取后的 RGB 画面通过某种编码方式（比如 H264）压缩后再发送出去。采集的帧率达到 20 帧以上的时候，接收端再显示出来就有投屏的效果了。</p>
+<h1 id="GDI"><a href="#GDI" class="headerlink" title="GDI"></a>GDI</h1><p>Windows 图形设备接口(GDI)是为与设备无关的图形设计的。基于 Windows 的应用程序不能直接访问图形硬件，应用程序通过 GDI 来与设备驱动程序进行交互。GDI 截图就是通过屏幕的设备环境（DC）获取到当前屏幕的位图数据。</p>
+<h2 id="ffmpeg-调用"><a href="#ffmpeg-调用" class="headerlink" title="ffmpeg 调用"></a>ffmpeg 调用</h2><p>ffmpeg 封装了 GDI 截图的相关的函数，调用和文件的播放差不多，区别就是初始化时多调用了<code>av_find_input_format</code>。<br>获取到的每一帧数据通过<code>avcodec_receive_frame</code>拿到 AVFrame。</p>
+<pre><code class="C++">//GDI截屏初始化
+m_pFormatContext = avformat_alloc_context();
+if(nullptr == m_pFormatContext) {
+    qDebug(&quot;avformat_alloc_context failed&quot;);
+    break;
+}
+
+AVInputFormat * pInputFormat = av_find_input_format(&quot;gdigrab&quot;);
+if(nullptr == pInputFormat) {
+    qDebug(&quot;av_find_input_format failed&quot;);
+    break;
+}
+
+AVDictionary * options = nullptr;
+if(0 != avformat_open_input(&amp;m_pFormatContext, &quot;desktop&quot;, pInputFormat, &amp;options)) {
+    qDebug(&quot;avformat_open_input failed&quot;);
+    break;
+}
+...
+
+//文件播放初始化
+m_pAVFormatContext = avformat_alloc_context();
+
+int result = avformat_open_input(&amp;m_pAVFormatContext, m_filePath.toStdString().c_str(), nullptr, nullptr);
+if (result &lt; 0) {
+    char errbuf[64];
+    av_strerror(result, errbuf, sizeof(errbuf));
+    qDebug(&quot;open stream failed: %s&quot;, errbuf);
+    return false;
+}
+</code></pre>
+<h2 id="ffmpeg-实现"><a href="#ffmpeg-实现" class="headerlink" title="ffmpeg 实现"></a>ffmpeg 实现</h2><p>相关实现代码在<code>FFmpeg/libavcodec/gdigrab.c</code>。通过调用<code>gdigrab_read_header()</code>完成初始化，<code>gdigrab_read_packet()</code>完成实际的截图。</p>
+<h3 id="gdigrab-read-header"><a href="#gdigrab-read-header" class="headerlink" title="gdigrab_read_header"></a>gdigrab_read_header</h3><ol>
+<li>确定窗口的句柄 hwnd。如果指定了 title 的话，调用 FindWindow()获取 hwnd；如果指定了 desktop，则设定 hwnd 为 NULL</li>
+<li>确定抓屏的矩形区域。如果抓取指定窗口，则通过 GetClientRect()函数；否则就抓取整个屏幕</li>
+<li>调用 GDI 的 API 完成抓屏的一些初始化工作。包括：<br>a)通过 GetDC()获得某个窗口句柄的 HDC<br>b)通过 CreateCompatibleDC()创建一个与指定设备兼容的 HDC<br>c)通过 CreateDIBSection()创建一个设备无关位图 HBITMAP<br>d)通过 SelectObject()绑定 HBITMAP 和 HDC</li>
+<li>通过 avformat_new_stream()创建一个 AVStream</li>
+<li>将初始化时候的一些参数保存至 GDIGrab 的上下文结构体</li>
+</ol>
+<h3 id="gdigrab-read-packet"><a href="#gdigrab-read-packet" class="headerlink" title="gdigrab_read_packet"></a>gdigrab_read_packet</h3><ol>
+<li>从 GDIGrab 上下文结构体读取初始化时候设定的参数</li>
+<li>根据帧率参数进行延时</li>
+<li>通过 av_new_packet()新建一个 AVPacket</li>
+<li>通过 BitBlt()完成抓屏功能</li>
+<li>如果需要画鼠标指针的话，调用 paint_mouse_pointer()</li>
+<li>拷贝图像内容至 AVPacket 的 data</li>
+</ol>
+<h3 id="相关源码"><a href="#相关源码" class="headerlink" title="相关源码"></a>相关源码</h3><pre><code class="C++">/**
+ * Initializes the gdi grab device demuxer (public device demuxer API).
+ *
+ * @param s1 Context from avformat core
+ * @return AVERROR_IO error, 0 success
+ */
+static int
+gdigrab_read_header(AVFormatContext *s1)
+{
+    struct gdigrab *gdigrab = s1-&gt;priv_data;
+
+    HWND hwnd;
+    HDC source_hdc = NULL;
+    HDC dest_hdc   = NULL;
+    BITMAPINFO bmi;
+    HBITMAP hbmp   = NULL;
+    void *buffer   = NULL;
+
+    const char *filename = s1-&gt;url;
+    const char *name     = NULL;
+    AVStream   *st       = NULL;
+
+    int bpp;
+    int horzres;
+    int vertres;
+    int desktophorzres;
+    int desktopvertres;
+    RECT virtual_rect;
+    RECT clip_rect;
+    BITMAP bmp;
+    int ret;
+
+    if (!strncmp(filename, &quot;title=&quot;, 6)) {
+        name = filename + 6;
+        hwnd = FindWindow(NULL, name);
+        if (!hwnd) {
+            av_log(s1, AV_LOG_ERROR,
+                   &quot;Can&#39;t find window &#39;%s&#39;, aborting.\n&quot;, name);
+            ret = AVERROR(EIO);
+            goto error;
+        }
+        if (gdigrab-&gt;show_region) {
+            av_log(s1, AV_LOG_WARNING,
+                    &quot;Can&#39;t show region when grabbing a window.\n&quot;);
+            gdigrab-&gt;show_region = 0;
+        }
+    } else if (!strcmp(filename, &quot;desktop&quot;)) {
+        hwnd = NULL;
+    } else {
+        av_log(s1, AV_LOG_ERROR,
+               &quot;Please use \&quot;desktop\&quot; or \&quot;title=&lt;windowname&gt;\&quot; to specify your target.\n&quot;);
+        ret = AVERROR(EIO);
+        goto error;
+    }
+
+    /* This will get the device context for the selected window, or if
+     * none, the primary screen */
+    source_hdc = GetDC(hwnd);
+    if (!source_hdc) {
+        WIN32_API_ERROR(&quot;Couldn&#39;t get window device context&quot;);
+        ret = AVERROR(EIO);
+        goto error;
+    }
+    bpp = GetDeviceCaps(source_hdc, BITSPIXEL);
+
+    horzres = GetDeviceCaps(source_hdc, HORZRES);
+    vertres = GetDeviceCaps(source_hdc, VERTRES);
+    desktophorzres = GetDeviceCaps(source_hdc, DESKTOPHORZRES);
+    desktopvertres = GetDeviceCaps(source_hdc, DESKTOPVERTRES);
+
+    if (hwnd) {
+        GetClientRect(hwnd, &amp;virtual_rect);
+        /* window -- get the right height and width for scaling DPI */
+        virtual_rect.left   = virtual_rect.left   * desktophorzres / horzres;
+        virtual_rect.right  = virtual_rect.right  * desktophorzres / horzres;
+        virtual_rect.top    = virtual_rect.top    * desktopvertres / vertres;
+        virtual_rect.bottom = virtual_rect.bottom * desktopvertres / vertres;
+    } else {
+        /* desktop -- get the right height and width for scaling DPI */
+        virtual_rect.left = GetSystemMetrics(SM_XVIRTUALSCREEN);
+        virtual_rect.top = GetSystemMetrics(SM_YVIRTUALSCREEN);
+        virtual_rect.right = (virtual_rect.left + GetSystemMetrics(SM_CXVIRTUALSCREEN)) * desktophorzres / horzres;
+        virtual_rect.bottom = (virtual_rect.top + GetSystemMetrics(SM_CYVIRTUALSCREEN)) * desktopvertres / vertres;
+    }
+
+    /* If no width or height set, use full screen/window area */
+    if (!gdigrab-&gt;width || !gdigrab-&gt;height) {
+        clip_rect.left = virtual_rect.left;
+        clip_rect.top = virtual_rect.top;
+        clip_rect.right = virtual_rect.right;
+        clip_rect.bottom = virtual_rect.bottom;
+    } else {
+        clip_rect.left = gdigrab-&gt;offset_x;
+        clip_rect.top = gdigrab-&gt;offset_y;
+        clip_rect.right = gdigrab-&gt;width + gdigrab-&gt;offset_x;
+        clip_rect.bottom = gdigrab-&gt;height + gdigrab-&gt;offset_y;
+    }
+
+    if (clip_rect.left &lt; virtual_rect.left ||
+            clip_rect.top &lt; virtual_rect.top ||
+            clip_rect.right &gt; virtual_rect.right ||
+            clip_rect.bottom &gt; virtual_rect.bottom) {
+            av_log(s1, AV_LOG_ERROR,
+                    &quot;Capture area (%li,%li),(%li,%li) extends outside window area (%li,%li),(%li,%li)&quot;,
+                    clip_rect.left, clip_rect.top,
+                    clip_rect.right, clip_rect.bottom,
+                    virtual_rect.left, virtual_rect.top,
+                    virtual_rect.right, virtual_rect.bottom);
+            ret = AVERROR(EIO);
+            goto error;
+    }
+
+
+    if (name) {
+        av_log(s1, AV_LOG_INFO,
+               &quot;Found window %s, capturing %lix%lix%i at (%li,%li)\n&quot;,
+               name,
+               clip_rect.right - clip_rect.left,
+               clip_rect.bottom - clip_rect.top,
+               bpp, clip_rect.left, clip_rect.top);
+    } else {
+        av_log(s1, AV_LOG_INFO,
+               &quot;Capturing whole desktop as %lix%lix%i at (%li,%li)\n&quot;,
+               clip_rect.right - clip_rect.left,
+               clip_rect.bottom - clip_rect.top,
+               bpp, clip_rect.left, clip_rect.top);
+    }
+
+    if (clip_rect.right - clip_rect.left &lt;= 0 ||
+            clip_rect.bottom - clip_rect.top &lt;= 0 || bpp%8) {
+        av_log(s1, AV_LOG_ERROR, &quot;Invalid properties, aborting\n&quot;);
+        ret = AVERROR(EIO);
+        goto error;
+    }
+
+    dest_hdc = CreateCompatibleDC(source_hdc);
+    if (!dest_hdc) {
+        WIN32_API_ERROR(&quot;Screen DC CreateCompatibleDC&quot;);
+        ret = AVERROR(EIO);
+        goto error;
+    }
+
+    /* Create a DIB and select it into the dest_hdc */
+    bmi.bmiHeader.biSize          = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth         = clip_rect.right - clip_rect.left;
+    bmi.bmiHeader.biHeight        = -(clip_rect.bottom - clip_rect.top);
+    bmi.bmiHeader.biPlanes        = 1;
+    bmi.bmiHeader.biBitCount      = bpp;
+    bmi.bmiHeader.biCompression   = BI_RGB;
+    bmi.bmiHeader.biSizeImage     = 0;
+    bmi.bmiHeader.biXPelsPerMeter = 0;
+    bmi.bmiHeader.biYPelsPerMeter = 0;
+    bmi.bmiHeader.biClrUsed       = 0;
+    bmi.bmiHeader.biClrImportant  = 0;
+    hbmp = CreateDIBSection(dest_hdc, &amp;bmi, DIB_RGB_COLORS,
+            &amp;buffer, NULL, 0);
+    if (!hbmp) {
+        WIN32_API_ERROR(&quot;Creating DIB Section&quot;);
+        ret = AVERROR(EIO);
+        goto error;
+    }
+
+    if (!SelectObject(dest_hdc, hbmp)) {
+        WIN32_API_ERROR(&quot;SelectObject&quot;);
+        ret = AVERROR(EIO);
+        goto error;
+    }
+
+    /* Get info from the bitmap */
+    GetObject(hbmp, sizeof(BITMAP), &amp;bmp);
+
+    st = avformat_new_stream(s1, NULL);
+    if (!st) {
+        ret = AVERROR(ENOMEM);
+        goto error;
+    }
+    avpriv_set_pts_info(st, 64, 1, 1000000); /* 64 bits pts in us */
+
+    gdigrab-&gt;frame_size  = bmp.bmWidthBytes * bmp.bmHeight * bmp.bmPlanes;
+    gdigrab-&gt;header_size = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) +
+                           (bpp &lt;= 8 ? (1 &lt;&lt; bpp) : 0) * sizeof(RGBQUAD) /* palette size */;
+    gdigrab-&gt;time_base   = av_inv_q(gdigrab-&gt;framerate);
+    gdigrab-&gt;time_frame  = av_gettime() / av_q2d(gdigrab-&gt;time_base);
+
+    gdigrab-&gt;hwnd       = hwnd;
+    gdigrab-&gt;source_hdc = source_hdc;
+    gdigrab-&gt;dest_hdc   = dest_hdc;
+    gdigrab-&gt;hbmp       = hbmp;
+    gdigrab-&gt;bmi        = bmi;
+    gdigrab-&gt;buffer     = buffer;
+    gdigrab-&gt;clip_rect  = clip_rect;
+
+    gdigrab-&gt;cursor_error_printed = 0;
+
+    if (gdigrab-&gt;show_region) {
+        if (gdigrab_region_wnd_init(s1, gdigrab)) {
+            ret = AVERROR(EIO);
+            goto error;
+        }
+    }
+
+    st-&gt;avg_frame_rate = av_inv_q(gdigrab-&gt;time_base);
+
+    st-&gt;codecpar-&gt;codec_type = AVMEDIA_TYPE_VIDEO;
+    st-&gt;codecpar-&gt;codec_id   = AV_CODEC_ID_BMP;
+    st-&gt;codecpar-&gt;bit_rate   = (gdigrab-&gt;header_size + gdigrab-&gt;frame_size) * 1/av_q2d(gdigrab-&gt;time_base) * 8;
+
+    return 0;
+
+error:
+    if (source_hdc)
+        ReleaseDC(hwnd, source_hdc);
+    if (dest_hdc)
+        DeleteDC(dest_hdc);
+    if (hbmp)
+        DeleteObject(hbmp);
+    if (source_hdc)
+        DeleteDC(source_hdc);
+    return ret;
+}
+...
+/**
+ * Grabs a frame from gdi (public device demuxer API).
+ *
+ * @param s1 Context from avformat core
+ * @param pkt Packet holding the grabbed frame
+ * @return frame size in bytes
+ */
+static int gdigrab_read_packet(AVFormatContext *s1, AVPacket *pkt)
+{
+    struct gdigrab *gdigrab = s1-&gt;priv_data;
+
+    HDC        dest_hdc   = gdigrab-&gt;dest_hdc;
+    HDC        source_hdc = gdigrab-&gt;source_hdc;
+    RECT       clip_rect  = gdigrab-&gt;clip_rect;
+    AVRational time_base  = gdigrab-&gt;time_base;
+    int64_t    time_frame = gdigrab-&gt;time_frame;
+
+    BITMAPFILEHEADER bfh;
+    int file_size = gdigrab-&gt;header_size + gdigrab-&gt;frame_size;
+
+    int64_t curtime, delay;
+
+    /* Calculate the time of the next frame */
+    time_frame += INT64_C(1000000);
+
+    /* Run Window message processing queue */
+    if (gdigrab-&gt;show_region)
+        gdigrab_region_wnd_update(s1, gdigrab);
+
+    /* wait based on the frame rate */
+    for (;;) {
+        curtime = av_gettime();
+        delay = time_frame * av_q2d(time_base) - curtime;
+        if (delay &lt;= 0) {
+            if (delay &lt; INT64_C(-1000000) * av_q2d(time_base)) {
+                time_frame += INT64_C(1000000);
+            }
+            break;
+        }
+        if (s1-&gt;flags &amp; AVFMT_FLAG_NONBLOCK) {
+            return AVERROR(EAGAIN);
+        } else {
+            av_usleep(delay);
+        }
+    }
+
+    if (av_new_packet(pkt, file_size) &lt; 0)
+        return AVERROR(ENOMEM);
+    pkt-&gt;pts = curtime;
+
+    /* Blit screen grab */
+    if (!BitBlt(dest_hdc, 0, 0,
+                clip_rect.right - clip_rect.left,
+                clip_rect.bottom - clip_rect.top,
+                source_hdc,
+                clip_rect.left, clip_rect.top, SRCCOPY | CAPTUREBLT)) {
+        WIN32_API_ERROR(&quot;Failed to capture image&quot;);
+        return AVERROR(EIO);
+    }
+    if (gdigrab-&gt;draw_mouse)
+        paint_mouse_pointer(s1, gdigrab);
+
+    /* Copy bits to packet data */
+
+    bfh.bfType = 0x4d42; /* &quot;BM&quot; in little-endian */
+    bfh.bfSize = file_size;
+    bfh.bfReserved1 = 0;
+    bfh.bfReserved2 = 0;
+    bfh.bfOffBits = gdigrab-&gt;header_size;
+
+    memcpy(pkt-&gt;data, &amp;bfh, sizeof(bfh));
+
+    memcpy(pkt-&gt;data + sizeof(bfh), &amp;gdigrab-&gt;bmi.bmiHeader, sizeof(gdigrab-&gt;bmi.bmiHeader));
+
+    if (gdigrab-&gt;bmi.bmiHeader.biBitCount &lt;= 8)
+        GetDIBColorTable(dest_hdc, 0, 1 &lt;&lt; gdigrab-&gt;bmi.bmiHeader.biBitCount,
+                (RGBQUAD *) (pkt-&gt;data + sizeof(bfh) + sizeof(gdigrab-&gt;bmi.bmiHeader)));
+
+    memcpy(pkt-&gt;data + gdigrab-&gt;header_size, gdigrab-&gt;buffer, gdigrab-&gt;frame_size);
+
+    gdigrab-&gt;time_frame = time_frame;
+
+    return gdigrab-&gt;header_size + gdigrab-&gt;frame_size;
+}
+</code></pre>
+<h1 id="DSHOW"><a href="#DSHOW" class="headerlink" title="DSHOW"></a>DSHOW</h1><p>DirectShow 是 windows 上基于 COM 的流媒体处理的开发包，与 DirectX 开发包一起发布。使用 DSHOW 在捕获的设备上有更多的选择，比如 USB 摄像机、声卡设备等注册了的设备都可以作为输入源</p>
+<h2 id="ffmpeg-调用-1"><a href="#ffmpeg-调用-1" class="headerlink" title="ffmpeg 调用"></a>ffmpeg 调用</h2><p>ffmpeg 封装了 DSHOW 截图的相关的函数，调用和 GDI 截图的区别就是初始化的参数不同。</p>
+<pre><code class="C++">//DSHOW截屏初始化
+m_pFormatContext = avformat_alloc_context();
+if(nullptr == m_pFormatContext) {
+    qDebug(&quot;avformat_alloc_context failed&quot;);
+    break;
+}
+
+AVInputFormat * pInputFormat = av_find_input_format(&quot;dshow&quot;);
+if(nullptr == pInputFormat) {
+    qDebug(&quot;av_find_input_format failed&quot;);
+    break;
+}
+
+AVDictionary * options = nullptr;
+if(0 != avformat_open_input(&amp;m_pFormatContext, &quot;video=screen-capture-recorder&quot;, pInputFormat, &amp;options)) {
+    qDebug(&quot;avformat_open_input failed&quot;);
+    break;
+}
+</code></pre>
+<h2 id="ffmpeg-实现-1"><a href="#ffmpeg-实现-1" class="headerlink" title="ffmpeg 实现"></a>ffmpeg 实现</h2><p>相关实现代码在<code>FFmpeg/libavcodec/dshow.c</code>。通过调用<code>dshow_read_header()</code>完成初始化，<code>dshow_read_packet()</code>完成实际的截图。</p>
+<h2 id="dshow-read-header"><a href="#dshow-read-header" class="headerlink" title="dshow_read_header"></a>dshow_read_header</h2><ol>
+<li>判断输入参数、输入格式、帧率是否正确</li>
+<li>通过 CoCreateInstance() 创建 IGraphBuilder 对应的 Com 对象</li>
+<li>在设备列表中检索指定设备</li>
+<li>根据音频、视频设备分别设置参数以及打开对应设备</li>
+<li>创建 IGraphBuilder 的 Event、Mutex</li>
+</ol>
+<h2 id="dshow-read-packet"><a href="#dshow-read-packet" class="headerlink" title="dshow_read_packet"></a>dshow_read_packet</h2><ol>
+<li>事件循环，Mutex 触发后开始解析</li>
+<li>取出 priv_data 中的 packet 并处理数据</li>
+<li>检查 DShow 的 media event</li>
+</ol>
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><pre><code class="C++">static int dshow_read_header(AVFormatContext *avctx)
+{
+    struct dshow_ctx *ctx = avctx-&gt;priv_data;
+    IGraphBuilder *graph = NULL;
+    ICreateDevEnum *devenum = NULL;
+    IMediaControl *control = NULL;
+    IMediaEvent *media_event = NULL;
+    HANDLE media_event_handle;
+    HANDLE proc;
+    int ret = AVERROR(EIO);
+    int r;
+
+    CoInitialize(0);
+
+    if (!ctx-&gt;list_devices &amp;&amp; !parse_device_name(avctx)) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Malformed dshow input string.\n&quot;);
+        goto error;
+    }
+
+    ctx-&gt;video_codec_id = avctx-&gt;video_codec_id ? avctx-&gt;video_codec_id
+                                                : AV_CODEC_ID_RAWVIDEO;
+    if (ctx-&gt;pixel_format != AV_PIX_FMT_NONE) {
+        if (ctx-&gt;video_codec_id != AV_CODEC_ID_RAWVIDEO) {
+            av_log(avctx, AV_LOG_ERROR, &quot;Pixel format may only be set when &quot;
+                              &quot;video codec is not set or set to rawvideo\n&quot;);
+            ret = AVERROR(EINVAL);
+            goto error;
+        }
+    }
+    if (ctx-&gt;framerate) {
+        r = av_parse_video_rate(&amp;ctx-&gt;requested_framerate, ctx-&gt;framerate);
+        if (r &lt; 0) {
+            av_log(avctx, AV_LOG_ERROR, &quot;Could not parse framerate &#39;%s&#39;.\n&quot;, ctx-&gt;framerate);
+            goto error;
+        }
+    }
+
+    r = CoCreateInstance(&amp;CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER,
+                         &amp;IID_IGraphBuilder, (void **) &amp;graph);
+    if (r != S_OK) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Could not create capture graph.\n&quot;);
+        goto error;
+    }
+    ctx-&gt;graph = graph;
+
+    r = CoCreateInstance(&amp;CLSID_SystemDeviceEnum, NULL, CLSCTX_INPROC_SERVER,
+                         &amp;IID_ICreateDevEnum, (void **) &amp;devenum);
+    if (r != S_OK) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Could not enumerate system devices.\n&quot;);
+        goto error;
+    }
+
+    if (ctx-&gt;list_devices) {
+        av_log(avctx, AV_LOG_INFO, &quot;DirectShow video devices (some may be both video and audio devices)\n&quot;);
+        dshow_cycle_devices(avctx, devenum, VideoDevice, VideoSourceDevice, NULL, NULL);
+        av_log(avctx, AV_LOG_INFO, &quot;DirectShow audio devices\n&quot;);
+        dshow_cycle_devices(avctx, devenum, AudioDevice, AudioSourceDevice, NULL, NULL);
+        ret = AVERROR_EXIT;
+        goto error;
+    }
+    if (ctx-&gt;list_options) {
+        if (ctx-&gt;device_name[VideoDevice])
+            if ((r = dshow_list_device_options(avctx, devenum, VideoDevice, VideoSourceDevice))) {
+                ret = r;
+                goto error;
+            }
+        if (ctx-&gt;device_name[AudioDevice]) {
+            if (dshow_list_device_options(avctx, devenum, AudioDevice, AudioSourceDevice)) {
+                /* show audio options from combined video+audio sources as fallback */
+                if ((r = dshow_list_device_options(avctx, devenum, AudioDevice, VideoSourceDevice))) {
+                    ret = r;
+                    goto error;
+                }
+            }
+        }
+    }
+    if (ctx-&gt;device_name[VideoDevice]) {
+        if ((r = dshow_open_device(avctx, devenum, VideoDevice, VideoSourceDevice)) &lt; 0 ||
+            (r = dshow_add_device(avctx, VideoDevice)) &lt; 0) {
+            ret = r;
+            goto error;
+        }
+    }
+    if (ctx-&gt;device_name[AudioDevice]) {
+        if ((r = dshow_open_device(avctx, devenum, AudioDevice, AudioSourceDevice)) &lt; 0 ||
+            (r = dshow_add_device(avctx, AudioDevice)) &lt; 0) {
+            av_log(avctx, AV_LOG_INFO, &quot;Searching for audio device within video devices for %s\n&quot;, ctx-&gt;device_name[AudioDevice]);
+            /* see if there&#39;s a video source with an audio pin with the given audio name */
+            if ((r = dshow_open_device(avctx, devenum, AudioDevice, VideoSourceDevice)) &lt; 0 ||
+                (r = dshow_add_device(avctx, AudioDevice)) &lt; 0) {
+                ret = r;
+                goto error;
+            }
+        }
+    }
+    if (ctx-&gt;list_options) {
+        /* allow it to list crossbar options in dshow_open_device */
+        ret = AVERROR_EXIT;
+        goto error;
+    }
+    ctx-&gt;curbufsize[0] = 0;
+    ctx-&gt;curbufsize[1] = 0;
+    ctx-&gt;mutex = CreateMutex(NULL, 0, NULL);
+    if (!ctx-&gt;mutex) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Could not create Mutex\n&quot;);
+        goto error;
+    }
+    ctx-&gt;event[1] = CreateEvent(NULL, 1, 0, NULL);
+    if (!ctx-&gt;event[1]) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Could not create Event\n&quot;);
+        goto error;
+    }
+
+    r = IGraphBuilder_QueryInterface(graph, &amp;IID_IMediaControl, (void **) &amp;control);
+    if (r != S_OK) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Could not get media control.\n&quot;);
+        goto error;
+    }
+    ctx-&gt;control = control;
+
+    r = IGraphBuilder_QueryInterface(graph, &amp;IID_IMediaEvent, (void **) &amp;media_event);
+    if (r != S_OK) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Could not get media event.\n&quot;);
+        goto error;
+    }
+    ctx-&gt;media_event = media_event;
+
+    r = IMediaEvent_GetEventHandle(media_event, (void *) &amp;media_event_handle);
+    if (r != S_OK) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Could not get media event handle.\n&quot;);
+        goto error;
+    }
+    proc = GetCurrentProcess();
+    r = DuplicateHandle(proc, media_event_handle, proc, &amp;ctx-&gt;event[0],
+                        0, 0, DUPLICATE_SAME_ACCESS);
+    if (!r) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Could not duplicate media event handle.\n&quot;);
+        goto error;
+    }
+
+    r = IMediaControl_Run(control);
+    if (r == S_FALSE) {
+        OAFilterState pfs;
+        r = IMediaControl_GetState(control, 0, &amp;pfs);
+    }
+    if (r != S_OK) {
+        av_log(avctx, AV_LOG_ERROR, &quot;Could not run graph (sometimes caused by a device already in use by other application)\n&quot;);
+        goto error;
+    }
+
+    ret = 0;
+
+error:
+
+    if (devenum)
+        ICreateDevEnum_Release(devenum);
+
+    if (ret &lt; 0)
+        dshow_read_close(avctx);
+
+    return ret;
+}
+...
+
+static int dshow_read_packet(AVFormatContext *s, AVPacket *pkt)
+{
+    struct dshow_ctx *ctx = s-&gt;priv_data;
+    AVPacketList *pktl = NULL;
+
+    while (!ctx-&gt;eof &amp;&amp; !pktl) {
+        WaitForSingleObject(ctx-&gt;mutex, INFINITE);
+        pktl = ctx-&gt;pktl;
+        if (pktl) {
+            *pkt = pktl-&gt;pkt;
+            ctx-&gt;pktl = ctx-&gt;pktl-&gt;next;
+            av_free(pktl);
+            ctx-&gt;curbufsize[pkt-&gt;stream_index] -= pkt-&gt;size;
+        }
+        ResetEvent(ctx-&gt;event[1]);
+        ReleaseMutex(ctx-&gt;mutex);
+        if (!pktl) {
+            if (dshow_check_event_queue(ctx-&gt;media_event) &lt; 0) {
+                ctx-&gt;eof = 1;
+            } else if (s-&gt;flags &amp; AVFMT_FLAG_NONBLOCK) {
+                return AVERROR(EAGAIN);
+            } else {
+                WaitForMultipleObjects(2, ctx-&gt;event, 0, INFINITE);
+            }
+        }
+    }
+
+    return ctx-&gt;eof ? AVERROR(EIO) : pkt-&gt;size;
+}
+</code></pre>
+<h1 id="DXGI"><a href="#DXGI" class="headerlink" title="DXGI"></a>DXGI</h1><p>windows 8.1 以上的系统，则实现了一个 DXGI，集成在 DirectX 之中，是 DirectX 的一个子功能。DXGI 效率最高，不过对系统要求高。初始化都是固定的格式就是比较麻烦，<a href="https://github.com/microsoftarchive/msdn-code-gallery-microsoft/tree/master/Official%20Windows%20Platform%20Sample/DXGI%20desktop%20duplication%20sample" target="_blank" rel="noopener">可以看看微软官方 demo</a>，创建和查询各种接口，最终获取到 IDXGIOutputDuplication 接口。截屏的时候，使用 AcquireNextFrame() 函数获取当前桌面图像， GetFrameDirtyRects() 用来获取发生了变化的矩形区域。</p>
+<h2 id="ffmpeg-调用-2"><a href="#ffmpeg-调用-2" class="headerlink" title="ffmpeg 调用"></a>ffmpeg 调用</h2><p>ffmpeg 没有对应的接口，需要自己拿到 RGB 数据后封装成 AVFrame 给后续的编码环节使用。</p>
+<pre><code class="C++">//初始化略
+...
+
+//创建对应的AVFrame
+m_pFrame = av_frame_alloc();
+if(nullptr == m_pFrame) return;
+m_pFrame-&gt;width = m_srcWidth;
+m_pFrame-&gt;height = m_srcHeight;
+m_pFrame-&gt;format = AV_PIX_FMT_BGRA;
+if(0 != av_frame_get_buffer(m_pFrame, 0)) return;
+
+...
+//将DXGI拿到的数据存到AVFrame
+m_pFrame-&gt;data[0] = directx.buffer;
+</code></pre>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>2,692</p>
+        <p><span>发布时间:</span>2020-05-26, 20:08:04</p>
+        <p><span>最后更新:</span>2023-05-21, 17:36:27</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2020/05/26/Windows-ScreenCapture/" title="windows桌面采集（GDI、DSHOW、DXGI对比）">http://longxuan.ren/2020/05/26/Windows-ScreenCapture/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://longxuan.ren/2020/05/26/Windows-ScreenCapture/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2020/05/28/H264-Analyze/">
+                    H264码流分析
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2020/05/20/Go-C-Memory-Align/">
+                    golang 和 C++ 的内存对齐
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#GDI"><span class="toc-number">1.</span> <span class="toc-text">GDI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ffmpeg-调用"><span class="toc-number">1.1.</span> <span class="toc-text">ffmpeg 调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ffmpeg-实现"><span class="toc-number">1.2.</span> <span class="toc-text">ffmpeg 实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gdigrab-read-header"><span class="toc-number">1.2.1.</span> <span class="toc-text">gdigrab_read_header</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gdigrab-read-packet"><span class="toc-number">1.2.2.</span> <span class="toc-text">gdigrab_read_packet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#相关源码"><span class="toc-number">1.2.3.</span> <span class="toc-text">相关源码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DSHOW"><span class="toc-number">2.</span> <span class="toc-text">DSHOW</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ffmpeg-调用-1"><span class="toc-number">2.1.</span> <span class="toc-text">ffmpeg 调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ffmpeg-实现-1"><span class="toc-number">2.2.</span> <span class="toc-text">ffmpeg 实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dshow-read-header"><span class="toc-number">2.3.</span> <span class="toc-text">dshow_read_header</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dshow-read-packet"><span class="toc-number">2.4.</span> <span class="toc-text">dshow_read_packet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#源码"><span class="toc-number">2.5.</span> <span class="toc-text">源码</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DXGI"><span class="toc-number">3.</span> <span class="toc-text">DXGI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ffmpeg-调用-2"><span class="toc-number">3.1.</span> <span class="toc-text">ffmpeg 调用</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"windows桌面采集（GDI、DSHOW、DXGI对比）　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2020/05/28/H264-Analyze/" title="上一篇: H264码流分析">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2020/05/20/Go-C-Memory-Align/" title="下一篇: golang 和 C++ 的内存对齐">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2023/05/21/Game_PS5_Remote_Play/">PS5 远程玩游戏</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2023 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>73.7k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>

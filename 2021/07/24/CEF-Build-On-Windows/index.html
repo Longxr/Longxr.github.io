@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="CEF默认不支持mp3、mp4，需要的话得自己编译，记录在window下编译过程中遇到的各种坑">
+<meta name="keywords" content="windows CEF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="windows平台编译CEF支持MP3、MP4">
+<meta property="og:url" content="http://longxuan.ren/2021/07/24/CEF-Build-On-Windows/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="CEF默认不支持mp3、mp4，需要的话得自己编译，记录在window下编译过程中遇到的各种坑">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-24-22-31-09.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-24-22-53-01.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-24-23-19-10.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-24-23-23-12.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-25-00-22-37.png">
+<meta property="og:updated_time" content="2023-05-21T17:36:27.231Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="windows平台编译CEF支持MP3、MP4">
+<meta name="twitter:description" content="CEF默认不支持mp3、mp4，需要的话得自己编译，记录在window下编译过程中遇到的各种坑">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-24-22-31-09.png">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>windows平台编译CEF支持MP3、MP4 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PS5/">PS5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-CEF-Build-On-Windows" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2021/07/24/CEF-Build-On-Windows/" class="article-date">
+      <time datetime="2021-07-24T16:27:21.000Z" itemprop="datePublished">2021-07-24</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      windows平台编译CEF支持MP3、MP4
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/CEF/">CEF</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>CEF默认不支持mp3、mp4，需要的话得自己编译，记录在window下编译过程中遇到的各种坑 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<h2 id="CEF基础版"><a href="#CEF基础版" class="headerlink" title="CEF基础版"></a>CEF基础版</h2><p>如果不需要mp3、mp4的支持，可以直接下载构建好的版本，下载链接<a href="https://cef-builds.spotifycdn.com/index.html" target="_blank" rel="noopener">戳这里</a>。<br>新版本是cef和chromium在一个压缩包里，老版本是分开的。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-24-22-31-09.png" alt="CEF-Build-On-Windows-2021-07-24-22-31-09"></p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>google的项目，都要配置好代理，想直接下是不行的。找个路径放相关的文件，比如<code>E:\cef</code>。</p>
+<h3 id="时区设置"><a href="#时区设置" class="headerlink" title="时区设置"></a>时区设置</h3><p>设置系统区域为英语（美国）。（控制面板-区域-管理-更改系统区域设置-英语（美国）），设置完需要重启。防止编译一些字符集的报错。</p>
+<h3 id="代理设置"><a href="#代理设置" class="headerlink" title="代理设置"></a>代理设置</h3><p>不知道是啥的话后面也不用搞了，不过就算设置了也还是慢，最好还是云服务器编译。</p>
+<h4 id="V2ray代理设置"><a href="#V2ray代理设置" class="headerlink" title="V2ray代理设置"></a>V2ray代理设置</h4><ol>
+<li>路由设置-&gt;勾选启用高级功能</li>
+<li>右下角小图标选择全局</li>
+</ol>
+<h4 id="git-clone-代理配置"><a href="#git-clone-代理配置" class="headerlink" title="git clone 代理配置"></a>git clone 代理配置</h4><pre><code class="bash">//加大buffer
+git config --global http.postBuffer 524288000
+
+//设置代理，ssr通常是1080，v2ray是10809，客户端底部有显示
+git config --global http.proxy http://127.0.0.1:10809 &amp;&amp; git config --global https.proxy https://127.0.0.1:10809
+
+//取消代理（上面端口设置错了的话）
+git config --global --unset http.proxy &amp;&amp; git config --global --unset https.proxy
+</code></pre>
+<h4 id="windows设置CMD代理"><a href="#windows设置CMD代理" class="headerlink" title="windows设置CMD代理"></a>windows设置CMD代理</h4><pre><code class="bash">netsh
+netsh&gt;winhttp
+netsh winhttp&gt;
+netsh winhttp&gt;set proxy 127.0.0.1:10809      //设置代理
+netsh winhttp&gt;show proxy                     //查看代理
+netsh winhttp&gt;reset proxy                    //重置代理，下载完了不想要代理才用
+</code></pre>
+<h4 id="设置Boto代理"><a href="#设置Boto代理" class="headerlink" title="设置Boto代理"></a>设置Boto代理</h4><pre><code>[Boto]
+proxy = 127.0.0.1
+proxy_port = 10809
+</code></pre><p>创建.boto文件，在命令行设置环境变量，<code>set NO_AUTH_BOTO_CONFIG=E:\cef\.boto</code></p>
+<h3 id="构建脚本"><a href="#构建脚本" class="headerlink" title="构建脚本"></a>构建脚本</h3><p>构建脚本会执行下载和编译，通过指定参数达到想要的编译效果，<a href="https://bitbucket.org/chromiumembedded/cef/raw/master/tools/automate/automate-git.py" target="_blank" rel="noopener">下载链接</a>。下载好后放到<code>E:\cef</code>目录下。这是个python脚本，python也需要装下，编译旧版本需要安装python2，新版本需要安装python3，在执行脚本的时候环境不对会给出提示。</p>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><p>automate-git.py 的参数可以手动执行 python automate-git.py –help 来查看，下面列举大部分情况都会用的。</p>
+<ul>
+<li>–branch 表示你要下载和编译哪个版本的代码，Chromium和CEF的版本对应关系<a href="https://bitbucket.org/chromiumembedded/cef/wiki/BranchesAndBuilding.md#markdown-header-automated-method" target="_blank" rel="noopener">可以看这个链接</a></li>
+<li>–no-build 表示只下载代码而不编译</li>
+<li>–no-distrib 不执行打包项目，这里只为下载代码，我们还要修改支持多媒体的参数，所以不进行打包</li>
+<li>–force-clean 如果你曾经执行过这个脚本，可能会出错，则加上这个参数，它执行清理残留文件（你也可以手动在 chromium 源码目录执行 git clean -xdf 来清理目录中的多余内容）。</li>
+<li>–download-dir 下载的源码目录</li>
+<li>–checkout 如果你不想编译某个分支的最新版代码，可以指定具体的提交，只用设置CEF的提交就行，Chromium会跟着切换</li>
+<li>–force-clean-deps 编译老版本的时候会碰到下载第三方依赖库失败，碰到了可以加下这个</li>
+<li>–no-depot-tools-update 如果工具包之前下载过了可以加上，就不升级工具包了，第一次下载不加</li>
+<li>–no-update 编译时用，不更新直接编译</li>
+<li>–no-debug-build 编译时用，不编译debug只要release</li>
+<li>–build-log-file 生成编译的日志文件，出错可以看下</li>
+<li>–x64-build 构建64位的版本 </li>
+</ul>
+<p>准备好后目录如下：<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-24-22-53-01.png" alt="CEF-Build-On-Windows-2021-07-24-22-53-01"></p>
+<h2 id="CEF源码下载"><a href="#CEF源码下载" class="headerlink" title="CEF源码下载"></a>CEF源码下载</h2><p>下载前需要设置下环境变量，也可以直接在命令行输入就行。</p>
+<pre><code class="bat">set CEF_USE_GN=1
+set GN_DEFINES=is_official_build=true
+set GYP_DEFINES=buildtype=Official
+set GYP_MSVS_VERSION=2017
+set CEF_ARCHIVE_FORMAT=tar.bz2
+
+@REM 第一次源码下载不加--no-depot-tools-update，会先包工具包下下来
+python automate-git.py --download-dir=e:\cef\source --branch=3626 --checkout=90eb8cc --no-build --no-distrib --force-clean --force-clean-deps --no-depot-tools-update 
+</code></pre>
+<p><strong>有一个注意点，depot-tools内部有一些bat和python脚本，需要把它的路径设置到环境变量的PATH里，不然下载会报错</strong></p>
+<h3 id="下载错误处理"><a href="#下载错误处理" class="headerlink" title="下载错误处理"></a>下载错误处理</h3><h4 id="python缺库"><a href="#python缺库" class="headerlink" title="python缺库"></a>python缺库</h4><p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-24-23-19-10.png" alt="CEF-Build-On-Windows-2021-07-24-23-19-10"><br>看到脚本自己去下了python库的.whl，但是安装没成功，我就手动装了下：</p>
+<pre><code class="bash">pip install numpy=1.12.1
+pip install opencv_python=3.2.0.7
+pip install psutil=5.2.2
+</code></pre>
+<h3 id="No-module-named-win32file"><a href="#No-module-named-win32file" class="headerlink" title="No module named win32file"></a>No module named win32file</h3><p>Traceback (most recent call last):<br>  File “../../build/toolchain/win/tool_wrapper.py”, line 29, in <module><br>    import win32file    # pylint: disable=import-error<br>ImportError: No module named win32file</module></p>
+<p>修改方法：在错误日志里指定的目录安装pywin32，<a href="https://magpcss.org/ceforum/viewtopic.php?f=6&amp;t=17258" target="_blank" rel="noopener">参考链接</a></p>
+<pre><code class="bash">cd E:\cef\source\depot_tools\bootstrap-2@3_8_10_chromium_20_bin\python\bin
+pip -m install pywin32
+</code></pre>
+<h4 id="提示subprocesss返回值非0"><a href="#提示subprocesss返回值非0" class="headerlink" title="提示subprocesss返回值非0"></a>提示subprocesss返回值非0</h4><p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-24-23-23-12.png" alt="CEF-Build-On-Windows-2021-07-24-23-23-12"></p>
+<p>把depot-tools的路径设置到环境变量的PATH里:</p>
+<pre><code class="bat">set PATH=E:\cef\source\depot_tools;%PATH%;
+</code></pre>
+<h4 id="AttributeError-‘module’-object-has-no-attribute-‘CheckCallAndFilterAndHeader’"><a href="#AttributeError-‘module’-object-has-no-attribute-‘CheckCallAndFilterAndHeader’" class="headerlink" title="AttributeError: ‘module’ object has no attribute ‘CheckCallAndFilterAndHeader’"></a>AttributeError: ‘module’ object has no attribute ‘CheckCallAndFilterAndHeader’</h4><p>老版本编译才有的问题，需要修改代码，<code>E:\cef\source\cef\tools\gclient_util.py</code>，<a href="https://bitbucket.org/chromiumembedded/cef/issues/2736/gclient_hookpy-fails-because-of-missing" target="_blank" rel="noopener">参考链接</a></p>
+<p>命令行出问题的话，脚本就给个提示返回值非0，没把错误打印出来就很坑…把显示的命令行在终端直接敲一下就能看到具体错误了。<br>踩完这一路的坑，就可以开始编译了…</p>
+<h3 id="CEF源码编译"><a href="#CEF源码编译" class="headerlink" title="CEF源码编译"></a>CEF源码编译</h3><p>编译需要设置的参数最重要的就是添加MP3、MP4支持 使用此条指令，不加白折腾了。还有就是指定VS的路径，编译报错了提示少什么路径可以再加。</p>
+<pre><code class="bat">set CEF_USE_GN=1
+set GN_DEFINES=is_official_build=true
+set GYP_DEFINES=buildtype=Official
+set GYP_MSVS_VERSION=2017
+set CEF_ARCHIVE_FORMAT=tar.bz2
+@REM 添加MP3、MP4支持 使用此条指令
+set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome
+
+set GYP_GENERATORS=ninja,msvs-ninja
+set GN_ARGUMENTS=--ide=vs2017 --sln=cef --filters=//cef/*
+@REM VS2017安装在默认目录，但任然需要下面设置，可能是由于VS2015和VS2017同时安装，路径根据自己的安装目录和版本确定
+set WIN_CUSTOM_TOOLCHAIN=1
+set CEF_VCVARS=none
+set GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community
+set SDK_ROOT=C:\Program Files (x86)\Windows Kits\10
+
+@REM 编译64位调用VS的脚本有问题，环境变量还是去找的32位路径，下面改手动设置路径
+@REM call &quot;C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Auxiliary/Build/vcvarsall.bat&quot; x64
+
+@REM set INCLUDE=C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\um;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\atlmfc\include;%INCLUDE%
+@REM set PATH=C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX64\x86;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.CRT;%PATH%
+@REM set LIB=C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x86;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\ucrt\x86;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\lib\x86;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\atlmfc\lib\x86;%LIB%
+@REM set VS_CRT_ROOT=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\crt
+
+set INCLUDE=C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\um;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\atlmfc\include;%INCLUDE%
+set LIB=C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\ucrt\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\lib\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\atlmfc\lib\x64;%LIB%
+set VS_CRT_ROOT=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\crt
+set PATH=C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.CRT;%PATH%
+
+python automate-git.py --download-dir=e:\cef\source --branch=3626 --checkout=90eb8cc --no-update --no-debug-build --build-log-file --verbose-build --force-distrib --force-build --x64-build
+</code></pre>
+<h3 id="输出文件"><a href="#输出文件" class="headerlink" title="输出文件"></a>输出文件</h3><p>在目录<code>E:\cef\source\chromium\src\cef\binary_distrib</code>下，还把压缩包也生成了。<br>生成的文件里没有libcef_dll_wrapper.lib，需要的话拿cmake生成一个vs工程再编译就行，什么配置都不用改，就略过了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/CEF-Build-On-Windows-2021-07-25-00-22-37.png" alt="CEF-Build-On-Windows-2021-07-25-00-22-37"></p>
+<h2 id="编后感"><a href="#编后感" class="headerlink" title="编后感"></a>编后感</h2><p>下载和编译环节一定要把参数都搞好，下载搞了2天，编译也搞了2天，心累…一开始直接编译了一个32位的，后面才反应过来要编译一个64位的，编译的时候CPU直接100%，其他活都不用干了。<br>等搞完发现指定分支提交和项目中使用的版本还不一样，又要重新checkout再编译Orz<br>最后发现还是搞个windows云服务器省事，环境直接选美国，代理也不用设置，我本地代理也只能3M/S，服务器下载30M/S，服务器编译还不影响本地工作(￣▽￣)”</p>
+<h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><ul>
+<li><a href="https://bitbucket.org/chromiumembedded/cef/wiki/AutomatedBuildSetup.md" target="_blank" rel="noopener">官方构建Wiki</a></li>
+<li><a href="https://bitbucket.org/chromiumembedded/cef/wiki/BranchesAndBuilding.md#markdown-header-automated-method" target="_blank" rel="noopener">CEF版本号对应关系</a></li>
+<li><a href="https://blog.csdn.net/baidu_32237719/article/details/79509819" target="_blank" rel="noopener">在Windows上编译 CEF3 且加入mp3/mp4的支持</a></li>
+<li><a href="https://blog.csdn.net/pnhuangyu/article/details/103191466/" target="_blank" rel="noopener">CEF学习（一）：下载和构建chromium，增加mp4等多媒体支持</a></li>
+</ul>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>2,259</p>
+        <p><span>发布时间:</span>2021-07-24, 16:27:21</p>
+        <p><span>最后更新:</span>2023-05-21, 17:36:27</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2021/07/24/CEF-Build-On-Windows/" title="windows平台编译CEF支持MP3、MP4">http://longxuan.ren/2021/07/24/CEF-Build-On-Windows/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://longxuan.ren/2021/07/24/CEF-Build-On-Windows/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2023/05/21/Game_PS5_Remote_Play/">
+                    PS5 远程玩游戏
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2020/07/11/Qt5-12-5-static-build/">
+                    Qt5.12.5 静态编译以及裁剪大小对比
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CEF基础版"><span class="toc-number">1.</span> <span class="toc-text">CEF基础版</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准备工作"><span class="toc-number">2.</span> <span class="toc-text">准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#时区设置"><span class="toc-number">2.1.</span> <span class="toc-text">时区设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代理设置"><span class="toc-number">2.2.</span> <span class="toc-text">代理设置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#V2ray代理设置"><span class="toc-number">2.2.1.</span> <span class="toc-text">V2ray代理设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#git-clone-代理配置"><span class="toc-number">2.2.2.</span> <span class="toc-text">git clone 代理配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#windows设置CMD代理"><span class="toc-number">2.2.3.</span> <span class="toc-text">windows设置CMD代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#设置Boto代理"><span class="toc-number">2.2.4.</span> <span class="toc-text">设置Boto代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#构建脚本"><span class="toc-number">2.3.</span> <span class="toc-text">构建脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#参数说明"><span class="toc-number">2.3.1.</span> <span class="toc-text">参数说明</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CEF源码下载"><span class="toc-number">3.</span> <span class="toc-text">CEF源码下载</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载错误处理"><span class="toc-number">3.1.</span> <span class="toc-text">下载错误处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#python缺库"><span class="toc-number">3.1.1.</span> <span class="toc-text">python缺库</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-module-named-win32file"><span class="toc-number">3.2.</span> <span class="toc-text">No module named win32file</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#提示subprocesss返回值非0"><span class="toc-number">3.2.1.</span> <span class="toc-text">提示subprocesss返回值非0</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AttributeError-‘module’-object-has-no-attribute-‘CheckCallAndFilterAndHeader’"><span class="toc-number">3.2.2.</span> <span class="toc-text">AttributeError: ‘module’ object has no attribute ‘CheckCallAndFilterAndHeader’</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CEF源码编译"><span class="toc-number">3.3.</span> <span class="toc-text">CEF源码编译</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#输出文件"><span class="toc-number">3.4.</span> <span class="toc-text">输出文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编后感"><span class="toc-number">4.</span> <span class="toc-text">编后感</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接："><span class="toc-number">5.</span> <span class="toc-text">参考链接：</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"windows平台编译CEF支持MP3、MP4　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2023/05/21/Game_PS5_Remote_Play/" title="上一篇: PS5 远程玩游戏">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2020/07/11/Qt5-12-5-static-build/" title="下一篇: Qt5.12.5 静态编译以及裁剪大小对比">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2023/05/21/Game_PS5_Remote_Play/">PS5 远程玩游戏</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2023 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>73.7k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>
