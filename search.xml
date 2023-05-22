@@ -4,6 +4,87 @@
   
     
     <entry>
+      <title><![CDATA[Hexo 3.5.0 迁移到 Github Action 踩坑记录]]></title>
+      <url>http://longxuan.ren/2023/05/22/HexoGithubAction/</url>
+      <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>忘记写博客两年半，域名续费才想起来博客的存在哈哈哈哈，顺便吐槽下 Hexo 官方文档都不维护更新下内容坑啊 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<p>在我昨天玩游戏心血来潮又想写点东西的时候，Clone 下来久违的博客仓库，提交完文章后，发现博客完全不更新的，这个时候就发现事情并不简单 Σ(っ °Д °;)っ</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/HexoGithubAction-2023-05-22-23-41-06.png" alt="HexoGithubAction-2023-05-22-23-41-06"></p>
+<p>登录 travis-ci 一看，最近一次成功的自动构建记录都是 2 年 前的事情了，上方一行红色文字提示我信用额度为负，好家伙。。。许久不见，travis-ci 的构建已经变成收费功能了。莫得法子，只能换一家白嫖了，正好 Github 也有 Github Action 是可以用于自动构建的，于是挥泪告别 travis-ci (哭了，我装的(￣ ▽ ￣)”)</p>
+<h1 id="workflows"><a href="#workflows" class="headerlink" title="workflows"></a>workflows</h1><p>网上看了一圈教程，workflows 写法五花八门，有用 SSH key 的，有用 GitHub Token 的，最后还是决定按照官方文档来了，<a href="https://hexo.io/zh-cn/docs/github-pages" target="_blank" rel="noopener">相关链接戳这里</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/HexoGithubAction-2023-05-22-23-50-33.png" alt="HexoGithubAction-2023-05-22-23-50-33"></p>
+<h1 id="踩坑处理"><a href="#踩坑处理" class="headerlink" title="踩坑处理"></a>踩坑处理</h1><p>提交 <code>.github/workflows/pages.yml</code> 后，自动触发构建，发现 Action 报错:</p>
+<h2 id="Invalid-workflow-file-github-workflows-pages-yml-L2"><a href="#Invalid-workflow-file-github-workflows-pages-yml-L2" class="headerlink" title="Invalid workflow file: .github/workflows/pages.yml#L2"></a>Invalid workflow file: .github/workflows/pages.yml#L2</h2><p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/HexoGithubAction-2023-05-22-23-59-02.png" alt="HexoGithubAction-2023-05-22-23-59-02"></p>
+<p>定睛一看，啊这…原来第一行是注释么，怎么不加 <strong>#号</strong>的，复制粘贴害人呀，改完又报错:</p>
+<h2 id="Node-js-12-actions-are-deprecated-Please-update-the-following-actions-to-use-Node-js-16-actions-checkout-v2-actions-setup-node-v2-actions-cache-v2"><a href="#Node-js-12-actions-are-deprecated-Please-update-the-following-actions-to-use-Node-js-16-actions-checkout-v2-actions-setup-node-v2-actions-cache-v2" class="headerlink" title="Node.js 12 actions are deprecated. Please update the following actions to use Node.js 16: actions/checkout@v2, actions/setup-node@v2, actions/cache@v2"></a>Node.js 12 actions are deprecated. Please update the following actions to use Node.js 16: actions/checkout@v2, actions/setup-node@v2, actions/cache@v2</h2><p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/HexoGithubAction-2023-05-23-00-04-41.png" alt="HexoGithubAction-2023-05-23-00-04-41"><br>搜索了下报错，找到相关 <a href="https://github.com/actions/checkout/issues/1047" target="_blank" rel="noopener">issue</a>, 看着意思是需要把文档中的 <code>actions/checkout@v2</code> 改成 <code>actions/checkout@v3</code>，<code>actions/setup-node@v2</code>、<code>actions/cache@v2</code> 也是同理。不过感觉以后可能还有升级…可以跳到仓库的主页看看目前最新的是哪个版本，比如 <a href="https://github.com/actions/checkout" target="_blank" rel="noopener">actions/checkout</a>:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/HexoGithubAction-2023-05-23-00-07-55.png" alt="HexoGithubAction-2023-05-23-00-07-55"></p>
+<p>改好提交，改完继续报错…</p>
+<h2 id="npm-ERR-Missing-script-“build”"><a href="#npm-ERR-Missing-script-“build”" class="headerlink" title="npm ERR! Missing script: “build”"></a>npm ERR! Missing script: “build”</h2><p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/HexoGithubAction-2023-05-23-00-10-42.png" alt="HexoGithubAction-2023-05-23-00-10-42"></p>
+<p>我寻思我也没改过 npm 的配置，咋就报错了。于是又在本地初始化一个新的 Hexo 仓库对比下，看下有何不同之处，对比发现 <code>package.json</code> 确实不一样，新版除了依赖模块还加了 <code>scripts</code> 部分</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/HexoGithubAction-2023-05-23-00-25-55.png" alt="HexoGithubAction-2023-05-23-00-25-55"></p>
+<p>加上 <code>scripts</code> 部分后构建不会报错了，但是构建完成 push 到仓库后，网站全白啥也没有，查看仓库文件 html 全是 0 kb，我文章跑哪去了 ？？</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/HexoGithubAction-2023-05-23-00-31-17.png" alt="HexoGithubAction-2023-05-23-00-31-17"></p>
+<h2 id="生成-html-为空"><a href="#生成-html-为空" class="headerlink" title="生成 html 为空"></a>生成 html 为空</h2><p>搜索一番发现，其他人也碰到了这个问题，是由于 <strong>node 版本太高了，hexo 还不支持</strong><br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/HexoGithubAction-2023-05-23-00-34-45.png" alt="HexoGithubAction-2023-05-23-00-34-45"></p>
+<p>将 <code>.github/workflows/pages.yml</code> 中的 node 版本改回 12 后，再次构建，我的博客终于又回来了</p>
+<h1 id="github-workflows-pages-yml"><a href="#github-workflows-pages-yml" class="headerlink" title=".github/workflows/pages.yml"></a>.github/workflows/pages.yml</h1><p>附上修改后的配置文件，方便其他有需要升级老版本 Hexo 的朋友</p>
+<pre><code class="yml">name: Pages
+
+on:
+  push:
+    branches:
+      - blog # 源码所在分支
+
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3 # 有报错的话可能需要升级到最新的脚本
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: &#39;12&#39; # 改为 Hexo 所需的 node 版本
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-npm-cache
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache
+      - name: Install Dependencies
+        run: npm install
+      - name: Build
+        run: npm run build # 检查 package.json 中是否有相关的 scripts
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+</code></pre>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a href="https://hexo.io/zh-cn/docs/github-pages" target="_blank" rel="noopener">在 GitHub Pages 上部署 Hexo</a></li>
+<li><a href="https://alanlee.fun/2021/02/28/hexo-empty-html/" target="_blank" rel="noopener">hexo 生成的 html 文件为空的问题</a></li>
+</ul>
+</the>]]></content>
+      
+        <categories>
+            
+            <category> Hexo </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Hexo workflows </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[PS5 远程玩游戏]]></title>
       <url>http://longxuan.ren/2023/05/21/Game_PS5_Remote_Play/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>解决下回家躺床上 PS5 吃灰的问题，在公司远程玩 PS5 <a id="more"></a></excerpt></p>
@@ -11749,6 +11830,18 @@ env:
 </ul>
 </the>]]></content>
       
+        <categories>
+            
+            <category> Hexo </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Hexo Travis </tag>
+            
+        </tags>
         
     </entry>
     
