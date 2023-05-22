@@ -1,9 +1,9 @@
 ---
 title: Hexo使用Travis CI自动化部署
 categories:
-  - null
+  - Hexo
 tags:
-  - null
+  - Hexo Travis
 date: 2017-05-10 13:58:25
 ---
 

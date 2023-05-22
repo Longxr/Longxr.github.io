@@ -3,7 +3,7 @@ name: Pages
 on:
   push:
     branches:
-      - blog # default branch 1
+      - blog # 源码所在分支
 
 jobs:
   pages:
@@ -11,11 +11,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3 # 有报错的话可能需要升级到最新的脚本
       - name: Use Node.js 12.x
         uses: actions/setup-node@v3
         with:
-          node-version: '12'
+          node-version: '12' # 改为 Hexo 所需的 node 版本
       - name: Cache NPM dependencies
         uses: actions/cache@v3
         with:
@@ -26,7 +26,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build
-        run: npm run build
+        run: npm run build # 检查 package.json 中是否有相关的 scripts
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
