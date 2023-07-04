@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="记录常用的终端命令">
+<meta name="keywords" content="Linux command">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 常用命令记录">
+<meta property="og:url" content="http://longxuan.ren/2023/07/04/LinuxCommond/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="记录常用的终端命令">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2023-07-04T15:45:30.941Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux 常用命令记录">
+<meta name="twitter:description" content="记录常用的终端命令">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Linux 常用命令记录 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo-Travis/">Hexo Travis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo-workflows/">Hexo workflows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-command/">Linux command</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PS5/">PS5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows-CEF/">windows CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-LinuxCommond" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2023/07/04/LinuxCommond/" class="article-date">
+      <time datetime="2023-07-04T23:43:15.000Z" itemprop="datePublished">2023-07-04</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux 常用命令记录
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-command/">Linux command</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>记录常用的终端命令 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<h1 id="服务器信息"><a href="#服务器信息" class="headerlink" title="服务器信息"></a>服务器信息</h1><h2 id="内核版本"><a href="#内核版本" class="headerlink" title="内核版本"></a>内核版本</h2><p>终端显示内核命令，<code>uname -r</code></p>
+<p><a href="https://www.kernel.org/" target="_blank" rel="noopener">内核发布地址</a>，主版本号、次版本号(奇数开发版、偶数稳定版)、末版本号</p>
+<h2 id="发行版本"><a href="#发行版本" class="headerlink" title="发行版本"></a>发行版本</h2><p>终端显示发行版本，<code>lsb_release -a</code></p>
+<ol>
+<li>RedHat，技术支持收费版，软件更新慢，稳得一笔</li>
+<li>Fedora，软件新，稳定性一般</li>
+<li>CentOS，软件较新又稳定，小公司服务器首选</li>
+<li>Ubuntu，桌面版选择</li>
+<li>Debian，桌面版选择</li>
+</ol>
+<h1 id="软件包安装"><a href="#软件包安装" class="headerlink" title="软件包安装"></a>软件包安装</h1><h2 id="常用安装源替换"><a href="#常用安装源替换" class="headerlink" title="常用安装源替换"></a>常用安装源替换</h2><ol>
+<li><a href="https://developer.aliyun.com/mirror" target="_blank" rel="noopener">阿里</a></li>
+<li><a href="http://mirrors.163.com/" target="_blank" rel="noopener">网易</a></li>
+<li><a href="https://mirrors.cloud.tencent.com/" target="_blank" rel="noopener">腾讯</a></li>
+</ol>
+<h2 id="rpm-安装"><a href="#rpm-安装" class="headerlink" title="rpm 安装"></a>rpm 安装</h2><h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>需要软件的 rpm 安装包，并且有依赖的安装包需要自己先安装依赖。<br>rpm 包格式：name-1.2.33-el7.x86_64.rpm，el7 表示 centos7、RedHat7…</p>
+<h3 id="rpm-参数"><a href="#rpm-参数" class="headerlink" title="rpm 参数"></a>rpm 参数</h3><ul>
+<li>-q xxx 查询软件包，-qa | more 查询所有安装的包</li>
+<li>-i 安装软件包</li>
+<li>-e 卸载软件包</li>
+</ul>
+<h2 id="yum-安装"><a href="#yum-安装" class="headerlink" title="yum 安装"></a>yum 安装</h2><h3 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h3><p>在线安装，安装软件时会自动处理依赖问题。</p>
+<h3 id="yum-参数"><a href="#yum-参数" class="headerlink" title="yum 参数"></a>yum 参数</h3><ul>
+<li>install 安装软件包</li>
+<li>remove 卸载软件包</li>
+<li>list | grouplist 查看软件包</li>
+<li>update 升级软件包</li>
+<li>yum 被锁定时，rm -f /var/run/yum.pid</li>
+</ul>
+<h3 id="更换-yum-源"><a href="#更换-yum-源" class="headerlink" title="更换 yum 源"></a>更换 yum 源</h3><p>去<a href="https://developer.aliyun.com/mirror" target="_blank" rel="noopener">阿里云镜像站</a> 复制替换源的命令<br>mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup<br>wget -O /etc/yum.repos.d/CentOS-Base.repo <a href="http://mirrors.aliyun.com/repo/Centos-7.repo" target="_blank" rel="noopener">http://mirrors.aliyun.com/repo/Centos-7.repo</a><br>yum makecache</p>
+<h2 id="源代码安装"><a href="#源代码安装" class="headerlink" title="源代码安装"></a>源代码安装</h2><h3 id="特点-2"><a href="#特点-2" class="headerlink" title="特点"></a>特点</h3><p>对于一些在当前系统没有发布安装包，或是需要自己修改源码的软件，可以通过自己编译来安装。</p>
+<pre><code>//下载，解压到指定xxx目录
+./configure --prefix=/usr/local/xxx
+make -j2
+make install
+</code></pre><h1 id="服务器交互"><a href="#服务器交互" class="headerlink" title="服务器交互"></a>服务器交互</h1><h2 id="centos-访问-windows-共享文件夹"><a href="#centos-访问-windows-共享文件夹" class="headerlink" title="centos 访问 windows 共享文件夹"></a>centos 访问 windows 共享文件夹</h2><pre><code>sudo mkdir /mnt/windows
+sudo mount -t cifs -o username=smb,password=shared //192.168.31.31/shared /mnt/windows
+cp -r /mnt/windows/test/ ./
+sudo chmod -R 777 ./test
+</code></pre><h2 id="centos-ssh-登录"><a href="#centos-ssh-登录" class="headerlink" title="centos ssh 登录"></a>centos ssh 登录</h2><ol>
+<li>生成 ssh 密钥，ssh-keygen -t rsa -C”github 邮箱”</li>
+<li>编辑.ssh/config，配置好服务器 User、host、IdentityFile</li>
+<li>终端操作</li>
+</ol>
+<pre><code>SET REMOTEHOST=name@server-ip
+scp %USERPROFILE%\.ssh\id_rsa.pub %REMOTEHOST%:~/tmp.pub
+ssh %REMOTEHOST% &quot;mkdir -p ~/.ssh &amp;&amp; chmod 700 ~/.ssh &amp;&amp; cat ~/tmp.pub &gt;&gt; ~/.ssh/authorized_keys &amp;&amp; chmod 600 ~/.ssh/authorized_keys &amp;&amp; rm -f ~/tmp.pub&quot;
+
+//上面要是连接还需要密码的话就重启下服务器ssh服务
+service sshd restart
+</code></pre><h2 id="vscode-remote-ssh"><a href="#vscode-remote-ssh" class="headerlink" title="vscode remote-ssh"></a>vscode remote-ssh</h2><h3 id="群晖-remote-ssh"><a href="#群晖-remote-ssh" class="headerlink" title="群晖 remote-ssh"></a>群晖 remote-ssh</h3><pre><code class="shell">cd /etc/ssh
+sudo vim sshd_config
+# 修改 AllowTcpForwarding: no 为 AllowTcpForwarding : yes
+:wq #vim 改完保存文件
+sudo synosystemctl restart sshd.service # 重启群晖 ssh 服务
+</code></pre>
+<h3 id="centos-下载报错"><a href="#centos-下载报错" class="headerlink" title="centos 下载报错"></a>centos 下载报错</h3><p>连接如果出现错误，错误日志为 wget 下载失败，在上面应该有一串哈希值的 commit-id，对应 vscode 某个 release 版本。直接用本地电脑访问  <a href="https://update.code.visualstudio.com/commit" target="_blank" rel="noopener">https://update.code.visualstudio.com/commit</a>:<commit-id>/server-linux-x64/stable<br>下载后将<code>vscode-server-linux-x64.tar.gz</code>文件解压到<code>~/.vscode-server/bin/&lt;commit-id&gt;</code>，<br>scp vscode-server-linux-x64.tar.gz user@ip:/home/longxr/.vscode-server/bin/<commit-id>/<br>tar zxf vscode-server-linux-x64.tar.gz -C .</commit-id></commit-id></p>
+<h3 id="centos-登录出错"><a href="#centos-登录出错" class="headerlink" title="centos 登录出错"></a>centos 登录出错</h3><ol>
+<li>换机器登录服务器可能导致服务端装了不同的 vscode-server 导致不断重连让选择平台，可以先用 xshell 登录删除相关目录：<code>sudo rm -rf /home/longxr/.vscode-server</code></li>
+<li>连接失败提示命名管道不存在，删除本机 ssh 目录下的<code>known_hosts</code>文件</li>
+</ol>
+<h1 id="常用目录"><a href="#常用目录" class="headerlink" title="常用目录"></a>常用目录</h1><ul>
+<li>/ 根目录</li>
+<li>/bin 命令保存目录（普通用户权限）</li>
+<li>/sbin 命令保存目录（root 权限）</li>
+<li>/boot 启动目录，包含启动相关文件，和开机有关</li>
+<li>/dev 设备文件保存目录</li>
+<li>/etc 配置文件保存目录，类似 windows 注册表</li>
+<li>/home 普通用户家目录</li>
+<li>/lib 系统库保存目录</li>
+<li>/mnt 系统挂载目录</li>
+<li>/media 挂载目录（常用于光盘挂载）</li>
+<li>/root 超级用户家目录</li>
+<li>/tmp 临时目录</li>
+<li>/proc 直接写入内存的</li>
+<li>/sys 直接写入内存的</li>
+<li>/usr 系统软件资源目录</li>
+<li>/var 系统相关文档内容</li>
+</ul>
+<h1 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h1><h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><pre><code>//查看目录下内容
+ls -l            //长格式显示文件，-lh以便于人识别的方式显示（文件大小），-lhS列表按照文件由大到小显示
+ls -a           //显示隐藏文件
+ls -r           //逆序显示
+ls -t           //按时间顺序显示
+ls -R           //递归显示，可以查看多级目录
+
+//切换目录
+cd floder
+cd ./floder
+
+//新建目录
+mkdir a b c
+mkdir -p a/b/c  //新建多级目录
+
+//删除
+rmdir a         //只能删除空目录
+rm -rf           //删除非空目录
+rm -rf /*       //删库跑路
+
+//复制
+cp  /src /dst       //复制文件
+cp -r /src /dst     //复制目录
+cp -v /src /dst     //终端显示从源到目标的箭头
+cp -p /src /dst     //复制并保留文件用户、时间、权限
+cp -a /src /dst     //复制并保留文件所有属性，等于-dpR
+cp -Rf /src/*   /dst/   //将src目录下的所有东西拷到temp下而不拷贝src目录本身
+
+//移动
+mv /src /dst        //重命名、改名
+
+//修改目录下所有文件权限
+sudo chmod -R 777 /test
+//修改目录下所有文件所属用户
+sudo chown -R myuser /path/to/folder
+
+//查看文本文件
+cat a.txt             //查看文件内容
+head -5 a.txt       //查看文件前5行
+tail -5 a.txt        //查看文件末尾5行
+wc -l a.txt         //输出文件行数
+cat app.log | grep -30 ‘keyword’ //查询关键字前后30行
+
+//打包压缩
+tar cf test.tar src/          //只打包，大
+tar czf test.tar.gz src/      //gzip压缩，快
+tar cjf test.tar.bz2 src/     //bzip2压缩，慢
+zip -r test.zip src/          //zip压缩
+
+//解压缩
+tar xf test.tar -C dst/        //tar解包
+tar zxf test.tar.gz -C dst/   //gzip解包，.tgz同
+tar jxf test.tar.bz2 -C dst/  //bzip2解包，.tbz2同
+unzip -o test.zip -d dst/                  //uzip解压缩
+</code></pre><h2 id="特殊技巧"><a href="#特殊技巧" class="headerlink" title="特殊技巧"></a>特殊技巧</h2><pre><code>//权限被据绝的时候，会将上一条命令加上sudo输出
+sudo!!
+
+//切换应用到后台
+Ctrl+Z  //暂停应用程序
+...        //处理其他事情
+fg      //切换到之前的应用
+
+//ssh登出后仍然运行命令
+nohup wget http://xxxx
+</code></pre><h2 id="命令行软件"><a href="#命令行软件" class="headerlink" title="命令行软件"></a>命令行软件</h2><ul>
+<li>htop 进程管理</li>
+<li>range 文件浏览器</li>
+</ul>
+<h1 id="配置文件-etc"><a href="#配置文件-etc" class="headerlink" title="配置文件/etc"></a>配置文件/etc</h1><p>/etc/passwd   　　用户数据库，每列的内容分别是用户名、是否需要密码、uid、组 id、家目录、登录的命令解释器（sbin/nologin 表示不能登录）<br>/etc/group   　　 组数据，每列的内容分别是组名、是否需要密码、组 id、组员</p>
+<h2 id="给普通用户管理员权限"><a href="#给普通用户管理员权限" class="headerlink" title="给普通用户管理员权限"></a>给普通用户管理员权限</h2><pre><code>su root
+visudo          //vim /etc/sudoers
+
+//找到root All=(ALL) ALL 这一行
+按yy复制行，回车按p粘贴行
+命令模式 :wq!保存
+</code></pre><h2 id="sudo-命令输入一次后，不关闭终端无需再输入密码"><a href="#sudo-命令输入一次后，不关闭终端无需再输入密码" class="headerlink" title="sudo 命令输入一次后，不关闭终端无需再输入密码"></a>sudo 命令输入一次后，不关闭终端无需再输入密码</h2><pre><code>sudo vim /etc/sudoers
+//找到Defaults env_reset，改成下面的：
+Defaults env_reset , timestamp_timeout=-1
+</code></pre><h1 id="文件权限-root-用户不受限制"><a href="#文件权限-root-用户不受限制" class="headerlink" title="文件权限(root 用户不受限制)"></a>文件权限(root 用户不受限制)</h1><p>目录：r 是可查看文件，w 是修改文件，x 是进入文件夹<br>用户和组权限不同时，以用户权限为准<br>chmod u g o a +/-/= r/w/x，给用户、组、其他用户添加、删除、设置权限<br>chmod 744 设置权限，r 代表 4，w 代表 2，x 代表 1，相加设置一个用户权限</p>
+<h2 id="boot-空间不足"><a href="#boot-空间不足" class="headerlink" title="boot 空间不足"></a>boot 空间不足</h2><p>一般是系统升级了之后，旧的内核文件还在，多了就满了。可以删除不需要的旧内核文件。</p>
+<pre><code>su
+uname -r                                             //查看当前内核版本
+rpm -q kernel                                       //列出所有内核文件
+rpm -e kernel-3.10.0-957.el7.x86_64          //删除旧版本
+yum remove kernel-3.10.0-957.el7.x86_64   //移除旧版本的相关包
+df -lh                                                  //查看磁盘占用
+</code></pre><h1 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h1><h2 id="网卡名称"><a href="#网卡名称" class="headerlink" title="网卡名称"></a>网卡名称</h2><ul>
+<li>eno1 板载网卡</li>
+<li>ens33 PCI-E 网卡</li>
+<li>enp0s3 无法获取物理信息的 PCI-E 网卡</li>
+<li>eth0 以上都不匹配</li>
+</ul>
+<h3 id="网卡显示-eth0-的方法"><a href="#网卡显示-eth0-的方法" class="headerlink" title="网卡显示 eth0 的方法"></a>网卡显示 eth0 的方法</h3><p>修改/etc/default/grub，swap rhgb quiet 后面增加 biosdevname=0 net.ifnames=0<br>grub2-mkconfig -o /boot/grub2/grub.cfg<br>reboot</p>
+<h2 id="网络相关命令"><a href="#网络相关命令" class="headerlink" title="网络相关命令"></a>网络相关命令</h2><pre><code>//修改ip地址
+ifconfig eth0 &lt;ip&gt; netmask 255.255.255.0
+//重启网卡（改ip要重启网卡才生效）
+systemctl restart network
+
+
+//查看防火墙所有开放的端口
+firewall-cmd --zone=public --list-ports
+//端口开关
+firewall-cmd --zone=public --add-port=3306/tcp --permanent   // 开放3306端口
+firewall-cmd --zone=public --remove-port=3306/tcp --permanent  //关闭3306端口
+firewall-cmd --reload   // 配置立即生效
+
+//查看网络连接状态
+mii-tool eth0   //虚拟机看不了
+
+//网络故障排除
+ping &lt;ip&gt;
+traceroute -w 1 //查看路由跳转，查询丢包原因，更详细可以使用mtr看
+nslookup www.baidu.com  //查看域名对应的ip
+telnet &lt;ip&gt; &lt;port&gt;  //查看服务端口是否启用
+tcpdump -i any -n host &lt;ip&gt; -w /tmp/filename //捕获对应ip的tcp数据包
+</code></pre><h1 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h1><h2 id="常用命令-1"><a href="#常用命令-1" class="headerlink" title="常用命令"></a>常用命令</h2><pre><code>ps                          //查看当前运行的进程
+ps -e | more            //查看所有进程
+ps -ef | grep xxx        //查找xxx进程，加了f参数第三列显示父进程ID
+pstree | more           //树状显示进程
+top                        //查看进程详细运行状态，类似windows资源管理器
+kill -s 9 &lt;pid&gt;         //根据pid杀进程
+</code></pre></the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2023/07/04/LinuxCommond/">Linux 常用命令记录</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>2,157</p>
+        <p><span>发布时间:</span>2023-07-04, 23:43:15</p>
+        <p><span>最后更新:</span>2023-07-04, 15:45:30</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2023/07/04/LinuxCommond/" title="Linux 常用命令记录">http://longxuan.ren/2023/07/04/LinuxCommond/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://longxuan.ren/2023/07/04/LinuxCommond/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2023/05/22/HexoGithubAction/">
+                    Hexo 3.5.0 迁移到 Github Action 踩坑记录
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#服务器信息"><span class="toc-number">1.</span> <span class="toc-text">服务器信息</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#内核版本"><span class="toc-number">1.1.</span> <span class="toc-text">内核版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#发行版本"><span class="toc-number">1.2.</span> <span class="toc-text">发行版本</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#软件包安装"><span class="toc-number">2.</span> <span class="toc-text">软件包安装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常用安装源替换"><span class="toc-number">2.1.</span> <span class="toc-text">常用安装源替换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rpm-安装"><span class="toc-number">2.2.</span> <span class="toc-text">rpm 安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#特点"><span class="toc-number">2.2.1.</span> <span class="toc-text">特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rpm-参数"><span class="toc-number">2.2.2.</span> <span class="toc-text">rpm 参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#yum-安装"><span class="toc-number">2.3.</span> <span class="toc-text">yum 安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#特点-1"><span class="toc-number">2.3.1.</span> <span class="toc-text">特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#yum-参数"><span class="toc-number">2.3.2.</span> <span class="toc-text">yum 参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更换-yum-源"><span class="toc-number">2.3.3.</span> <span class="toc-text">更换 yum 源</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#源代码安装"><span class="toc-number">2.4.</span> <span class="toc-text">源代码安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#特点-2"><span class="toc-number">2.4.1.</span> <span class="toc-text">特点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#服务器交互"><span class="toc-number">3.</span> <span class="toc-text">服务器交互</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#centos-访问-windows-共享文件夹"><span class="toc-number">3.1.</span> <span class="toc-text">centos 访问 windows 共享文件夹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#centos-ssh-登录"><span class="toc-number">3.2.</span> <span class="toc-text">centos ssh 登录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vscode-remote-ssh"><span class="toc-number">3.3.</span> <span class="toc-text">vscode remote-ssh</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#群晖-remote-ssh"><span class="toc-number">3.3.1.</span> <span class="toc-text">群晖 remote-ssh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#centos-下载报错"><span class="toc-number">3.3.2.</span> <span class="toc-text">centos 下载报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#centos-登录出错"><span class="toc-number">3.3.3.</span> <span class="toc-text">centos 登录出错</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#常用目录"><span class="toc-number">4.</span> <span class="toc-text">常用目录</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#命令"><span class="toc-number">5.</span> <span class="toc-text">命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常用命令"><span class="toc-number">5.1.</span> <span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#特殊技巧"><span class="toc-number">5.2.</span> <span class="toc-text">特殊技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#命令行软件"><span class="toc-number">5.3.</span> <span class="toc-text">命令行软件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#配置文件-etc"><span class="toc-number">6.</span> <span class="toc-text">配置文件/etc</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#给普通用户管理员权限"><span class="toc-number">6.1.</span> <span class="toc-text">给普通用户管理员权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sudo-命令输入一次后，不关闭终端无需再输入密码"><span class="toc-number">6.2.</span> <span class="toc-text">sudo 命令输入一次后，不关闭终端无需再输入密码</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#文件权限-root-用户不受限制"><span class="toc-number">7.</span> <span class="toc-text">文件权限(root 用户不受限制)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#boot-空间不足"><span class="toc-number">7.1.</span> <span class="toc-text">boot 空间不足</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#网络"><span class="toc-number">8.</span> <span class="toc-text">网络</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#网卡名称"><span class="toc-number">8.1.</span> <span class="toc-text">网卡名称</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#网卡显示-eth0-的方法"><span class="toc-number">8.1.1.</span> <span class="toc-text">网卡显示 eth0 的方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#网络相关命令"><span class="toc-number">8.2.</span> <span class="toc-text">网络相关命令</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#进程管理"><span class="toc-number">9.</span> <span class="toc-text">进程管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常用命令-1"><span class="toc-number">9.1.</span> <span class="toc-text">常用命令</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Linux 常用命令记录　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2023/05/22/HexoGithubAction/" title="下一篇: Hexo 3.5.0 迁移到 Github Action 踩坑记录">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2023/07/04/LinuxCommond/">Linux 常用命令记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2023/05/22/HexoGithubAction/">Hexo 3.5.0 迁移到 Github Action 踩坑记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2023/05/21/Game_PS5_Remote_Play/">PS5 远程玩游戏</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2023 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>76.6k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>
