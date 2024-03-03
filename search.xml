@@ -4,8 +4,64 @@
   
     
     <entry>
+      <title><![CDATA[NAS 域名访问和 Nginx 反代理]]></title>
+      <url>https://longxuan.ren/2024/03/03/NASDomainAndNginx/</url>
+      <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>有公网 IP 的话可以设置通过域名访问家里的 NAS，另外 NAS 上服务多了端口记不过来，可以给不同的服务设置对应的子域名 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<p>有了 NAS 之后在家里折腾了一段时间，家里用着不错。如果想要在外面也能访问 NAS 的话，至少还要准备一个域名以及给宽带申请下公网 IP。都有了的话可以参考下述内容开搞~</p>
+<h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>域名一个，买个小众点的就行，小众的短域名 10 年也才几百块钱。<br>公网 IP，可以打电话给运营商，顺便还会上门给你光猫改桥接。</p>
+<h1 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h1><h2 id="DDNS"><a href="#DDNS" class="headerlink" title="DDNS"></a>DDNS</h2><p>先来完成第一个步骤，让 NAS 可以通过域名访问。当买好域名和申请了公网 IP 后，就可以在域名解析的配置里加上 IP 的记录，当访问域名时就会解析到指定的 IP 地址。但是对于普通用户来说申请到的 公网 IP 都是动态的，重启下路由器 IP 就会变，这时候就需要使用 DDNS 服务来定时的更新自己的 IP 到域名解析的记录里了。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-03-23-38-54.png" alt="NASDomainAndNginx-2024-03-03-23-38-54"></p>
+<h3 id="申请-AccessKey"><a href="#申请-AccessKey" class="headerlink" title="申请 AccessKey"></a>申请 AccessKey</h3><p>由于我的域名是在阿里云买的，所以这里就用阿里提供的服务了。登录了自己的阿里云账号后点击头像，有个 AccessKey 管理，会提示你使用子账号，跳转到新界面首先根据说明创建一个子账号。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-03-23-47-49.png" alt="NASDomainAndNginx-2024-03-03-23-47-49"></p>
+<p>阿里的对于每个子账号的权限都可以单独设置，比如我们这里只是用于 DNS 解析，在创建好账号后，权限管理只需要添加 AliyunDNSFullAccess 就行了。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-03-23-53-44.png" alt="NASDomainAndNginx-2024-03-03-23-53-44"></p>
+<p>在账号的下方认证管理可以创建一个该账号的 AccessKey，创建好后会弹出一个弹窗，上面有 AccessKey ID 和 AccessKey Secret，以及包含这俩的 csv，记得保存好这个 csv，这个弹窗关了之后就看不到了，只能重新再创建了。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-00-00-00.png" alt="NASDomainAndNginx-2024-03-04-00-00-00"></p>
+<h3 id="DDNS-GO-安装"><a href="#DDNS-GO-安装" class="headerlink" title="DDNS-GO 安装"></a>DDNS-GO 安装</h3><p>有群晖的话可以配置下<a href="https://spk7.imnks.com" target="_blank" rel="noopener">矿神 SDK</a> 的套件来源，配置好套件来源后，直接搜索安装好 DDNS-GO。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-00-02-25.png" alt="NASDomainAndNginx-2024-03-04-00-02-25"><br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-00-04-10.png" alt="NASDomainAndNginx-2024-03-04-00-04-10"></p>
+<h3 id="脚本配置"><a href="#脚本配置" class="headerlink" title="脚本配置"></a>脚本配置</h3><p>安装好 DDNS-GO 直接运行并点击打开，就会跳转到其配置页面上，在配置页最上方选好阿里云，并填上 AccessKey ID 和 AccessKey Secret，在下方填好自己的域名并点击最下方的保存就完成了。<br><strong>这里如果你申请的域名是 <code>abc.com</code>，记得在前面加个<em>，填成 `</em>.abc.com`，因为我们后面是要配置不同服务的子域名的。</strong><br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-00-08-21.png" alt="NASDomainAndNginx-2024-03-04-00-08-21"></p>
+<h2 id="证书添加"><a href="#证书添加" class="headerlink" title="证书添加"></a>证书添加</h2><p>现在浏览器访问请求时，如果加了 https 是要校验 ssl 证书的，如果没有的话会提示这个网站有风险。免费证书的话可以在阿里云上申请，搜索【数字证书管理服务】。我之前申请的时候免费的能用一年，不过在写这篇文章的时候登录上去看了下，现在好像不交钱只有 3 个月了，有点坑…</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-00-28-57.png" alt="NASDomainAndNginx-2024-03-04-00-28-57"></p>
+<p>申请好证书后把证书下载到本地，然后在 安全性里选择证书，新增并导入（第一个证书可以勾选设为默认证书）。在导入界面上选择之前下载的证书文件导入，私钥选择 xxx.key，证书选择 xxx.pem。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-00-35-46.png" alt="NASDomainAndNginx-2024-03-04-00-35-46"></p>
+<p>导入完证书后点击设置，将你想要换成自己域名的服务都改成你自己的域名。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-00-44-16.png" alt="NASDomainAndNginx-2024-03-04-00-44-16"></p>
+<h2 id="端口转发"><a href="#端口转发" class="headerlink" title="端口转发"></a>端口转发</h2><p>如果在内网想访问 NAS 上的某个服务，可以通过 <code>NAS 局域网IP:port</code> 的方式直接请求。<br>但是对于外网的访问，即使知道了当前家里的公网 IP，是不能直接访问内网 NAS 机器上的端口的，需要先做下端口转发，是的访问 <code>公网IP:port</code> 的请求能转发到 <code>NAS 局域网IP:port</code>，现在的路由器都支持该功能，在路由器的配置页设置就行。<br><strong>有的路由器有提供 DMZ 功能，这个功能是将局域网内的一个 IP 直接暴露在外网，这个挺危险的，如果有人知道了你的公网 IP 就能不断尝试访问不同的端口，建议不要使用该功能</strong></p>
+<p>我们先转发个 5001 端口，浏览器输入 <code>https://域名:5001</code> 就可以看到自己的群晖登录界面。</p>
+<h2 id="反代理子域名"><a href="#反代理子域名" class="headerlink" title="反代理子域名"></a>反代理子域名</h2><p>在完成了上面的内容后，就可以可以通过<code>https://域名:port</code>直接访问 NAS 的服务了，此时可以将每个 NAS 服务的端口都通过路由器转发。只是暴露端口每次都要去路由器添加，添加的时候麻烦，用起来也记不住。这时候要反代理上场了，可以只暴露一个端口，不同服务通过子域名来区分，访问连接变成 <code>https://服务名.域名:12345</code>。</p>
+<h3 id="部署-Nginx-Proxy-Manager"><a href="#部署-Nginx-Proxy-Manager" class="headerlink" title="部署 Nginx Proxy Manager"></a>部署 Nginx Proxy Manager</h3><p>打开群晖的 Container Manager，注册表搜索 <code>nginx-proxy-manager</code>，下载 Star 最多的这个即可。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-00-56-22.png" alt="NASDomainAndNginx-2024-03-04-00-56-22"></p>
+<p>创建容器指定下自己的端口号和本地路径，由于群晖的 80、443 等端口都是被 Web Station 给占用了，这里需要换成其他自定义的端口。文件夹映射我的是:</p>
+<ul>
+<li><code>/docker/NginxProxyManger/data</code> =&gt; <code>/data</code></li>
+<li><code>/docker/NginxProxyManger/letencrypt</code> =&gt; <code>//etc/letsencrypt</code></li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-00-59-26.png" alt="NASDomainAndNginx-2024-03-04-00-59-26"></p>
+<p>再勾选下容器的【启用自动重新启动】，配置好后就可以运行容器了。访问的管理端地址就是上面映射的 81 端口，比如我的管理端地址就是：<code>NAS 局域网IP:18081</code>。第一次打开这个页面时，默认用户：<a href="mailto:`admin@example.com" target="_blank" rel="noopener">`admin@example.com</a><code>，密码：</code>changeme`。首次登录后，需要修改用户名、登录邮箱以及登录密码。</p>
+<h3 id="配置-Nginx-Proxy-Manager"><a href="#配置-Nginx-Proxy-Manager" class="headerlink" title="配置 Nginx Proxy Manager"></a>配置 Nginx Proxy Manager</h3><p>打开管理端页面配置好邮箱和登录密码后，可以点击 SSL Certificates -&gt; Add SSL Certificate，导入之前创建的，或者申请个新的：<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-01-10-45.png" alt="NASDomainAndNginx-2024-03-04-01-10-45"></p>
+<p>如果是新申请如下，DDNS 的配置上面有介绍过，这里类似，就不再赘述了。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-01-11-41.png" alt="NASDomainAndNginx-2024-03-04-01-11-41"></p>
+<p>证书添加好后就可以添加自己想要的子域名了，点击 Hosts -&gt; Add Proxy Host:<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-01-16-02.png" alt="NASDomainAndNginx-2024-03-04-01-16-02"></p>
+<p>填好想自己想要的子域名，以及 NAS 服务的端口，比如我有个 test 功能的端口是 23333，就如下图所示：<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-01-18-06.png" alt="NASDomainAndNginx-2024-03-04-01-18-06"></p>
+<p>SSL 配置页记得把所有开关都开下，证书选择上一步添加好的 SSL 证书。<br><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/NASDomainAndNginx-2024-03-04-01-19-55.png" alt="NASDomainAndNginx-2024-03-04-01-19-55"></p>
+<p>此时再把 Nginx Proxy Manager 的 https 端口 18443（创建容器时自定义的）设置好路由器的端口转发，就可以实现通过 <code>https://test.域名:18443</code> 访问 NAS 的服务了。后期有新的服务可以参考同样的形式在 Nginx Proxy Manager 配置 Proxy Host 就能实现，如：<code>https://test2.域名:18443</code></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/678250017" target="_blank" rel="noopener">群晖搭建 Nginx Proxy Manager，个人最推荐的反代工具</a></li>
+<li><a href="https://blog.csdn.net/weixin_42523454/article/details/128100870" target="_blank" rel="noopener">群晖添加 SSL 证书，开启 https</a></li>
+</ul>
+</the>]]></content>
+      
+        <categories>
+            
+            <category> NAS </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> NAS Nginx docker </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Linux 常用命令记录]]></title>
-      <url>http://longxuan.ren/2023/07/04/LinuxCommond/</url>
+      <url>https://longxuan.ren/2023/07/04/LinuxCommond/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>记录常用的终端命令 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -228,7 +284,7 @@ kill -s 9 &lt;pid&gt;         //根据pid杀进程
     
     <entry>
       <title><![CDATA[Hexo 3.5.0 迁移到 Github Action 踩坑记录]]></title>
-      <url>http://longxuan.ren/2023/05/22/HexoGithubAction/</url>
+      <url>https://longxuan.ren/2023/05/22/HexoGithubAction/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>忘记写博客两年半，域名续费才想起来博客的存在哈哈哈哈，顺便吐槽下 Hexo 官方文档都不维护更新下内容坑啊 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -309,7 +365,7 @@ jobs:
     
     <entry>
       <title><![CDATA[PS5 远程玩游戏]]></title>
-      <url>http://longxuan.ren/2023/05/21/Game_PS5_Remote_Play/</url>
+      <url>https://longxuan.ren/2023/05/21/Game_PS5_Remote_Play/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>解决下回家躺床上 PS5 吃灰的问题，在公司远程玩 PS5 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -353,7 +409,7 @@ jobs:
     
     <entry>
       <title><![CDATA[windows平台编译CEF支持MP3、MP4]]></title>
-      <url>http://longxuan.ren/2021/07/24/CEF-Build-On-Windows/</url>
+      <url>https://longxuan.ren/2021/07/24/CEF-Build-On-Windows/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>CEF默认不支持mp3、mp4，需要的话得自己编译，记录在window下编译过程中遇到的各种坑 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -490,7 +546,7 @@ python automate-git.py --download-dir=e:\cef\source --branch=3626 --checkout=90e
     
     <entry>
       <title><![CDATA[Qt5.12.5 静态编译以及裁剪大小对比]]></title>
-      <url>http://longxuan.ren/2020/07/11/Qt5-12-5-static-build/</url>
+      <url>https://longxuan.ren/2020/07/11/Qt5-12-5-static-build/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>使用 VS2019 静态编译 Qt5.12.5 源码，并记录不同配置裁剪后生成的程序大小 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -567,7 +623,7 @@ Prefix = ..
     
     <entry>
       <title><![CDATA[YUV图像旋转]]></title>
-      <url>http://longxuan.ren/2020/06/16/YUV-Rotate/</url>
+      <url>https://longxuan.ren/2020/06/16/YUV-Rotate/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>手机竖屏录制的视频，PC 播放时需要对解码后的数据做下旋转。<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -636,7 +692,7 @@ libyuv::I420Rotate(
     
     <entry>
       <title><![CDATA[Qt Widget与原生窗口的对比]]></title>
-      <url>http://longxuan.ren/2020/06/08/Qt-Widget-NativeWindow/</url>
+      <url>https://longxuan.ren/2020/06/08/Qt-Widget-NativeWindow/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>QWidget 和原生窗口的一些对比<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -692,7 +748,7 @@ libyuv::I420Rotate(
     
     <entry>
       <title><![CDATA[Qt全局热键实现]]></title>
-      <url>http://longxuan.ren/2020/06/06/Qt-Global-Shortcut/</url>
+      <url>https://longxuan.ren/2020/06/06/Qt-Global-Shortcut/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt 中没有实现好的跨平台全局热键，需要自己调用系统 API 来实现。<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -794,7 +850,7 @@ Int id               //该热键的唯一标识
     
     <entry>
       <title><![CDATA[H264码流分析]]></title>
-      <url>http://longxuan.ren/2020/05/28/H264-Analyze/</url>
+      <url>https://longxuan.ren/2020/05/28/H264-Analyze/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>H264 是属于视频的编码层的标准格式，平时用 ffmpeg 只是指定下参数就完事了，并没有仔细了解，今天来分析下 H264 码流具体的内容。<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -935,7 +991,7 @@ while(0 == avcodec_receive_packet(m_pEncodeContext, m_pDstPacket)) {
     
     <entry>
       <title><![CDATA[windows桌面采集（GDI、DSHOW、DXGI对比）]]></title>
-      <url>http://longxuan.ren/2020/05/26/Windows-ScreenCapture/</url>
+      <url>https://longxuan.ren/2020/05/26/Windows-ScreenCapture/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>windows 下 3 种桌面采集方式的对比<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -1567,7 +1623,7 @@ m_pFrame-&gt;data[0] = directx.buffer;
     
     <entry>
       <title><![CDATA[golang 和 C++ 的内存对齐]]></title>
-      <url>http://longxuan.ren/2020/05/20/Go-C-Memory-Align/</url>
+      <url>https://longxuan.ren/2020/05/20/Go-C-Memory-Align/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>golang 和 C++的内存对齐，基本一致，记住规则和对应类型的 size 即可 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -1758,7 +1814,7 @@ func main() {
     
     <entry>
       <title><![CDATA[golang学习--slice]]></title>
-      <url>http://longxuan.ren/2020/05/12/Go-slice/</url>
+      <url>https://longxuan.ren/2020/05/12/Go-slice/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>针对切片的理解，通过几个例子来掌握切片相关内容<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -1982,7 +2038,7 @@ func TestSliceAppend3(t *testing.T) {
     
     <entry>
       <title><![CDATA[Go语言使用Qt开发界面]]></title>
-      <url>http://longxuan.ren/2020/04/19/Go-Use-Qt/</url>
+      <url>https://longxuan.ren/2020/04/19/Go-Use-Qt/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Go 语言跨平台，Qt 也跨平台，两个跨平台的框架/语言愉快地交织在了一起。我本应该获得了这种如梦一般的幸福时光才对。可是，为什么，会变成现在这样呢……（白学家梗） <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -2131,7 +2187,7 @@ qtdeploy build desktop ./
     
     <entry>
       <title><![CDATA[不同语言在函数内部定义函数]]></title>
-      <url>http://longxuan.ren/2020/04/04/Languages-Define-Inner-Func/</url>
+      <url>https://longxuan.ren/2020/04/04/Languages-Define-Inner-Func/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>在 LeetCode 刷题的时候，题解有的大佬给出的答案很优秀，是 python 的，想抄作业发现有的功能函数都定义在答案函数的内部，主要是闭包操作外部变量方便。不同语言在函数内部定义函数稍有不同，于是记录下自己可能用到的语言在函数中定义函数的方式。<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -2231,7 +2287,7 @@ outerFunc();
     
     <entry>
       <title><![CDATA[ffmpeg将多个flv文件合成为mp4（golang版）]]></title>
-      <url>http://longxuan.ren/2020/03/22/flvs2mp4-go/</url>
+      <url>https://longxuan.ren/2020/03/22/flvs2mp4-go/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>视频文件归档，将flv合并为mp4，go语言版 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -2399,7 +2455,7 @@ func main() {
     
     <entry>
       <title><![CDATA[远程办公内网搭建]]></title>
-      <url>http://longxuan.ren/2020/03/21/Remote-Access-Server/</url>
+      <url>https://longxuan.ren/2020/03/21/Remote-Access-Server/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>通过 zerotier 搭建远程办公的内网，操作简单，关键不花钱 2333 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -2479,7 +2535,7 @@ ssh %REMOTEHOST% &quot;mkdir -p ~/.ssh &amp;&amp; chmod 700 ~/.ssh &amp;&amp; ca
     
     <entry>
       <title><![CDATA[ffmpeg将多个flv文件合成为mp4（python版）]]></title>
-      <url>http://longxuan.ren/2020/03/20/flvs2mp4-python/</url>
+      <url>https://longxuan.ren/2020/03/20/flvs2mp4-python/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>视频文件归档，将flv合并为mp4 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -2602,7 +2658,7 @@ if __name__ == &#39;__main__&#39;:
     
     <entry>
       <title><![CDATA[golang学习--defer]]></title>
-      <url>http://longxuan.ren/2020/02/29/Go-defer/</url>
+      <url>https://longxuan.ren/2020/02/29/Go-defer/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Go 语言中的 defer 语句，可以在函数结束或者是出现异常时保证执行相关释放资源的操作，和 C++中的析构函数有点类似。像是文件的关闭，socket 连接的关闭这些操作都可以使用 defer 语句来延迟执行。<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -2699,7 +2755,7 @@ func TestParam(t *testing.T) {
     
     <entry>
       <title><![CDATA[更换博客图床]]></title>
-      <url>http://longxuan.ren/2020/01/10/Replace-Jianshu-Url/</url>
+      <url>https://longxuan.ren/2020/01/10/Replace-Jianshu-Url/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>我最开始写博客的时候接触到的就是简书，简书的在线编辑文章对于markdown的支持在2年前就很好用了，而且上传图片也比较简单，直接拖到文章里就能生成链接了，也省了一个图床。于是我就先在简书写markdown，再把文章复制一份放到<a href="https://longxuan.ren/">自己的网站</a>上。平时比较多的情况是直接在文章里贴代码，图可能就在最后放个结果图的链接，最近去看自己网站上的博客的时候，发现图片全都看不了，找了下原因发现简书上传的图片在外站貌似是无法查看了，把简书当图床用的日子到头了<em>(:з)∠)</em><br><a id="more"></a><the rest of contents | 余下全文></the></excerpt></p>
 <h2 id="寻找合适的图床"><a href="#寻找合适的图床" class="headerlink" title="寻找合适的图床"></a>寻找合适的图床</h2><p>有了简书的这个经历，发现通过某个网站当图床都有点不靠谱了，指不定哪天就禁止外链，所有图片就都gg了，所以图床还是自己搭一个比较好。<br>搜索引擎找了一圈，有三个比较常用的：</p>
 <ol>
@@ -2891,7 +2947,7 @@ if __name__ == &#39;__main__&#39;:
     
     <entry>
       <title><![CDATA[QtCreator代码格式化]]></title>
-      <url>http://longxuan.ren/2020/01/07/QtCreator-Code-Format/</url>
+      <url>https://longxuan.ren/2020/01/07/QtCreator-Code-Format/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>QtCreator支持多种格式化工具， 我使用的是clang-format，这个工具能够自动化格式C/C++/Obj-C代码，支持多种代码风格（Google, Chromium, LLVM, Mozilla, WebKit），同时也支持自定义风格 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -3145,7 +3201,7 @@ IndentWidth:     4
     
     <entry>
       <title><![CDATA[Qt使用技巧]]></title>
-      <url>http://longxuan.ren/2019/09/23/Qt-Use-Tips/</url>
+      <url>https://longxuan.ren/2019/09/23/Qt-Use-Tips/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>记录下一些使用 Qt 的小技巧<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -3234,7 +3290,7 @@ linux {
     
     <entry>
       <title><![CDATA[Qt在视频画面上绘制动态矩形]]></title>
-      <url>http://longxuan.ren/2019/08/23/Qt-Video-Drawbox/</url>
+      <url>https://longxuan.ren/2019/08/23/Qt-Video-Drawbox/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt可以通过QOpenGLWidget使用OpenGL渲染显示视频，在渲染的视频画面上，有可能需要绘制一些几何图案(识别之类的画个框框那种)。目前试了3种不同的方式在画面上绘制矩形，记录下使用过程。<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -3536,7 +3592,7 @@ int InitFilters(const char *filters_descr)
     
     <entry>
       <title><![CDATA[基于Qt的OpenGL学习（9）—— 材质、光照贴图]]></title>
-      <url>http://longxuan.ren/2019/08/15/Qt-OpenGL-LightingMaps/</url>
+      <url>https://longxuan.ren/2019/08/15/Qt-OpenGL-LightingMaps/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -4001,7 +4057,7 @@ void main()
     
     <entry>
       <title><![CDATA[基于Qt的OpenGL学习（8）—— 基础光照]]></title>
-      <url>http://longxuan.ren/2019/08/14/Qt-OpenGL-BasicLighting/</url>
+      <url>https://longxuan.ren/2019/08/14/Qt-OpenGL-BasicLighting/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -4396,7 +4452,7 @@ void main()
     
     <entry>
       <title><![CDATA[基于Qt的OpenGL学习（7）—— 颜色]]></title>
-      <url>http://longxuan.ren/2019/08/13/Qt-OpenGL-Colors/</url>
+      <url>https://longxuan.ren/2019/08/13/Qt-OpenGL-Colors/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -4765,7 +4821,7 @@ void main()
     
     <entry>
       <title><![CDATA[基于Qt的OpenGL学习（6）—— 摄像机]]></title>
-      <url>http://longxuan.ren/2019/08/12/Qt-OpenGL-Camera/</url>
+      <url>https://longxuan.ren/2019/08/12/Qt-OpenGL-Camera/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -5265,7 +5321,7 @@ void Camera::updateCameraVectors()
     
     <entry>
       <title><![CDATA[基于Qt的OpenGL学习（5）—— 坐标系统]]></title>
-      <url>http://longxuan.ren/2019/08/09/Qt-OpenGL-Coordinate-Systems/</url>
+      <url>https://longxuan.ren/2019/08/09/Qt-OpenGL-Coordinate-Systems/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -5807,7 +5863,7 @@ int main(int argc, char *argv[])
     
     <entry>
       <title><![CDATA[基于Qt的OpenGL学习（4）—— 变换]]></title>
-      <url>http://longxuan.ren/2019/08/09/Qt-OpenGL-Transform/</url>
+      <url>https://longxuan.ren/2019/08/09/Qt-OpenGL-Transform/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -6261,7 +6317,7 @@ int main(int argc, char *argv[])
     
     <entry>
       <title><![CDATA[基于Qt的OpenGL学习（3）—— 纹理]]></title>
-      <url>http://longxuan.ren/2019/08/08/Qt-OpenGL-Textures/</url>
+      <url>https://longxuan.ren/2019/08/08/Qt-OpenGL-Textures/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -6733,7 +6789,7 @@ int main(int argc, char *argv[])
     
     <entry>
       <title><![CDATA[基于Qt的OpenGL学习（2）—— 着色器]]></title>
-      <url>http://longxuan.ren/2019/08/08/Qt-OpenGL-Shader/</url>
+      <url>https://longxuan.ren/2019/08/08/Qt-OpenGL-Shader/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -7100,7 +7156,7 @@ int main(int argc, char *argv[])
     
     <entry>
       <title><![CDATA[基于Qt的OpenGL学习（1）—— Hello Triangle]]></title>
-      <url>http://longxuan.ren/2019/08/08/Qt-OpenGL-HelloTriangle/</url>
+      <url>https://longxuan.ren/2019/08/08/Qt-OpenGL-HelloTriangle/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>要学习OpenGL的话，强烈安利这个教程JoeyDeVries的<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">learnopengl</a>，这里是中文翻译好的版本。教程中使用OpenGL是通过<a href="http://www.glfw.org/download.html" target="_blank" rel="noopener">GLFW</a>这个库，而在Qt中对OpenGL封装得很好，并且和GUI以及IO相关的处理Qt更便捷，学习起来更轻松。这里就对每篇教程，在Qt在分别直接使用OpenGL的函数和Qt封装好的类以作对比。<br>教程中使用的OpenGL版本为3.3，在Qt中需要使用此版本的OpenGL只需要继承类<code>QOpenGLFunctions_3_3_Core</code>即可。如果为了在不同设备上都能用OpenGL的话，Qt提供了类<code>QOpenGLFunctions</code>，这个类包含了大部分公共的函数，可能会有个别函数不能用。 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -7408,7 +7464,7 @@ int main(int argc, char *argv[])
     
     <entry>
       <title><![CDATA[Qt5.12.4 Android环境配置]]></title>
-      <url>http://longxuan.ren/2019/07/25/Qt-Android-environment/</url>
+      <url>https://longxuan.ren/2019/07/25/Qt-Android-environment/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt5.12.4 Android环境配置，从入门到入土<em>(:з)∠)</em> <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -7466,7 +7522,7 @@ int main(int argc, char *argv[])
     
     <entry>
       <title><![CDATA[ffmpeg相关常用命令及可选参数]]></title>
-      <url>http://longxuan.ren/2019/07/05/ffmpeg-command/</url>
+      <url>https://longxuan.ren/2019/07/05/ffmpeg-command/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>ffmpeg相关常用命令及可选参数, 包括ffmpeg.exe、 ffplay.exe、 ffprobe.exe, 程序下载链接<a href="https://ffmpeg.zeranoe.com/builds/" target="_blank" rel="noopener">戳这里</a>, 选择static即可 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -8174,7 +8230,7 @@ ffprobe -v quiet -show_format -show_streams -print_format json video.mp4
     
     <entry>
       <title><![CDATA[Qt-msvc使用Protocol Buffers]]></title>
-      <url>http://longxuan.ren/2019/07/04/Qt-use-Protobuf/</url>
+      <url>https://longxuan.ren/2019/07/04/Qt-use-Protobuf/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt + VS2017 使用Protocol Buffers<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -8340,7 +8396,7 @@ int main(int argc, char *argv[])
     
     <entry>
       <title><![CDATA[ffmpeg从MP4中提取H264裸流（新旧API对比）]]></title>
-      <url>http://longxuan.ren/2019/07/03/ffmpeg-get-raw-h264/</url>
+      <url>https://longxuan.ren/2019/07/03/ffmpeg-get-raw-h264/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>ffmpeg从MP4中提取H264裸流，新旧API对比<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -8413,7 +8469,7 @@ av_bsf_free(&amp;h264bsfc);
     
     <entry>
       <title><![CDATA[Qt键盘-Android键盘映射]]></title>
-      <url>http://longxuan.ren/2019/06/17/Qt-Android-Keycode-Map/</url>
+      <url>https://longxuan.ren/2019/06/17/Qt-Android-Keycode-Map/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>在做远程控制的时候，需要在本地先捕获当前键盘事件，再将按的键发送给远端，在被控制端模拟对应的键盘事件来做出反应。要让程序知道按了键盘上的某个键，可以通过<a href="https://baike.baidu.com/item/%E9%94%AE%E7%9B%98%E6%89%AB%E6%8F%8F%E7%A0%81" target="_blank" rel="noopener">键盘扫描码</a>或者各平台的<a href="https://baike.baidu.com/item/%E8%99%9A%E6%8B%9F%E9%94%AE%E7%A0%81" target="_blank" rel="noopener">虚拟键码</a>来实现。<br>同一个键盘的键盘扫描码在不同平台结果都是相同的，但是不同厂家的键盘，以及接口不同的键盘(PS/2、USB) 扫描码都有可能不一样，为了减少硬件的影响还是将两个平台的虚拟键码做个映射。<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -9096,7 +9152,7 @@ av_bsf_free(&amp;h264bsfc);
     
     <entry>
       <title><![CDATA[Qt程序的持续集成]]></title>
-      <url>http://longxuan.ren/2019/03/02/Continuous-integration-of-Qt-programs/</url>
+      <url>https://longxuan.ren/2019/03/02/Continuous-integration-of-Qt-programs/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>持续集成用到的相关软件TeamCity，这里就不多介绍了，主要说明下自动构建、打包脚本相关内容 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -9191,7 +9247,7 @@ DESTDIR         = $$PWD/bin
     
     <entry>
       <title><![CDATA[Qt5.12.0 + VS2017 环境搭建]]></title>
-      <url>http://longxuan.ren/2018/12/30/Qt5-12-0-VS2017-environment/</url>
+      <url>https://longxuan.ren/2018/12/30/Qt5-12-0-VS2017-environment/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt5.12.0在2018年12月5日发布，虽然平时工作还是在用Qt5.7.0的mingw32版(支持XP的最后一个mingw版本？)，放假了折腾下新版本看看。<br>2019.3.15更新：Qt5.12.2在2019.3.14发布，这个版本Mingw32又装回去了_(:з)∠)__ <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -9252,7 +9308,7 @@ DESTDIR         = $$PWD/bin
     
     <entry>
       <title><![CDATA[ffmpeg解码H264裸流为YUV数据]]></title>
-      <url>http://longxuan.ren/2018/11/08/ffmpeg-H264-to-YUV/</url>
+      <url>https://longxuan.ren/2018/11/08/ffmpeg-H264-to-YUV/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>视频画面的传输中，由于原始数据过大，实际传输的数据是已经编码好的数据，一般是H264, 当客户端收到后就需要解码并显示出来。<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -9350,7 +9406,7 @@ for(int k = 0; k &lt; pFrame-&gt;height / 2; k++)
     
     <entry>
       <title><![CDATA[Github仓库过大、文件过多下载方案]]></title>
-      <url>http://longxuan.ren/2018/10/28/Github-DownLoad-Big-File/</url>
+      <url>https://longxuan.ren/2018/10/28/Github-DownLoad-Big-File/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>当项目的文件过大或者小文件数量过多的时候，直接从github下载经常因为网络问题中断，而且还没个恢复下载的选项只能重新开始相当坑了….<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -9391,7 +9447,7 @@ for(int k = 0; k &lt; pFrame-&gt;height / 2; k++)
     
     <entry>
       <title><![CDATA[Python合并C++文件]]></title>
-      <url>http://longxuan.ren/2018/09/27/PythonC-Merge/</url>
+      <url>https://longxuan.ren/2018/09/27/PythonC-Merge/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Python合并C++文件<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -9478,7 +9534,7 @@ fout_cpp.close()
     
     <entry>
       <title><![CDATA[Sublime通用插件记录]]></title>
-      <url>http://longxuan.ren/2018/08/30/Sublime-Common-Plugin/</url>
+      <url>https://longxuan.ren/2018/08/30/Sublime-Common-Plugin/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>偶尔重置系统，前端语言还经常换，就记几个常用的插件得了 (装多了快捷键冲突也懒得改)，剩下的根据需求再添加 <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -9735,7 +9791,7 @@ fout_cpp.close()
     
     <entry>
       <title><![CDATA[Qt-mingw工程、Qt-msvc工程、VS工程相互转换]]></title>
-      <url>http://longxuan.ren/2018/08/22/Qt-mingw-msvc/</url>
+      <url>https://longxuan.ren/2018/08/22/Qt-mingw-msvc/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt-mingw 工程、Qt-msvc 工程、VS 工程相互转换，包括子工程动态库、第三方库设置，windows 下就应该老老实实用 msvc，用 mingw 的话 win8 以上的新特性都没得玩<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -9835,7 +9891,7 @@ LIBS += ....//添加第三发库文件
     
     <entry>
       <title><![CDATA[ffmpeg音频采集、编码]]></title>
-      <url>http://longxuan.ren/2018/08/17/ffmpeg-Audio-Capture-Encoder/</url>
+      <url>https://longxuan.ren/2018/08/17/ffmpeg-Audio-Capture-Encoder/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>不同于视频采集一帧编码一帧，音频采集和编码之间稍微复杂一些，记录下相关内容<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -10104,7 +10160,7 @@ qDebug() &lt;&lt; &quot;swr_get_out_samples&quot;  &lt;&lt; fifo_size;
     
     <entry>
       <title><![CDATA[超详细Windows + Python + PyQt5 + Pycharm 环境搭建]]></title>
-      <url>http://longxuan.ren/2018/08/06/Windows-PyQt5-Pycharm/</url>
+      <url>https://longxuan.ren/2018/08/06/Windows-PyQt5-Pycharm/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>超详细Windows + Python + PyQt5 + Pycharm 环境搭建，走过路过不要错过~~ <a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -10206,7 +10262,7 @@ if __name__ == &#39;__main__&#39;:
     
     <entry>
       <title><![CDATA[Qt-Mingw-ffmpeg]]></title>
-      <url>http://longxuan.ren/2018/07/27/Qt-Mingw-ffmpeg/</url>
+      <url>https://longxuan.ren/2018/07/27/Qt-Mingw-ffmpeg/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>介绍下在Qt下直接调用官方下载的动态库以及自己编译成静态库等，另外关于ffmpeg怎么用算LGPL谁知道的话求告知<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -10315,7 +10371,7 @@ make install
     
     <entry>
       <title><![CDATA[Qt-NSIS]]></title>
-      <url>http://longxuan.ren/2018/07/02/Qt-NSIS/</url>
+      <url>https://longxuan.ren/2018/07/02/Qt-NSIS/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>用NSIS打包Qt程序<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -10500,7 +10556,7 @@ FunctionEnd
     
     <entry>
       <title><![CDATA[QtAddressBar]]></title>
-      <url>http://longxuan.ren/2018/07/02/QtAddressBar/</url>
+      <url>https://longxuan.ren/2018/07/02/QtAddressBar/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt仿Windows10地址栏<a id="more"></a></excerpt></p>
 <p><the rest of contents | 余下全文></the></p>
 <blockquote>
@@ -10529,7 +10585,7 @@ FunctionEnd
     
     <entry>
       <title><![CDATA[Qt-QSS]]></title>
-      <url>http://longxuan.ren/2018/05/24/Qt-QSS/</url>
+      <url>https://longxuan.ren/2018/05/24/Qt-QSS/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt常用QSS集合<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -10844,7 +10900,7 @@ QScrollBar::add-line:vertical {
     
     <entry>
       <title><![CDATA[Qt-TsFileTranslateTool]]></title>
-      <url>http://longxuan.ren/2018/04/13/Qt-TsFileTranslateTool/</url>
+      <url>https://longxuan.ren/2018/04/13/Qt-TsFileTranslateTool/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt翻译文件处理工具,根据源文本生成excel文件，可调用有道云自动翻译<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -10899,7 +10955,7 @@ QScrollBar::add-line:vertical {
     
     <entry>
       <title><![CDATA[Qt-AutoLayout]]></title>
-      <url>http://longxuan.ren/2018/02/28/Qt-AutoLayout/</url>
+      <url>https://longxuan.ren/2018/02/28/Qt-AutoLayout/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt之自动布局<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -11090,7 +11146,7 @@ QScrollBar::add-line:vertical {
     
     <entry>
       <title><![CDATA[Qt多项目管理]]></title>
-      <url>http://longxuan.ren/2018/01/29/MultiProjectManage/</url>
+      <url>https://longxuan.ren/2018/01/29/MultiProjectManage/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Qt多项目管理，pro相关设置<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -11302,7 +11358,7 @@ LIBS += \
     
     <entry>
       <title><![CDATA[Qt自定义进度条]]></title>
-      <url>http://longxuan.ren/2017/11/16/Qt-CustomProgressbar/</url>
+      <url>https://longxuan.ren/2017/11/16/Qt-CustomProgressbar/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要> Qt真的是一个绘图软件emmmmm<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -11468,7 +11524,7 @@ void AnimationProgressbar::slot_valuechange(QVariant var)
     
     <entry>
       <title><![CDATA[Qt之动画效果]]></title>
-      <url>http://longxuan.ren/2017/08/16/Qt-Animation/</url>
+      <url>https://longxuan.ren/2017/08/16/Qt-Animation/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要> Qt自带的动画框架用来做简单的控件动画效果是比较简单易用的，像是对控件的位移、缩放、不透明度这些来做动画效果。<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -11538,7 +11594,7 @@ void AnimationProgressbar::slot_valuechange(QVariant var)
     
     <entry>
       <title><![CDATA[Qt之QListView使用]]></title>
-      <url>http://longxuan.ren/2017/08/10/Qt-ListView/</url>
+      <url>https://longxuan.ren/2017/08/10/Qt-ListView/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>记录下使用QListView遇到的各种问题<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -11758,7 +11814,7 @@ m_proxyModel-&gt;setFilterRegExp(QRegExp(&quot;^[0|2]$&quot;)); //根据正则�
     
     <entry>
       <title><![CDATA[Qt自定义Dialog]]></title>
-      <url>http://longxuan.ren/2017/07/29/Qt-CustomDialog/</url>
+      <url>https://longxuan.ren/2017/07/29/Qt-CustomDialog/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>自定义Qt对话框Demo<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -11866,7 +11922,7 @@ void LoginDialog::mouseMoveEvent(QMouseEvent *event)
     
     <entry>
       <title><![CDATA[Qt环境搭建]]></title>
-      <url>http://longxuan.ren/2017/07/29/QtEnvironmentConstruction/</url>
+      <url>https://longxuan.ren/2017/07/29/QtEnvironmentConstruction/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>在工作之前也是没有想过会用到Qt，既然任务交待下来了也没辙了╰（￣ ￣）╭<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -11911,7 +11967,7 @@ void LoginDialog::mouseMoveEvent(QMouseEvent *event)
     
     <entry>
       <title><![CDATA[AE操作小技巧-曲线篇]]></title>
-      <url>http://longxuan.ren/2017/06/26/AE-Skills-Curves/</url>
+      <url>https://longxuan.ren/2017/06/26/AE-Skills-Curves/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>咸鱼正式开始工作啦～好久都没写博客了，随便来点个人笔记的内容吧<a id="more"></a></excerpt></p>
 <p><the rest of contents | 余下全文></the></p>
 <h2 id="关键帧类型"><a href="#关键帧类型" class="headerlink" title="关键帧类型"></a>关键帧类型</h2><ol>
@@ -11967,7 +12023,7 @@ void LoginDialog::mouseMoveEvent(QMouseEvent *event)
     
     <entry>
       <title><![CDATA[Hexo使用Travis CI自动化部署]]></title>
-      <url>http://longxuan.ren/2017/05/10/Hexo-Travis-CI/</url>
+      <url>https://longxuan.ren/2017/05/10/Hexo-Travis-CI/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>通过使用Travis CI自动化部署，换电脑发布文章无需安装Hexo<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -12070,7 +12126,7 @@ env:
     
     <entry>
       <title><![CDATA[bilibili区域限制解除的三种方法]]></title>
-      <url>http://longxuan.ren/2017/05/08/BilibiliAreaRestriction/</url>
+      <url>https://longxuan.ren/2017/05/08/BilibiliAreaRestriction/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>有的番由于某些原因，例如大陆禁播啦～版权被其他网站抢啦～B站的思路也是有意思，就买台湾地区的版权，大陆要看还得绕一圈<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -12102,7 +12158,7 @@ env:
     
     <entry>
       <title><![CDATA[git使用ssh多账号配置]]></title>
-      <url>http://longxuan.ren/2017/05/05/Git-ssh-MultiAccount/</url>
+      <url>https://longxuan.ren/2017/05/05/Git-ssh-MultiAccount/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>git通过ssh登录时，设置不同的登录账号<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -12170,7 +12226,7 @@ Hi Longxr! You&#39;ve successfully authenticated, but GitHub does not provide sh
     
     <entry>
       <title><![CDATA[oh-my-zsh git]]></title>
-      <url>http://longxuan.ren/2017/04/25/oh-my-zsh-git/</url>
+      <url>https://longxuan.ren/2017/04/25/oh-my-zsh-git/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>git Alias<a id="more"></a></excerpt></p>
 <p><the rest of contents | 余下全文></the></p>
 <blockquote>
@@ -12661,7 +12717,7 @@ Hi Longxr! You&#39;ve successfully authenticated, but GitHub does not provide sh
     
     <entry>
       <title><![CDATA[Sublime插件React-Native篇]]></title>
-      <url>http://longxuan.ren/2017/04/24/Sublime-React-Native/</url>
+      <url>https://longxuan.ren/2017/04/24/Sublime-React-Native/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>作为一个秒开的编辑器，用了就不想换呀，插件库也很强大，稍作配置就可以用了<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -12971,7 +13027,7 @@ npm install -g eslint-plugin-react
     
     <entry>
       <title><![CDATA[Python学习笔记]]></title>
-      <url>http://longxuan.ren/2017/04/21/PythonLearn/</url>
+      <url>https://longxuan.ren/2017/04/21/PythonLearn/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>教练，我要写爬虫！<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -13234,7 +13290,7 @@ print(&#39;END&#39;)
     
     <entry>
       <title><![CDATA[AE蛋疼插件问题记录]]></title>
-      <url>http://longxuan.ren/2017/04/20/AE-Plugns-Notes/</url>
+      <url>https://longxuan.ren/2017/04/20/AE-Plugns-Notes/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>重装插件总是一件蛋疼的事情，下次做个快照好了…<a id="more"></a></excerpt></p>
 <p><the rest of contents | 余下全文></the></p>
 <h2 id="AE插件的安装路径"><a href="#AE插件的安装路径" class="headerlink" title="AE插件的安装路径"></a>AE插件的安装路径</h2><blockquote>
@@ -13271,7 +13327,7 @@ print(&#39;END&#39;)
     
     <entry>
       <title><![CDATA[Mac操作小技巧]]></title>
-      <url>http://longxuan.ren/2017/04/13/Mac-Skills/</url>
+      <url>https://longxuan.ren/2017/04/13/Mac-Skills/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>常用快捷键<br>文件用Sublime打开<br>Finder与终端交互<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
@@ -13326,7 +13382,7 @@ print(&#39;END&#39;)
     
     <entry>
       <title><![CDATA[Hexo博客搭建中的坑]]></title>
-      <url>http://longxuan.ren/2017/04/11/Hexo-Notes/</url>
+      <url>https://longxuan.ren/2017/04/11/Hexo-Notes/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>记录坑爹瞬间<a id="more"></a></excerpt></p>
 <p><the rest of contents | 余下全文></the></p>
 <h3 id="问题：Travis-Ci自动构建图标build-status-unknown"><a href="#问题：Travis-Ci自动构建图标build-status-unknown" class="headerlink" title="问题：Travis-Ci自动构建图标build status unknown"></a>问题：Travis-Ci自动构建图标build status unknown</h3><p>解决：原因是构建的分支不是master分支，默认显示缺省分支master的状态，修改图标链接<code>svg?branch=master</code>为<code>svg?branch=blog</code></p>
@@ -13356,7 +13412,7 @@ print(&#39;END&#39;)
     
     <entry>
       <title><![CDATA[Hexo个人博客搭建]]></title>
-      <url>http://longxuan.ren/2017/04/07/Hexo-Blog-Construction/</url>
+      <url>https://longxuan.ren/2017/04/07/Hexo-Blog-Construction/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>欢迎大家访问我的<a href="https://longxuan.ren">博客</a>，虽然一般都是简书和博客同步更新啦~~懒得搞图床，把简书当图床还挺好用的233333<a id="more"></a></excerpt></p>
 <the rest of contents | 余下全文>
 
