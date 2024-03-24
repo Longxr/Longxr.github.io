@@ -4,6 +4,176 @@
   
     
     <entry>
+      <title><![CDATA[docker 常用命令]]></title>
+      <url>https://longxuan.ren/2024/03/25/DockerCommand/</url>
+      <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>记录下常用的 docker 命令 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<h2 id="底层技术支持"><a href="#底层技术支持" class="headerlink" title="底层技术支持"></a>底层技术支持</h2><ul>
+<li>Namespaces: 做隔离 pid，net，ipc，mnt，uts</li>
+<li>Control groups: 做资源限制</li>
+<li>Union file systems: Container 和 image 的分层</li>
+</ul>
+<h2 id="Docker-使用"><a href="#Docker-使用" class="headerlink" title="Docker 使用"></a>Docker 使用</h2><h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><pre><code>sudo systemctl start docker                               //启动docker
+docker pull ${CONTAINER NAME}                             //拉取镜像
+docker images                                             //查看本地所有镜像
+docker ps                                                 //查看所有正在运行的容器，加-q返回id
+docker ps -a                                              //查看所有容器，加-q返回id
+docker rmi ${IMAGE NAME/ID}                               //删除镜像
+docker rm ${CONTAINER NAME/ID}                            //删除容器
+docker save ${IMAGE NAME} &gt; ${FILE NAME}.tar              //将镜像保存成文件
+docker load &lt; ${FILE NAME}.tar                            //从文件加载镜像
+docker start ${CONTAINER NAME/ID}                         //运行一个以前运行过的容器
+docker stop ${CONTAINER NAME/ID}                          //停止一个正在运行的容器
+docker logs ${CONTAINER NAME/ID}                          //显示运行容器的日志
+docker run...                                             //运行一个容器
+    --name ${container name}                              //设置容器名称
+    -it                                                   //启动交互式容器, 默认打开一个终端，后面还可以写终端命令，会替换Dockerfile的CMD
+    -p ${host port}:${container port}                     //指定端口映射
+    -P                                                    //随机端口映射，将容器暴露的端口(EXPOSE) 随机映射到宿主机的一个端口，访问宿主机端口就相当于访问容器端口
+    -e ${env name}=${env value}                           //添加环境变量
+    -d                                                    //后台运行，守护式容器
+    -v ${host folder path}:${container folder path}       //将主机目录挂在到容器内，类似软链接文件是同步的，$(pwd)代表当前目录
+</code></pre><h3 id="高级命令"><a href="#高级命令" class="headerlink" title="高级命令"></a>高级命令</h3><pre><code># Advance use
+docker inspect ${CONTAINER NAME/ID}                       //查看容器信息
+docker ps -f &quot;status=exited&quot;                              //显示所有退出的容器
+docker ps -a -q                                           //显示所有容器id
+docker ps -f &quot;status=exited&quot; -q                           //显示所有退出容器的id
+docker restart $(docker ps -q)                            //重启所有正在运行的容器
+docker stop $(docker ps -a -q)                            //停止所有容器
+docker rm $(docker ps -aq)                                //删除所有容器
+docker rm $(docker ps -f &quot;status=exited&quot; -q)              //删除所有退出的容器
+docker rm $(docker stop $(docker ps -a -q))               //停止并删除所有容器
+docker start $(docker ps -a -q)                           //启动所有容器
+docker rmi $(docker images -a -q)                         //删除所有镜像
+docker exec -it ${CONTAINER NAME/ID} /bin/bash            //进入容器内
+docker exec -it ${CONTAINER NAME/ID} ping ${CONTAINER NAME/ID} //一个容器ping另外一个容器
+docker exec -it ${CONTAINER NAME/ID} ip a                 //查看容器网络接口
+docker top ${CONTAINER NAME/ID}                           //显示一个容器的top信息
+docker stats                                              //显示容器统计信息(正在运行)
+docker stats -a                                           //显示所有容器的统计信息(包括没有运行的)
+docker stats -a --no-stream                               //显示所有容器的统计信息(包括没有运行的) ，只显示一次
+docker stats --no-stream | sort -k8 -h                    //统计容器信息并以使用流量作为倒序
+docker system
+docker system df                                          //显示硬盘占用
+docker system events                                      //显示容器的实时事件
+docker system info                                        //显示系统信息
+docker system prune                                       //清理文件，清除所有停止的容器，没有被用的nerwork等
+</code></pre><h2 id="使用技巧"><a href="#使用技巧" class="headerlink" title="使用技巧"></a>使用技巧</h2><h3 id="免除-sudo-输入"><a href="#免除-sudo-输入" class="headerlink" title="免除 sudo 输入"></a>免除 sudo 输入</h3><p>将当前用户添加到 docker 用户组，再重新打开终端即可</p>
+<pre><code>sudo groupadd docker                                      //装了docker就默认创建了docker用户组了，可以不用这一步
+sudo gpasswd -a longxr docker
+systemctl restart docker
+newgrp - docker                                           //切换会话或者重启机器
+</code></pre><h3 id="交互式容器"><a href="#交互式容器" class="headerlink" title="交互式容器"></a>交互式容器</h3><h4 id="进入"><a href="#进入" class="headerlink" title="进入"></a>进入</h4><p>docker -it ${CONTAINER_NAME}</p>
+<h4 id="退出"><a href="#退出" class="headerlink" title="退出"></a>退出</h4><ol>
+<li>输入 exit 回车，容器会停止运行</li>
+<li>ctrl+P+Q (大写模式)，容器不退出</li>
+</ol>
+<h3 id="进入守护式容器"><a href="#进入守护式容器" class="headerlink" title="进入守护式容器"></a>进入守护式容器</h3><ol>
+<li>docker attach ${CONTAINER_NAME}，直接进入容器启动命令的终端，不会启动新进程</li>
+<li>docker exec -it ${CONTAINER_NAME} {command}, 在容器终端打开新终端，并且可以启动新进程</li>
+</ol>
+<h3 id="主机与容器间的文件拷贝"><a href="#主机与容器间的文件拷贝" class="headerlink" title="主机与容器间的文件拷贝"></a>主机与容器间的文件拷贝</h3><pre><code>docker cp ${CONTAINER_NAME}:{CONTAINER_PATH} {HOST_PATH}，容器到主机
+docker cp  {HOST_PATH} ${CONTAINER_NAME}:{CONTAINER_PATH}，主机到容器
+</code></pre><h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><h3 id="构建自己的-Docker-镜像"><a href="#构建自己的-Docker-镜像" class="headerlink" title="构建自己的 Docker 镜像"></a>构建自己的 Docker 镜像</h3><pre><code>//通过container来构建image，不推荐
+docker container commit
+docker image build
+
+//通过Dockerfile生成，Dockfile在当前文件夹下，最后路径就写了个.
+docker build -t longxr/centos-vim-new .
+</code></pre><h3 id="Dockerfile-语法"><a href="#Dockerfile-语法" class="headerlink" title="Dockerfile 语法"></a>Dockerfile 语法</h3><pre><code>FROM scratch                                                //制作base image
+FROM centos                                                 //使用 centos base image
+
+LABEL maintainer=&quot;test@a.com&quot;                               //添加描述
+LABEL version=&quot;1.0&quot;
+LABEL description=&quot;This is description&quot;
+
+WORKDIR /test                                               //设置工作目录，没有则创建，尽量用绝对目录，不要使用RUN cd
+ADD hello /                                                 //添加hello文件
+ADD test.tar.gz /                                           //添加文件到根目录并解压缩
+WORKDIR /root
+COPY hello test/                                            //将hello添加到/root/test/hello
+
+RUN yum install wget                                        //添加远程文件使用curl、wget
+RUN wget -O redis.tar.gz &quot;http://download.redis.io/releases/redis-5.0.3.tar.gz&quot;
+
+ENV MYSQL_VERSION 5.6                                       //设置常量，增加可维护性
+RUN apt-get install -y mysql-server=&quot;${MYSQL_VERSION}&quot; \
+&amp;&amp; rm -rf /var/lib/apt/lists/*
+
+//shell格式
+RUN yum update &amp;&amp; yum install -y vim                        //执行命令并创建新的Image Layer，所以命令尽量合成一行写
+CMD  echo &quot;hello docker&quot;                                    //设置容器启动后默认执行的命令和参数
+ENTRYPOINT &quot;hello docker&quot;                                   //设置容器启动时运行的命令，让容器以服务的形式运行
+
+//exec格式
+RUN [&quot;apt-get&quot;, &quot;install&quot;, &quot;-y&quot;, &quot;vim&quot;]
+CMD [&quot;bin/bash&quot;, &quot;-c&quot;, &quot;echo hello docker&quot;]                 //如果docker run 指定了其他命令则忽略，多个CMD只有最后的会执行
+ENTRYPOINT [&quot;bin/bash&quot;, &quot;-c&quot;, &quot;echo hello docker&quot;]          //不会被忽略，一定执行
+
+EXPOSE 5000                                                 //暴露5000端口给外部访问
+</code></pre><h2 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker-compose"></a>docker-compose</h2><h3 id="常用命令-1"><a href="#常用命令-1" class="headerlink" title="常用命令"></a>常用命令</h3><pre><code>docker-compose up -d                                        //根据docker-compose.yml来创建容器、network、volume并启动，需要看日志的话就不要后台运行 (去掉-d)
+                       --scale ${CONTAINER NAME}=3  //同时创建多个容器
+docker-compose down                                         //停止并删除up所创建的内容（本地的image不会删除）
+docker-compose  start                                       //启动容器
+docker-compose stop                                         //停止容器
+docker-compose ps                                           //查看当前运行的容器
+docker-compose exec mysql bash                              //进入容器中
+
+</code></pre><h2 id="docker-swarm"><a href="#docker-swarm" class="headerlink" title="docker-swarm"></a>docker-swarm</h2><h3 id="概念相关"><a href="#概念相关" class="headerlink" title="概念相关"></a>概念相关</h3><ul>
+<li>node: 部署了 docker engine 的 host 实例，既可以是物理主机，也可以是虚拟主机。</li>
+<li>task: 在具体某个 docker container 中执行的具体命令，是 Swarm 中的最小的调度单位。</li>
+<li>service: 是指一组任务的集合，服务定义了任务的属性。</li>
+<li>manager: 负责维护 docker cluster 的 docker engine，通常有多个 manager 在集群中，manager 之间通过 raft 协议进行状态同步，当然 manager 角色 engine 所在 host 也参与负载调度。</li>
+<li>worker: 参与容器集群负载调度，仅用于承载 tasks。</li>
+</ul>
+<h3 id="集群创建"><a href="#集群创建" class="headerlink" title="集群创建"></a>集群创建</h3><p>仅做记录，平时群晖最多到 docker-compose 创建项目就够了</p>
+<h4 id="本地虚拟机"><a href="#本地虚拟机" class="headerlink" title="本地虚拟机"></a>本地虚拟机</h4><pre><code>docker-machine create manger1
+docker-machine create worker1
+docker-machine create worker2
+
+docker-machine ssh manger1
+docker swarm --init --advertise-addr &lt;manger1-ip&gt;         // 如果是安装包装的docker，直接docker swarm --init即可
+docker swarm join-token worker                            //加入worker节点需要输入的命令，在init的时候也会打印出来
+docker swarm join-token manager                           //加入manager节点需要输入的命令
+exit
+
+docker-machine ssh manager2                               //添加manager
+docker swarm join --token xxx                             //这里直接粘贴上面的加入manager命令
+exit
+
+docker-machine ssh manager3                               //推荐3个或5个manager节点(必须是奇数)来实现高可用。有半数以上manager可用，swarm就可以继续工作
+docker swarm join --token xxx                             //这里直接粘贴上面的加入manager命令
+exit
+
+docker-machine ssh worker1                                //添加worker
+docker swarm join --token xxx                             //这里直接粘贴上面的加入worker命令
+exit
+
+docker-machine ssh worker2
+docker swarm join-token &lt;token&gt; &lt;ip&gt;:&lt;port&gt;
+exit
+
+docker-machine ssh manger1
+docker node ls                                            //进入manager节点，可以查看集群node状态
+</code></pre></the>]]></content>
+      
+        <categories>
+            
+            <category> docker </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> docker </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[NAS 域名访问和 Nginx 反代理]]></title>
       <url>https://longxuan.ren/2024/03/03/NASDomainAndNginx/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>有公网 IP 的话可以设置通过域名访问家里的 NAS，另外 NAS 上服务多了端口记不过来，可以给不同的服务设置对应的子域名 <a id="more"></a></excerpt></p>
