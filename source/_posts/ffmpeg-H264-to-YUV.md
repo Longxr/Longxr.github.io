@@ -65,7 +65,7 @@ while(0 == avcodec_receive_frame(pCodecContext, pFrame)){
 ### YUV数据格式
 RGB来表示颜色大家都不陌生，R(红色)、G(绿色)、B(蓝色)，通过这三基色就可以组合成其他需要的颜色。YUV也是一种表示颜色的方式，其中Y(亮度)、U(色度)、V(浓度)。YUV根据采样方式的不同又有YUV444、YUV422、YUV420等多种格式。这里主要介绍YUV420采样格式。
 
-![YUV格式](https://upload-images.jianshu.io/upload_images/2756183-2b22ff580f36ce8b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![YUV格式](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_01.jpg)
 
 #### YUV420
 YUV420格式是指，每个像素都保留一个Y分量 (亮度全抽样)，而在水平方向上，不是每行都取U和V分量，而是一行只取U分量，接着一行就只取V分量，以此重复(即4:2:0, 4:0:2, 4:2:0, 4:0:2 .......)。所以420不是指没有V，而是指一行采样只取U，另一行采样只取V。从4x4矩阵列来看，每4个矩阵点Y区域中，只有一个U和V，所以它们的比值是4:1。
@@ -84,9 +84,9 @@ YUV420格式是指，每个像素都保留一个Y分量 (亮度全抽样)，而�
 #### YUV420P
 采样好了数据，在存储YUV数据的时候，对于YUV不同的存储方式又有YUV420P(YV12)、YUV420SP(NV12)等分类。
 
-![yv12](https://upload-images.jianshu.io/upload_images/2756183-1e5880d057018191.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![yv12](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_02.png)
 
-![nv12](https://upload-images.jianshu.io/upload_images/2756183-f15042bcf5cd5856.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![nv12](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/ffmpeg-H264-to-YUV_03.png)
 
 从图上可以看出，YUV420P和NV12的区别就是一个是UV交替存储，一个是先存U再存V。这个在解码的时候就看你解码格式指定的是哪个了，默认解码是YUV420P。
 
