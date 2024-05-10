@@ -57,6 +57,8 @@ Host longxr-bitbucket
     IdentifyFile ~/.ssh/bitbucket_rsa 
 ```
 
+> win10直接~/.ssh/github_rsa 就行，~是/c/Users/,没有冒号，也不用反斜杠....win7过来被坑人士
+
 ## 登录测试 
 ```
 ssh -T git@github.com 
