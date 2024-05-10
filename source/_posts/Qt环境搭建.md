@@ -1,9 +1,9 @@
 ---
 title: Qt环境搭建
 categories:
-  - Qt
+  - 环境搭建
 tags:
-  - QDialog
+  - Qt
 date: 2017-07-29 16:21:02
 ---
 
