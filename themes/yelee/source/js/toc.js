@@ -15,7 +15,7 @@ define(function (){
             else {
                 $("#tocButton").attr("value", valueShow);
                 $("#toc").slideUp(350);
-                $(".switch-btn, .switch-area").fadeIn(500);
+                $(".switch-btn, .switch-area, .beian").fadeIn(500);
             }
         })
     }()
