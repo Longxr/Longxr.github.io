@@ -30,7 +30,7 @@ date: 2017-05-08 09:39:36
 
 ![网站截图](http://upload-images.jianshu.io/upload_images/2756183-a5a25faf382c03a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-方法三：挂VPN
+## 方法三：挂VPN
 这招虽然最稳，但是比较蛋疼的是得挂台湾的VPN，偏偏我用的SS没有台湾节点，墙都翻出去了，还看不到，淡淡的忧伤啊QAQ，所以要挂VPN的朋友注意看有没有台湾节点哈（从弹幕截图来看，倒是都在推荐天行和green这俩VPN，想试试的可以去看看）
 
 ![视频截图](http://upload-images.jianshu.io/upload_images/2756183-52538cb938130b81.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
