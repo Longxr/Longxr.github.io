@@ -31,6 +31,7 @@ Finder与终端交互<!-- more -->
 #### 全屏截图：Command+Shift+3
 #### 指定区域截图：Command+Shift+4
 #### 指定窗口截图：Command+Shift+4，空格+鼠标单击指定窗口
+#### 剪切移动文件：Command+C 拷贝文件，Command+Option+V 剪切文件
 
 ## 文件用Sublime打开
 > 经常面对各种格式的文本文件，分别设置打开方式太麻烦，统一用Sublime打开，添加到右键菜单功能
