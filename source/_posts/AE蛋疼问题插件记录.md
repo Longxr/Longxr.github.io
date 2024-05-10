@@ -10,7 +10,9 @@ date: 2017-04-20 11:33:36
 <Excerpt in index | 摘要> 
 重装插件总是一件蛋疼的事情，下次做个快照好了...<!-- more -->
 <The rest of contents | 余下全文>
-## AE插件的安装路径：(提示什么特效副本副本重复的时候三个路径找找删掉不要的版本)
+## AE插件的安装路径
+> 提示什么特效副本副本重复的时候三个路径找找删掉不要的版本
+
 - 免安装插件：X:\Adobe\Adobe After Effects CC\Support Files\Plug-ins(有时候在前一个目录)
 - 需安装插件：C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore
 - C:\Program Files\Adobe\Adobe After Effects CC\Support Files\Plug-ins
