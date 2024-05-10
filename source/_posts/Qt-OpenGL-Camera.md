@@ -16,7 +16,7 @@ date: 2019-08-12 17:27:11
 ## 对比说明
 ### 教程地址
 [原教程地址](https://learnopengl-cn.github.io/01%20Getting%20started/09%20Camera)，相关知识可以点击链接学习。
-[我的工程地址](https://github.com/Longxr/QOpenGLWidgetTest)，每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout fb1ce99`，喜欢就点个Star吧~
+[我的工程地址](https://github.com/Longxr/LearnopenglQt)，每篇教程一个commit，可以切换着看，查看本篇代码 `git checkout v1.6`，喜欢就点个Star吧~
 
 ### 不同点 (仅列出新增)
 1. Qt中封装的OpenGL相关的类之前基本都对比完了，其余部分基本还是用glxxx()的函数，后面可能就只在QtFunctionWidget.cpp中修改了。
