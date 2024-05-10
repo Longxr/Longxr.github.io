@@ -139,7 +139,6 @@ FunctionEnd
 
 3. 检测是否安装过旧版本，有的话提示卸载：
 ```
-...
 var /GLOBAL UNINSTALL_PROG
 var /GLOBAL OLD_VER
 var /GLOBAL OLD_PATH
@@ -161,7 +160,7 @@ UninstallOld:
   RMDir $OLD_PATH
 
 FinishInit:
-...
+
 ```
 
 4. 安装包多语言：
