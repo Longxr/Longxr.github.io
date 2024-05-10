@@ -4,7 +4,7 @@ comments: false
 permalink: /404
 ---
 
-## 很抱歉，您所访问的地址并不存在
+## 很抱歉，您所访问的地址并不存在呢
 
 <style type="text/css">
 	.article-header {
