@@ -1,5 +1,5 @@
 ---
-title: ffmpeg-Audio-Capture-Encoder
+title: ffmpeg音频采集、编码
 categories:
   - Qt
 tags:
