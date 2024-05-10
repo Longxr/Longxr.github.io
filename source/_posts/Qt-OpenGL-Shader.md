@@ -23,7 +23,7 @@ date: 2019-08-08 15:46:22
 2. 原教程是一个while循环不停重绘，Qt中的`paintGL`则是在需要时才重绘，因此采用QTimer定时器触发重绘刷新。
 
 ## 运行结果
-![运行结果](https://upload-images.jianshu.io/upload_images/2756183-121cf4606a7e32c0.gif?imageMogr2/auto-orient/strip)
+![运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-Shader_01.gif)
 
 ## 使用OpenGL函数版
 ### CoreFunctionWidget.h

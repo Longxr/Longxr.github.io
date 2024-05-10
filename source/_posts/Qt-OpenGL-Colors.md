@@ -22,7 +22,7 @@ date: 2019-08-13 13:23:33
 1. 之前程序只有一个shaderProgram、VAO，直接用的shaderProgram的`setAttributeBuffer()`函数绑定VBO数据；现在有两个shaderProgram、VAO，不确定后面shaderProgram和VAO还是不是一对一的关系，还是改成默认的`glVertexAttribPointer()`函数了，两个都能用。（感觉之前的好像VAO没啥用啊，shaderprogram可以直接去绑定VBO）
 
 ## 运行结果
-![运行结果](https://upload-images.jianshu.io/upload_images/2756183-7742167b01f93803.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-Colors_01.png)
 
 ## 修改的文件
 ### QtFunctionWidget.h

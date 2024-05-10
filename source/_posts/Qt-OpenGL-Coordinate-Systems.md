@@ -23,7 +23,7 @@ date: 2019-08-09 13:36:23
 2. 原教程最中间的矩形不转是因为教程里循环赋值角度第0个时：angle = 0 * value。
 
 ## 运行结果
-![运行结果](https://upload-images.jianshu.io/upload_images/2756183-c345631d1ab44a2f.gif?imageMogr2/auto-orient/strip)
+![运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-Coordinate-Systems_01.gif)
 
 ## 使用OpenGL函数版
 ### CoreFunctionWidget.h

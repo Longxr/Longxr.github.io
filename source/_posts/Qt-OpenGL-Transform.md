@@ -22,7 +22,7 @@ date: 2019-08-09 13:26:11
 1. 原教程使用GLM来进行矩阵变换，Qt中有对应的QMatrix4x4处理4维矩阵。
 
 ## 运行结果
-![运行结果](https://upload-images.jianshu.io/upload_images/2756183-4988c3226d7440fd.gif?imageMogr2/auto-orient/strip)
+![运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-Transform_01.gif)
 
 ## 使用OpenGL函数版
 ### CoreFunctionWidget.h

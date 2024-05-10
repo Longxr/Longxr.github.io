@@ -22,7 +22,7 @@ date: 2019-08-08 15:47:23
 1. Qt提供了`QOpenGLTexture`类来处理OpenGL中的Texture，并且创建的时候可以直接传递一个QImage给纹理对象，如果使用gl相关函数还要读取图片数据的data再设置，比较麻烦。
 
 ## 运行结果
-![运行结果](https://upload-images.jianshu.io/upload_images/2756183-5d3f7bb2cd996782.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-Textures_01.png)
 
 ## 使用OpenGL函数版
 ### CoreFunctionWidget.h

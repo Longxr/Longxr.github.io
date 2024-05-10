@@ -17,7 +17,7 @@ date: 2018-07-27 08:38:53
 
 #### 官网下载
 如果没有特殊要求，可以直接在ffmpeg[官网下载](https://ffmpeg.zeranoe.com/builds/)编译好的库文件直接使用，自己编译还是相当麻烦的QAQ。选择自己操作系统相关的版本，下载shared和dev两个压缩包：
-![官网下载](https://upload-images.jianshu.io/upload_images/2756183-de294d5649275595.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![官网下载](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Mingw-ffmpeg_01.png)
 
 Static包含的是静态编译的ffmpeg.exe，Shared包含的是ffmpeg的动态库及ffmpeg.exe,Dev中包含的是加入到工程中的lib（使用的时候还是要添加动态库才能运行）。
 
@@ -29,7 +29,7 @@ Static包含的是静态编译的ffmpeg.exe，Shared包含的是ffmpeg的动态�
 ```
 
 在要使用的文件中引用ffmpeg相关的头文件：
-![引用头文件](https://upload-images.jianshu.io/upload_images/2756183-7219099117b5dee4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![引用头文件](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Mingw-ffmpeg_02.png)
 
 #### 可能的问题
 - 最新的ffmpeg有把libfmx (使用intel的qsv硬编硬解，下面有说明) 编译进去，但是好像没有fmx的头文件，会报错。可以去[这里](https://github.com/lu-zero/mfx_dispatch/tree/master/mfx)下下来，放到ffmpeg的include目录下。
@@ -38,7 +38,7 @@ Static包含的是静态编译的ffmpeg.exe，Shared包含的是ffmpeg的动态�
 
 ### 自定义编译
 官网下载的ffmpeg动态库编译的configure里有一条是`--enable gpl`，我们用的时候是直接用的动态库，我也不确定这算不算LGPL，实在没辙的话只能自己编译了。
-![license相关](https://upload-images.jianshu.io/upload_images/2756183-87c6a43dc855ba41.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![license相关](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Mingw-ffmpeg_03.png)
 
 #### IDE安装
 本人安装的是Qt5.7.0的mingw32bit，[下载地址戳我](http://download.qt.io/archive/qt/5.7/5.7.0/)
@@ -46,10 +46,10 @@ Static包含的是静态编译的ffmpeg.exe，Shared包含的是ffmpeg的动态�
 ### msys2安装
 因为要编译32bit的，下载选择msys2的32位版本，[下载地址戳我](http://www.msys2.org/)
 安装完成后找到msys2安装目录下的msys2_shell.cmd，将其中一行的注释去掉：
-![msys2_shell.cmd修改](https://upload-images.jianshu.io/upload_images/2756183-b5e7ed4fe9651426.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![msys2_shell.cmd修改](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Mingw-ffmpeg_04.png)
 
 打开Qt的命令行工具，将目录切换到msys2的安装目录下，输入：`msys2_shell.cmd -mingw32`
-![命令行输入](https://upload-images.jianshu.io/upload_images/2756183-9c2a7ab457c96085.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![命令行输入](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Mingw-ffmpeg_05.png)
 
 msys2就打开了，下一步是安装相关的软件包。
 
@@ -134,11 +134,11 @@ make install
 
 编译好后的ffmpeg在/usr/local/ffmpeg，就是configure第一行指定的位置。
 最后贴下各种文件的目录：
-![源码下载路径](https://upload-images.jianshu.io/upload_images/2756183-b897b5003b4c4377.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![源码下载路径](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Mingw-ffmpeg_06.png)
 
-![ffmpeg添加的lib路径](https://upload-images.jianshu.io/upload_images/2756183-69ae2370ca4b5e0f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![ffmpeg添加的lib路径](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Mingw-ffmpeg_07.png)
 
-![ffmpeg 添加的include路径](https://upload-images.jianshu.io/upload_images/2756183-bdb6f397407b4729.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![ffmpeg 添加的include路径](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-Mingw-ffmpeg_08.png)
 
 ### 可能的问题
 * 测试编译，没有把--enable gpl去掉，不确定去掉能不能编译哈，毕竟....x264是GPL的。

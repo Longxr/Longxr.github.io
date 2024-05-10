@@ -23,7 +23,7 @@ date: 2019-08-12 17:27:11
 2. 我的更新是通过QTimer调用update()实现的，就没有计算教程中的时间差了。
 
 ## 运行结果
-![运行结果](https://upload-images.jianshu.io/upload_images/2756183-50b4b01826375315.gif?imageMogr2/auto-orient/strip)
+![运行结果](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-OpenGL-Camera_01.gif)
 
 
 ## 修改的文件

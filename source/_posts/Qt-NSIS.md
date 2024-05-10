@@ -194,9 +194,9 @@ FunctionEnd
 5. 界面美化
 如果制作的安装包不需要多语言的设置的话，可以通过一些别人写好的插件进行界面美化，如：[nsNiuniuSkin](http://www.ggniu.cn/download.htm#)
 下载下来就带了2个demo，改改就能自己用了，比较方便。Demo图示：
-![Demo1.png](https://upload-images.jianshu.io/upload_images/2756183-820580357046cb8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Demo1.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-NSIS_01.png)
 
-![Demo2.png](https://upload-images.jianshu.io/upload_images/2756183-0492847b8884378a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Demo2.png](https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/Qt-NSIS_02.png)
 
 
 
