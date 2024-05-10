@@ -14,7 +14,7 @@ menu:
   关于我: /about/
 
 # Link to your avatar | 填写头像地址
-avatar: /img/avatar.png
+avatar: /img/avatar.jpg
 
 # Small icon of Your site | 站点小图标地址
 favicon: /favicon.png
@@ -31,7 +31,7 @@ favicon: /favicon.png
 root_url:
 
 # Year of Site Creation | 网站成立年份
-since: 2016
+since: 2017
 
 # Social info. Bar | 社交信息展示
 ## Keep "mailto:" in Email | 设置 Email 时保留 "mailto:"
@@ -40,11 +40,11 @@ since: 2016
 ## https://github.com/hexojs/hexo-generator-feed
 
 subnav:
-  Email: "mailto:123@123.com"
-  #新浪微博: "sina weibo"
-  GitHub: "#"
+  Email: "mailto:longxuanren@gmail.com"
+  新浪微博: "http://weibo.com/jiu0wu/"
+  GitHub: "https://github.com/Longxr"
   #V2EX: "#"
-  RSS: "/atom.xml"
+  #RSS: "/atom.xml"
   #知乎: "zhihu"
   #豆瓣: "douban"
   #简书: "jianshu"
@@ -54,7 +54,7 @@ subnav:
   #Coding: ""
   #网易云音乐: "netease"
   #虾米音乐: "xiami"
-  #bilibili: ""
+  bilibili: "http://space.bilibili.com/2572438/#!/"
   #AcFun: ""
   #niconico: ""
   #Quora: ""
@@ -62,7 +62,7 @@ subnav:
   #Google: "#"
   #Twitter: "#"
   #LinkedIn: "#"
-  #QQ: "#"
+  QQ: "tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com"
   #微信: "Wechat"
   #PayPal: "#"
   #StackOverflow: "#"
@@ -81,24 +81,24 @@ subnav:
 # Chose ONE as your comment system and keep others disable.
 # 选一个作为网站评论系统，其他保持禁用。
 
-preload_comment: true
+preload_comment: false
 ## false: 当点击评论条等区域时再加载评论模块
 ## false: load comment's section until u click/hover on the bar/icon
 
-show_count: false
+show_count: true
 ## 是否在主页文章标题旁显示评论数（多说、Disqus）
 ## Add comment count after article title
 
 disqus:
-  on: true
+  #on: true
   shortname:
   # https://help.disqus.com/customer/en/portal/articles/466208-what-s-a-shortname-
   # It is unnecessary to enable disqus here if
   # you have set "disqus_shortname" in your site's "_config.yml"
 
 duoshuo:
-  #on: true
-  domain:
+  on: true
+  domain: longxr
   # 是否开启多说评论，http://duoshuo.com/create-site/
   # 使用上面网址登陆你的多说，然后创建站点，在 domain 中填入你设定的域名前半部分
   # http://<要填的部分>.duoshuo.com (domain只填上<>里的内容，不要填整个网址)
@@ -166,7 +166,7 @@ animate: true
 
 # Load jQuery UI to style tooltips
 # 工具提示框样式美化
-jquery_ui: false
+jquery_ui: true
 
 # Max width of right cloumn | 限制右侧内容的宽带
 limit_article_width:
@@ -187,7 +187,7 @@ friends:
 #friends: false
 
 #是否开启“关于我”。
-aboutme: 专注于前端
+aboutme: 撸章，做视频，捏小人，码代码...
 #aboutme: false
 
 # Open link in a new tab | 是否在新窗口打开链接
@@ -219,7 +219,7 @@ ie_updater:
 
 # Tab Title Change | 标签页标题切换
 tab_title_change:
-  on: false
+  on: true
   left_tab_title: '(つェ⊂) 我藏好了哦~ '
   return_tab_title: '(*´∇｀*) 被你发现啦~ '
 
@@ -230,7 +230,7 @@ tab_title_change:
 ## Insatall below plugin to take effect | 使用搜索需先安装对应插件
 ## https://github.com/PaicHyperionDev/hexo-generator-search
 search:
-  #on: true
+  on: true
   onload: false
   ## true: get search.xml file when the page has loaded
   ## false: get the file when search box gets focus

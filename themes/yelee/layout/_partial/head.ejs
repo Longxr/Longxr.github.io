@@ -9,10 +9,10 @@
 <meta name="author" content="<%= config.author %>" />
 
 <% if (is_home()){ %>
-    <% if (theme.baidu_site) { %> 
+    <% if (theme.baidu_site) { %>
         <meta name="baidu-site-verification" content="<%- theme.baidu_site %>" />
     <% } %>
-    <% if (theme.google_site) { %> 
+    <% if (theme.google_site) { %>
         <meta name="google-site-verification" content="<%- theme.google_site %>" />
     <% } %>
 <% } %>
@@ -91,6 +91,16 @@ if ( is_archive() ) {
     <script> yiliaConfig.jquery_ui = [false]; </script>
 <% } %>
 
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
 <% if (theme.root_url){ %>
     <script> yiliaConfig.rootUrl = <%=theme.root_url%>; </script>
 <% } else {%>
@@ -107,7 +117,7 @@ if ( is_archive() ) {
         (function() {
             var hm = document.createElement("script");
             hm.src = "//hm.baidu.com/hm.js?<%=theme.baidu_tongji%>";
-            var s = document.getElementsByTagName("script")[0]; 
+            var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();
     </script>
