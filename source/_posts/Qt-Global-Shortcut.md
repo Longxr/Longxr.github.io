@@ -67,7 +67,7 @@ bool MyWinEventFilter::nativeEventFilter(const QByteArray &eventType, void *mess
 
 # 热键的注册
 
-上面处理好了事件发生后的步骤，还需要告诉系统什么哪些算是热键。注册用到的原生 API 有：
+上面处理好了事件发生后的步骤，还需要告诉系统哪些算是热键。注册用到的原生 API 有：
 
 ```C++
 BOOL   RegisterHotKey(
