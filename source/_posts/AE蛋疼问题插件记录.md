@@ -17,6 +17,9 @@ date: 2017-04-20 11:33:36
 - 需安装插件：C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore
 - C:\Program Files\Adobe\Adobe After Effects CC\Support Files\Plug-ins
 
+## 问题：缺少XXX.dll文件
+解决：下载[DirectX修复工具](http://download.csdn.net/detail/vbcom/8651973)修复下
+
 
 ## 问题：安装了Trapcode Suite插件套装后，3D stroke预设点了什么反应都没有
 解决：找到3D stroke的安装路径D:\Adobe\Adobe After Effects CC\Support Files\Plug-ins\Trapecode Suite\Trapcode Suite 64bit，在当前目录新建一个Trapcode文件夹，把SVG文件夹放到里面，预设就能用了_(:з」∠)_
