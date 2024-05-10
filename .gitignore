@@ -4,6 +4,3 @@ Thumbs.db
 *.log
 node_modules/
 public/
-.deploy*/
-package.json
-package.json
