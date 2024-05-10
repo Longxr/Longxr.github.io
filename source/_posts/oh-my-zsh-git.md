@@ -1,9 +1,11 @@
 ---
 title: oh-my-zsh git
 categories:
-  - null
+  - 操作技巧
 tags:
-  - null
+  - 快捷键
+  - git
+  - zsh
 date: 2017-04-25 15:23:09
 ---
 
