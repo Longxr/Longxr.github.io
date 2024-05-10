@@ -1,5 +1,5 @@
 ---
-title: Qt-Use-Tips
+title: Qt使用技巧
 categories:
     - Qt
 tags:
