@@ -1,5 +1,5 @@
 ---
-title: Qt-OpenGL-HelloTriangle
+title: 基于Qt的OpenGL学习（1）—— Hello Triangle
 categories:
   - Qt
 tags:
