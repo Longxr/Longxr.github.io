@@ -9,6 +9,7 @@ before_install:
 install:
   - npm install   #安装hexo及插件
 before_script:
+  - npm install -g mocha
   - git clone --branch master https://github.com/Longxr/Longxr.github.io.git public
 script:
   - hexo cl   #清除
