@@ -17,11 +17,11 @@ date: 2017-06-26 14:02:03
 4. 圆形关键帧,是指三个关键帧中间那个为圆形的话会将这三个关键帧形成的两段不同速度进行柔缓连接 
 5. 正方形关键帧,停滞关键帧，需要设置冻结画面时间的时候会用到
 
-![关键帧类型](http://upload-images.jianshu.io/upload_images/2756183-be36504ecca40845.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![关键帧类型](https://upload-images.jianshu.io/upload_images/2756183-be36504ecca40845.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 还有一些少见的类型，可以对半看，菱形的一半就是线性运动，漏斗的一半就是缓入或缓出，正方形的一半就是这半边运动停滞，举个栗子：
 
-![组合类型](http://upload-images.jianshu.io/upload_images/2756183-e239c5fa31d22b46.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![组合类型](https://upload-images.jianshu.io/upload_images/2756183-e239c5fa31d22b46.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 这两个关键帧右边都是停止状态，左边分别是缓入和线性运动，组合起来1就是缓入再停止，2是匀速运动再停止
 

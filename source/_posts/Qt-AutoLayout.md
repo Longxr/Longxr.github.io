@@ -60,7 +60,7 @@ Qt之自动布局<!-- more -->
 
 ### layoutStretch属性
 布局中的layoutStretch表明了在该布局中的控件所占比例的分配，默认是0。当设置了大于0的数字后，其余为0的控件默认只占最小的大小，剩下的空间则按照比例分配给数字大于0的控件。举个栗子，在一个水平布局中有3个控件，控件的SizePolicy属性都是*Preferred*，布局的layoutStretch属性为：*0，0，1*，那么前2个控件占有最小大小，最后一个控件占满剩下的空间。
-![布局栗子](http://upload-images.jianshu.io/upload_images/2756183-7984f8a4c469af3e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![布局栗子](https://upload-images.jianshu.io/upload_images/2756183-7984f8a4c469af3e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 ## 代码中使用自动布局
@@ -101,9 +101,9 @@ QGridLayout要多2个参数,定义控件所占单元格大小：
 
 ## ui中使用自动布局
 1. 在Qt设计师界面上方，选中多个控件后点击即可：
-![布局按钮](http://upload-images.jianshu.io/upload_images/2756183-676ba7964ac9154d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![布局按钮](https://upload-images.jianshu.io/upload_images/2756183-676ba7964ac9154d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-2. 加入布局后还要注意设置Widget的布局：![注意Widget布局](http://upload-images.jianshu.io/upload_images/2756183-43d171c187526cc7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+2. 加入布局后还要注意设置Widget的布局：![注意Widget布局](https://upload-images.jianshu.io/upload_images/2756183-43d171c187526cc7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 3. 控件在布局中的对齐方式：
 控件上右键->Layout Alignment->...(选择对齐方式)
@@ -112,7 +112,7 @@ QGridLayout要多2个参数,定义控件所占单元格大小：
 
 5. 默认的水平布局等有一个默认的间距，不需要改成0即可：
 
-![Layout间距](http://upload-images.jianshu.io/upload_images/2756183-05eebd9e6ecfc400.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Layout间距](https://upload-images.jianshu.io/upload_images/2756183-05eebd9e6ecfc400.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 参考资料
 - [Qt Creator 窗体控件自适应窗口大小布局](http://www.cnblogs.com/emouse/archive/2013/05/19/3087708.html)
