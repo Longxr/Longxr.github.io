@@ -137,33 +137,35 @@ FunctionEnd
 ...
 ```
 
-3. 检测是否安装过旧版本，有的话提示卸载：
-```
-var /GLOBAL UNINSTALL_PROG
-var /GLOBAL OLD_VER
-var /GLOBAL OLD_PATH
-	
-ClearErrors
-  ReadRegStr $UNINSTALL_PROG ${PRODUCT_UNINST_ROOT_KEY} ${PRODUCT_UNINST_KEY} "UninstallString"
-  IfErrors  FinishInit
-  
-  ReadRegStr $OLD_VER ${PRODUCT_UNINST_ROOT_KEY} ${PRODUCT_UNINST_KEY} "DisplayVersion"
-  MessageBox MB_YESNOCANCEL|MB_ICONQUESTION "$(Uninstall_Old_Message)" /SD IDYES IDYES UninstallOld IDNO FinishInit
-  Abort
-  
-UninstallOld:
-  StrCpy $OLD_PATH $UNINSTALL_PROG -10
-
-  ExecWait '"$UNINSTALL_PROG" /S _?=$OLD_PATH' $0
-  DetailPrint "uninst.exe returned $0"
-  Delete "$UNINSTALL_PROG"
-  RMDir $OLD_PATH
-
-FinishInit:
+3. 检测是否安装过旧版本，有的话提示卸载:
 
 ```
+	var /GLOBAL UNINSTALL_PROG
+	var /GLOBAL OLD_VER
+	var /GLOBAL OLD_PATH
+		
+	ClearErrors
+	  ReadRegStr $UNINSTALL_PROG ${PRODUCT_UNINST_ROOT_KEY} ${PRODUCT_UNINST_KEY} "UninstallString"
+	  IfErrors  FinishInit
+	  
+	  ReadRegStr $OLD_VER ${PRODUCT_UNINST_ROOT_KEY} ${PRODUCT_UNINST_KEY} "DisplayVersion"
+	  MessageBox MB_YESNOCANCEL|MB_ICONQUESTION "$(Uninstall_Old_Message)" /SD IDYES IDYES UninstallOld IDNO FinishInit
+	  Abort
+	  
+	UninstallOld:
+	  StrCpy $OLD_PATH $UNINSTALL_PROG -10
 
-4. 安装包多语言：
+	  ExecWait '"$UNINSTALL_PROG" /S _?=$OLD_PATH' $0
+	  DetailPrint "uninst.exe returned $0"
+	  Delete "$UNINSTALL_PROG"
+	  RMDir $OLD_PATH
+
+	FinishInit:
+
+```
+
+4. 安装包多语言:
+
 ```
 ; 语言选择窗口常量设置
 !define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
