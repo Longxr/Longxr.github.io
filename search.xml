@@ -13572,9 +13572,9 @@ print(&#39;END&#39;)
         
         <tags>
             
-            <tag> blog </tag>
-            
             <tag> Hexo </tag>
+            
+            <tag> blog </tag>
             
         </tags>
         
@@ -13662,9 +13662,9 @@ hexo d
         
         <tags>
             
-            <tag> blog </tag>
-            
             <tag> Hexo </tag>
+            
+            <tag> blog </tag>
             
         </tags>
         
