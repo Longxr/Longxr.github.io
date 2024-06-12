@@ -4,6 +4,122 @@
   
     
     <entry>
+      <title><![CDATA[Python Anaconda 使用]]></title>
+      <url>https://longxuan.ren/2024/05/25/PythonAnaconda/</url>
+      <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Anaconda 是一个开源的 Python 发行版本，用它来管理 python 环境。 <a id="more"></a></excerpt></p>
+<p><the rest of contents | 余下全文><br>不同项目用到的 Python 版本不同，依赖的三方库也可能不同，如果都在默认的 Python 环境安装依赖可能会有冲突，这时候就可以用 Anaconda 针对不同的项目设置不同的 Python 版本以及下载不同版本的依赖库。</the></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官网下载安装包即可，<a href="https://docs.anaconda.com/free/miniconda/" target="_blank" rel="noopener">miniconda 下载</a></p>
+<h3 id="添加镜像源"><a href="#添加镜像源" class="headerlink" title="添加镜像源"></a>添加镜像源</h3><p>如果能翻墙可以直接忽略，镜像源主要处理下载被墙的问题。</p>
+<pre><code class="shell">conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+conda config --set show_channel_urls yes
+
+//更新conda，保持conda最新
+conda update conda
+
+//更新anaconda
+conda update anaconda
+</code></pre>
+<h2 id="虚拟环境管理"><a href="#虚拟环境管理" class="headerlink" title="虚拟环境管理"></a>虚拟环境管理</h2><p>不同的 Python 环境是独立的，可以分别装不同的 Python。</p>
+<pre><code class="shell">//创建虚拟环境，后面加上 anaconda 参数, 会把base的基础包一起安装
+conda create -n env_name python=x.x
+
+//列出当前所有环境，列出的环境中，当前环境前面有个*号
+conda info --envs
+
+//激活环境
+conda activate env_name
+
+//取消激活，取消激活当前环境的话，后面的环境名也可以省了
+conda deactivate env_name
+
+//删除环境
+conda remove -n env_name --all
+
+//克隆环境
+conda create -n new_env_name --clone env_name
+
+//导出环境配置，导出的配置文件会在当前目录下
+conda env export &gt; environment.yml
+
+//通过配置文件创建环境
+conda env create -f environment.yml
+</code></pre>
+<h2 id="包管理"><a href="#包管理" class="headerlink" title="包管理"></a>包管理</h2><h3 id="使用-conda-管理当前环境包"><a href="#使用-conda-管理当前环境包" class="headerlink" title="使用 conda 管理当前环境包"></a>使用 conda 管理当前环境包</h3><p>包的管理是针对当前环境的，所以最好是用 Anaconda Prompt 来操作，在终端位置前可以看到当前虚拟环境名，在其他终端也可以通过<code>conda info --envs</code>来查看当前环境</p>
+<pre><code class="shell">//在当前环境安装包
+conda install &lt;package_name&gt;
+
+//删除当前环境的包
+conda remove &lt;package_name&gt;
+
+//更新当前环境的包
+conda update &lt;package_name&gt;
+
+//更新当前环境所有包
+conda update --all
+
+//查看当前环境安装的包
+conda list
+
+//查找包，模糊匹配
+conda search &lt;package_name&gt;
+
+//查找包，精确查找
+conda search --full-name &lt;package_name&gt;
+
+</code></pre>
+<h3 id="使用-pip-管理当前环境包"><a href="#使用-pip-管理当前环境包" class="headerlink" title="使用 pip 管理当前环境包"></a>使用 pip 管理当前环境包</h3><p>用 pip 和 conda 安装的包，都可以通过 list 命令查看到已安装包时看到，混着用貌似也没事，看了下安装路径都是<code>C:\Users\Administrator\Anaconda3\envs\&lt;env_name&gt;\Lib\site-packages</code></p>
+<pre><code class="shell">//在当前环境安装包
+pip install &lt;package_name&gt;
+
+//删除当前环境的包
+pip uninstall &lt;package_name&gt;
+
+//更新当前环境的包
+pip install &lt;package_name&gt; --upgrade
+
+//更新当前环境所有包（仅供参考，我是用的conda更新所有包）
+pip freeze --local | grep -v &#39;^\-e&#39; | cut -d = -f 1 | xargs -n1 pip install -U --user
+
+//查看当前环境安装的包
+pip list
+
+</code></pre>
+<h3 id="使用-conda-管理指定环境包"><a href="#使用-conda-管理指定环境包" class="headerlink" title="使用 conda 管理指定环境包"></a>使用 conda 管理指定环境包</h3><p>conda 对包的管理在不切换环境时也可以进行，只需要在对应命令后面加上对应的虚拟环境名即可</p>
+<pre><code class="shell">//在指定环境安装包
+conda install -n &lt;env_name&gt; &lt;package_name&gt;
+
+//删除指定环境的包
+conda remove -n &lt;env_name&gt; &lt;package_name&gt;
+
+//更新指定环境的包
+conda update -n &lt;env_name&gt; &lt;package_name&gt;
+
+//更新指定环境所有包
+conda update -n &lt;env_name&gt; --all
+
+//查看指定环境安装的包
+conda list -n &lt;env_name&gt;
+
+</code></pre>
+]]></content>
+      
+        <categories>
+            
+            <category> Python </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Python Anaconda conda </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[docker 常用命令]]></title>
       <url>https://longxuan.ren/2024/03/25/DockerCommand/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>记录下常用的 docker 命令 <a id="more"></a></excerpt></p>
