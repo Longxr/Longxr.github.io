@@ -4,6 +4,46 @@
   
     
     <entry>
+      <title><![CDATA[Python 安装 onnxruntime-gpu、paddlepaddle-gpu 报错处理]]></title>
+      <url>https://longxuan.ren/2024/06/12/PythonPaddlepaddle-gpu/</url>
+      <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>最近看到一个挂机脚本，依赖里面用到了 onnxruntime-gpu、paddlepaddle-gpu，本机环境搭建时碰到的坑做个记录。 <a id="more"></a></excerpt></p>
+<p><the rest of contents | 余下全文><br><a href="https://github.com/lazydog28/mc_auto_boss" target="_blank" rel="noopener">刷声骸脚本</a>，成熟的电脑要学会自己玩游戏了。</the></p>
+<h2 id="CUDA-安装"><a href="#CUDA-安装" class="headerlink" title="CUDA 安装"></a>CUDA 安装</h2><p>注意看要用到 CUDA 的库支持的版本，比如 <a href="https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements" target="_blank" rel="noopener">onnxruntime 安装依赖</a></p>
+<h3 id="下载链接"><a href="#下载链接" class="headerlink" title="下载链接"></a>下载链接</h3><p><a href="https://developer.nvidia.com/cuda-toolkit-archive" target="_blank" rel="noopener">CUDA 历史版本下载</a><br><a href="https://developer.nvidia.com/rdp/cudnn-archive" target="_blank" rel="noopener">cuDNN 历史版本下载</a></p>
+<h3 id="CUDA-配置查看"><a href="#CUDA-配置查看" class="headerlink" title="CUDA 配置查看"></a>CUDA 配置查看</h3><p>nvidia-smi //查看显卡支持的 CUDA 版本<br>nvcc –version //查看当前安装的 CUDA 版本</p>
+<h2 id="问题处理"><a href="#问题处理" class="headerlink" title="问题处理"></a>问题处理</h2><h3 id="onnxruntime-gpu-报错处理"><a href="#onnxruntime-gpu-报错处理" class="headerlink" title="onnxruntime-gpu 报错处理"></a>onnxruntime-gpu 报错处理</h3><h4 id="CUDA-PATH-is-set-but-CUDA-wasnt-able-to-be-loaded"><a href="#CUDA-PATH-is-set-but-CUDA-wasnt-able-to-be-loaded" class="headerlink" title="CUDA_PATH is set but CUDA wasnt able to be loaded"></a>CUDA_PATH is set but CUDA wasnt able to be loaded</h4><p>onnxruntime::python::CreateExecutionProviderInstance CUDA_PATH is set but CUDA wasnt able to be loaded. Please install the correct version of CUDA andcuDNN as mentioned in the GPU requirements page (<a href="https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements)" target="_blank" rel="noopener">https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements)</a>, make sure they’re in the PATH, and that your GPU is supported</p>
+<p>CUDA、cuDNN、onnxruntime-gpu 版本不匹配，比如我安装时官网最新 CUDA 已经 12.5 了，但是 onnxruntime-gpu 最新版本 1.18 只支持到 CUDA 12.4, cuDNN 8.9.2.26。于是又重新去装 CUDA…cuDNN 下载解压后复制到 CUDA 所在版本目录即可。</p>
+<p>另外默认 onnxruntime-gpu 是用的 CUDA 11.8，如果要用 CUDA 12.4，需要卸载默认装的再重新安装，可以参考<a href="https://onnxruntime.ai/docs/install/#install-onnx-runtime-gpu-cuda-12x" target="_blank" rel="noopener">官方安装文档</a></p>
+<pre><code class="shell">pip uninstall onnxruntime-gpu
+pip install onnxruntime-gpu --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12/pypi/simple/
+</code></pre>
+<h4 id="Could-not-locate-zlibwapi-dll-Please-make-sure-it-is-in-your-library-path"><a href="#Could-not-locate-zlibwapi-dll-Please-make-sure-it-is-in-your-library-path" class="headerlink" title="Could not locate zlibwapi.dll. Please make sure it is in your library path!"></a>Could not locate zlibwapi.dll. Please make sure it is in your library path!</h4><p>cuDNN 8.9.x 版本需要装下 zlib，由于 CUDA bin 目录已经加到环境变量，直接把 zlib dll 放到 CUDA bin 目录下就行<br><a href="https://docs.nvidia.com/deeplearning/cudnn/archives/cudnn-892/install-guide/index.html#install-zlib-windows" target="_blank" rel="noopener">cuDNN on Windows</a></p>
+<h3 id="paddlepaddle-gpu"><a href="#paddlepaddle-gpu" class="headerlink" title="paddlepaddle-gpu"></a>paddlepaddle-gpu</h3><h4 id="The-third-party-dynamic-library-cublas64-118-dll-cublas64-11-dll-that-Paddle-depends-on-is-not-configured-correctly-error-code-is-126"><a href="#The-third-party-dynamic-library-cublas64-118-dll-cublas64-11-dll-that-Paddle-depends-on-is-not-configured-correctly-error-code-is-126" class="headerlink" title="The third-party dynamic library (cublas64_118.dll;cublas64_11.dll) that Paddle depends on is not configured correctly. (error code is 126)"></a>The third-party dynamic library (cublas64_118.dll;cublas64_11.dll) that Paddle depends on is not configured correctly. (error code is 126)</h4><p>默认 paddlepaddle-gpu 和 CUDA 版本不匹配…重装。<a href="https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/install/pip/windows-pip.html" target="_blank" rel="noopener">paddlepaddle 安装</a></p>
+<pre><code class="shell">pip uninstall paddlepaddle-gpu
+pip install paddlepaddle-gpu==2.6.1.post120 -f https://www.paddlepaddle.org.cn/whl/windows/mkl/avx/stable.html
+</code></pre>
+<p>装好后可以检测下</p>
+<pre><code class="python">import paddle
+paddle.utils.run_check()
+</code></pre>
+]]></content>
+      
+        <categories>
+            
+            <category> Python </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Python onnxruntime paddlepaddle </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Python Anaconda 使用]]></title>
       <url>https://longxuan.ren/2024/05/25/PythonAnaconda/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Anaconda 是一个开源的 Python 发行版本，用它来管理 python 环境。 <a id="more"></a></excerpt></p>
@@ -13688,9 +13728,9 @@ print(&#39;END&#39;)
         
         <tags>
             
-            <tag> Hexo </tag>
-            
             <tag> blog </tag>
+            
+            <tag> Hexo </tag>
             
         </tags>
         
@@ -13778,9 +13818,9 @@ hexo d
         
         <tags>
             
-            <tag> Hexo </tag>
-            
             <tag> blog </tag>
+            
+            <tag> Hexo </tag>
             
         </tags>
         
