@@ -3,7 +3,9 @@ title: Python 安装 onnxruntime-gpu、paddlepaddle-gpu 报错处理
 categories:
   - Python
 tags:
-  - Python onnxruntime paddlepaddle
+  - Python
+  - onnxruntime
+  - paddlepaddle
 date: 2024-06-12 22:30:14
 ---
 

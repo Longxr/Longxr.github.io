@@ -3,7 +3,9 @@ title: NAS 域名访问和 Nginx 反代理
 categories:
   - NAS
 tags:
-  - NAS Nginx docker
+  - NAS
+  - Nginx
+  - docker
 date: 2024-03-03 22:51:22
 ---
 

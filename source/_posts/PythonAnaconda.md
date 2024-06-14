@@ -3,7 +3,9 @@ title: Python Anaconda 使用
 categories:
   - Python
 tags:
-  - Python Anaconda conda
+  - Python
+  - Anaconda
+  - conda
 date: 2024-05-25 21:25:34
 ---
 

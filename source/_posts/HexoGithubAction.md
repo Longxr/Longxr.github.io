@@ -3,7 +3,8 @@ title: Hexo 3.5.0 迁移到 Github Action 踩坑记录
 categories:
   - Hexo
 tags:
-  - Hexo workflows
+  - Hexo
+  - workflows
 date: 2023-05-22 22:34:17
 ---
 
