@@ -4,6 +4,173 @@
   
     
     <entry>
+      <title><![CDATA[Obsidian 使用]]></title>
+      <url>https://longxuan.ren/2025/02/09/ObsidianUse/</url>
+      <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>逐步迁移之前的笔记到 Obsidian，记录下常用的功能。 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<h2 id="知识管理流程"><a href="#知识管理流程" class="headerlink" title="知识管理流程"></a>知识管理流程</h2><ul>
+<li>学习知识</li>
+<li>保存知识<ul>
+<li>输出，Markdown</li>
+<li>整理，双链</li>
+</ul>
+</li>
+<li>使用知识</li>
+<li>共享知识</li>
+<li>创新知识</li>
+</ul>
+<h2 id="Markdown-语法"><a href="#Markdown-语法" class="headerlink" title="Markdown 语法"></a>Markdown 语法</h2><ul>
+<li><h3 id="标题，最多支持-6-个-号"><a href="#标题，最多支持-6-个-号" class="headerlink" title="标题，最多支持 6 个#号"></a>标题，最多支持 6 个#号</h3></li>
+<li><strong>加粗</strong></li>
+<li>_斜体_</li>
+<li><del>删除线</del></li>
+</ul>
+<hr>
+<ul>
+<li>列表，创建好项后可通过 Tab 变成子项<ul>
+<li>有序列表<ol>
+<li>序号 1</li>
+<li>序号 2</li>
+</ol>
+</li>
+<li>无序列表<ul>
+<li>序号 1</li>
+<li>序号 2</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><blockquote>
+<p>引用内容</p>
+</blockquote>
+</li>
+<li><a href="https://www.bilibili.com/video/BV1V34y1k7St" target="_blank" rel="noopener">链接</a></li>
+<li>[x] 待办事项，Ctrl+L</li>
+</ul>
+<h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><p>命令面板，Ctrl+P<br>编辑模式/预览模式切换，Ctrl+E</p>
+<h2 id="双链"><a href="#双链" class="headerlink" title="双链"></a>双链</h2><p>通过两个方括号可以引用文章，#号可以定位标题，|添加别名，最前面加!可以直接在当前文章显示链接的内容</p>
+<p>![[DockerCommand#常用命令|Docker 常用命令]]</p>
+<h2 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h2><h3 id="快捷键-1"><a href="#快捷键-1" class="headerlink" title="快捷键"></a>快捷键</h3><ul>
+<li>搜索当前文档： Ctrl + F</li>
+<li>搜索整个资料库：Ctrl + Shift + F</li>
+</ul>
+<h3 id="搜索技巧"><a href="#搜索技巧" class="headerlink" title="搜索技巧"></a>搜索技巧</h3><ul>
+<li>直接搜索关键词</li>
+<li>多个关键词搜索，通过空格间隔（AND）, 只要一个关键词包含用 OR</li>
+<li>指定搜索范围：<ul>
+<li>搜索文件名： file:word</li>
+<li>搜索文本内容： content:word</li>
+<li>搜索标签：tag:#word</li>
+<li>搜索同一行中的多个关键词：line:word1 word2</li>
+<li>搜索同一章节中的多个关键词：section:word1 word2</li>
+<li>搜索同一段落中的多个关键词：block:word1 word2</li>
+</ul>
+</li>
+<li>搜索任务：<ul>
+<li>搜索任务：task:”word”</li>
+<li>搜索未完成任务：task-todo:”word”</li>
+<li>搜索已完成任务：task-done:”word”</li>
+</ul>
+</li>
+</ul>
+<h3 id="query"><a href="#query" class="headerlink" title="query"></a>query</h3><pre><code class="query">搜索技巧 搜索任务
+</code></pre>
+<h2 id="Dataview-查询"><a href="#Dataview-查询" class="headerlink" title="Dataview 查询"></a>Dataview 查询</h2><p>Dataview，Obsidian 资料库的查询工具/插件</p>
+<ul>
+<li>查询对象： Obsidian 数据库</li>
+<li><p>查询依据： YAML 数据 / 文档 Metainfo</p>
+</li>
+<li><p>YAML</p>
+<ul>
+<li>位于 Markdown 文件开头， 首尾用 — 包含的部分</li>
+<li>默认支持的字段<ul>
+<li>tags</li>
+<li>publish</li>
+<li>cssclass</li>
+<li>aliases</li>
+</ul>
+</li>
+<li>自定义字段<ul>
+<li>category</li>
+<li>date</li>
+<li>time</li>
+<li>rating</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Obsidian 文件属性<ul>
+<li>file.name: 文件标题（字符串）</li>
+<li>file.floder: 文件所属文件夹路径</li>
+<li>file.path: 文件路径</li>
+<li>file.size: 文件字节大小</li>
+<li>file.ctime: 文件创建时间</li>
+<li>file.mtime: 文件修改时间</li>
+<li>file.cday: 文件创建日期</li>
+<li>file.mday: 文件修改日期</li>
+<li>file.tags: 笔记中所有标签数组</li>
+<li>file.etag:s 除去子标签的数组</li>
+<li>file.inlinks: 指向此文件的所有传入链接的数组</li>
+<li>file.outlinks: 此文件所有出站链接的数组</li>
+<li>file.aliase:s 文件别名数组</li>
+<li>file.day: 如果文件名中有日期，那么就会以这个字段显示</li>
+</ul>
+</li>
+<li>任务属性<ul>
+<li>Task 会继承所在文件的所有字段，比如 Task 所在页面中已经包含了 rating 信息了，那么 Task 也有</li>
+<li>completed: 任务是否完成</li>
+<li>fullyCompleted: 任务以及子任务是否完成</li>
+<li>tex:t 任务名</li>
+<li>line: 任务所在行</li>
+<li>path: 任务所在路径</li>
+<li>sestion: 连接到任务所在区块</li>
+<li>link: 连接到任务最近的可连接的区块</li>
+<li>subtasks: 子任务</li>
+<li>real: 如果为 true, 则是一个真正的任务，否则就是一个任务之前或之后的元素列表</li>
+<li>completion: 任务完成的日期</li>
+<li>due: 任务到期时间</li>
+<li>created: 创建日期</li>
+<li>annotated: 如果任务有自定义标记则为 ture， 否则为 false</li>
+</ul>
+</li>
+</ul>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>以 三个点开头，后面跟上 dataview 表明这是 dataview 代码</p>
+<pre><code class="代码类型">[list|table|task] field1, field2 as myfield,
+FROM #tag or &quot;floder&quot; or [[link]] or outgoing([[link]])
+WHERE field [&gt; | &lt; | =] [field2 | literal value] (and field1 ...) (or field3...)
+SORT field [ascending | descending | asc | desc] (ascending is implied if provided)
+</code></pre>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><h4 id="文件夹查询"><a href="#文件夹查询" class="headerlink" title="文件夹查询"></a>文件夹查询</h4><pre><code class="dataview">list
+FROM &quot;02 学习&quot;
+</code></pre>
+<h4 id="标签查询"><a href="#标签查询" class="headerlink" title="标签查询"></a>标签查询</h4><pre><code class="dataview">TABLE file.size as 文件大小, file.ctime as 创建时间
+FROM #工具
+SORT file.name desc
+</code></pre>
+<h2 id="白板（画布）"><a href="#白板（画布）" class="headerlink" title="白板（画布）"></a>白板（画布）</h2><p>任意内容都可以放入白板中作为卡片展示，比如笔记、图片、网页、文本等。</p>
+<h3 id="新建"><a href="#新建" class="headerlink" title="新建"></a>新建</h3><p>目录右键新建画布，或者 Ctrl + P，输入白板</p>
+<h2 id="Callout"><a href="#Callout" class="headerlink" title="Callout"></a>Callout</h2><blockquote>
+<p>[!NOTE] 提示内容<br>就是 Markdown 的引用，展示上有优化，展示类型可以右键后选择 Callout type 修改</p>
+</blockquote>
+</the>]]></content>
+      
+        <categories>
+            
+            <category> Obsidian </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Obsidian </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[印象笔记转换 markdown]]></title>
       <url>https://longxuan.ren/2024/06/16/evernote2md/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>印象笔记会员快要到期了，看着界面上各种鸡肋功能还限制登录设备，赶紧把数据迁移出来，卸载垃圾软件。 <a id="more"></a></excerpt></p>
