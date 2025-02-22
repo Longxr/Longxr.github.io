@@ -4,6 +4,58 @@
   
     
     <entry>
+      <title><![CDATA[密码库迁移到 Bitwarden]]></title>
+      <url>https://longxuan.ren/2025/02/22/BitwardenUse/</url>
+      <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>之前多端的密码库使用的是 LastPass，在电脑上使用免费没什么问题，直到有次想不起密码在手机上用时才发现有平台限制。然后看了下支持自己搭建密码库的方案，决定就是 Bitwarden 了。 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<h2 id="LastPass-的限制"><a href="#LastPass-的限制" class="headerlink" title="LastPass 的限制"></a>LastPass 的限制</h2><p>LastPass 如果只在同一个平台使用的话是没有什么问题的，但如果换了平台就会有如下提示，想要用的话，得加钱 ~</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/BitwardenUse-2025-02-22-21-45-11.png" alt="BitwardenUse-2025-02-22-21-45-11"></p>
+<p>加钱是不可能加的，看了下 Bitwarden 跨平台各端都支持，也支持自托管服务器，把密码库放到自己的服务器上，就决定是你了!</p>
+<h2 id="Bitwarden-安装"><a href="#Bitwarden-安装" class="headerlink" title="Bitwarden 安装"></a>Bitwarden 安装</h2><p>我是用的群晖，可以通过 Container Manager 来安装 docker 镜像。在注册表搜索 <code>vaultwarden/server</code> 就可以下载了，下载了较新的 1.33.2 版本 （没有直接下载 latest 是因为跑个几年后自己都不记得 latest 是哪个版本了哈哈哈）</p>
+<p>下载后运行镜像，需要设置下环境和存储空间位置两部分内容。</p>
+<h3 id="环境设置"><a href="#环境设置" class="headerlink" title="环境设置"></a>环境设置</h3><p>环境设置首次启动时可以用默认的就行，后续步骤先创建好自己的账号后，可以选择禁止创建账号，就自己一个人使用。下面三个新增的变量功能分别是：</p>
+<ul>
+<li>SIGNUPS_ALLOWED，允许注册，false 就是禁止注册，第一次启动先别加，不然自己都注册不了了</li>
+<li>INVITATIONS_ALLOWED，允许邀请，false 就是禁止邀请</li>
+<li>日志文件位置，/data/bitwarden.log</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/BitwardenUse-2025-02-22-21-48-11.png" alt="BitwardenUse-2025-02-22-21-48-11"></p>
+<h3 id="存储空间位置"><a href="#存储空间位置" class="headerlink" title="存储空间位置"></a>存储空间位置</h3><p>容器内部数据都在 <code>/data</code>，指定到本地一个文件夹即可，比如 <code>docker/vaultwarden/data</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/BitwardenUse-2025-02-22-21-45-14.png" alt="BitwardenUse-2025-02-22-21-45-14"></p>
+<p>容器的 80 端口映射一个可用端口就行，这里映射到 3332，配置好后下一步直接运行。由于 Bitwarden 的安全限制必须使用 https 访问，所以直接通过链接 <code>http://NAS_ip:3332</code> 是不行的，需要反代理设置下，参考之前的文章<a href="https://longxuan.ren/2024/03/03/NASDomainAndNginx/">设置反代理</a>。</p>
+<h2 id="Bitwarden-使用"><a href="#Bitwarden-使用" class="headerlink" title="Bitwarden 使用"></a>Bitwarden 使用</h2><p>设置好后通过 https 访问代理地址就可以看到首页了，注册账号并登录可以看到当前账号的管理页面。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/BitwardenUse-2025-02-22-21-45-40.png" alt="BitwardenUse-2025-02-22-21-45-40"></p>
+<h3 id="数据迁移"><a href="#数据迁移" class="headerlink" title="数据迁移"></a>数据迁移</h3><p>首先要做的就是先把 LastPass 的密码数据给迁移过来，先登录 LastPass，在 Advanced Options 里，选择 Export，验证后会将所有密码导出到一个 csv 文件中。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/BitwardenUse-2025-02-22-21-46-11.png" alt="BitwardenUse-2025-02-22-21-46-11"></p>
+<p>然后回到 Bitwarden 这边，选择导入数据，文件格式选择 LastPass，文件选择上一步导出的 csv 导入数据。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/BitwardenUse-2025-02-22-21-46-46.png" alt="BitwardenUse-2025-02-22-21-46-46"></p>
+<h3 id="自托管地址设置"><a href="#自托管地址设置" class="headerlink" title="自托管地址设置"></a>自托管地址设置</h3><p>服务搭建好了，密码也迁移完成，最后一步就是在不同的平台、浏览器上使用了。客户端和浏览器扩展可以在<a href="https://bitwarden.com/download/" target="_blank" rel="noopener">官网直接下载</a>。下载并安装好后，在登录的地方，可以选择使用自托管环境，并将服务器 URL 指定为之前反代理设置的链接，然后就可以在各个平台愉快的使用了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Longxr/PicStored/blog/BitwardenUse-2025-02-22-21-47-21.png" alt="BitwardenUse-2025-02-22-21-47-21"></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://sspai.com/post/61976/" target="_blank" rel="noopener">登录信息就该自己掌握：基于私有云的 Bitwarden 迁移指南</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/682424886" target="_blank" rel="noopener">群辉 7.2 Container Manager 套件搭建 Bitwarden 开源密码库</a></li>
+</ul>
+</the>]]></content>
+      
+        <categories>
+            
+            <category> docker </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> docker </tag>
+            
+            <tag> Bitwarden </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Obsidian 使用]]></title>
       <url>https://longxuan.ren/2025/02/09/ObsidianUse/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>逐步迁移之前的笔记到 Obsidian，记录下常用的功能。 <a id="more"></a></excerpt></p>
