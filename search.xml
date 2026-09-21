@@ -4,6 +4,141 @@
   
     
     <entry>
+      <title><![CDATA[Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1]]></title>
+      <url>https://longxuan.ren/2026/09/20/JellyfinUpdate/</url>
+      <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>App Store 下载的 Jellyfin 客户端只支持 12 以上的服务端，而我一直在用的 nyanmisaka/jellyfin 镜像停在 2024 年 3 月构建的版本上（10.8 一档），新版客户端直接没法用，只能升级。结果发现官方 12.1 不让一步升上去——旧数据库就是 10.8 时代的，12.1 直接拒绝迁移。中间还因为大肥鱼操作失误把数据库读坏了，又从备份回滚了一次。最后按 10.8 → 10.10.7 → 10.11.11 → 12.1 的路径升级成功 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<p>Jellyfin 在自己的 NAS 上跑了三年多，用的是 nyanmisaka/jellyfin 这个第三方镜像。它最大的好处是自带比较新的 jellyfin-ffmpeg，群晖的核显硬件转码开箱能用。</p>
+<p>这次决定升级的直接原因是客户端：<strong>App Store 下载的 Jellyfin 客户端只支持 12 以上的服务端版本</strong>。而这个镜像的 <code>latest</code> 一直停在 2024 年 3 月构建的版本上（对应 Jellyfin 10.8 一档），看了下作者最新镜像没有到12的，等于新版客户端连我的 NAS 上的旧版服务端是不通的。官方镜像早就到 12.x 了，所以干脆切回官方镜像，一次性把版本拉上来。</p>
+<p>迁移最大的顾虑不是镜像本身，而是数据。Jellyfin 的媒体库、用户、观看记录全都存在 <code>/config</code> 里，而且<strong>数据库里记的是容器内的绝对路径</strong>，所以容器内路径必须一个字符都不改，否则整个库要重建。这次的原则就是：只换镜像，挂载和环境变量尽量照抄。</p>
+<h2 id="先摸清旧容器的配置"><a href="#先摸清旧容器的配置" class="headerlink" title="先摸清旧容器的配置"></a>先摸清旧容器的配置</h2><p>旧容器是用 DSM Container Manager 直接创建的，从容器详情里把配置抄出来：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>映像</td>
+<td><code>nyanmisaka/jellyfin:latest</code>（构建于 2024.03.19）</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>host / host</td>
+</tr>
+<tr>
+<td>存储</td>
+<td><code>/volume2/Video</code> → <code>/video</code>、<code>/volume1/docker/jellyfin/config</code> → <code>/config</code>、<code>/volume1/docker/jellyfin/cache</code> → <code>/cache</code></td>
+</tr>
+<tr>
+<td>环境变量</td>
+<td><code>MALLOC_TRIM_THRESHOLD_=131072</code>、<code>LC_ALL</code>/<code>LANG</code>=<code>en_US.UTF-8</code>、<code>LANGUAGE=en_US:en</code></td>
+</tr>
+<tr>
+<td>内核</td>
+<td>DS920+</td>
+</tr>
+</tbody>
+</table>
+<p>顺便清掉了几个”当初抄教程带进来、其实没用”的配置：<code>NVIDIA_DRIVER_CAPABILITIES=compute,video,utility</code>（这台机器是 Intel 核显，没有 N 卡）、<code>HEALTHCHECK_URL</code>（非标准变量，官方镜像不读）。另外旧容器里显式写了 <code>PATH</code>，这个也没抄——官方镜像自带 PATH，硬编码反而可能在新版本镜像加了新路径之后把 ffmpeg 找丢。</p>
+<p>整理成 <code>docker-compose.yml</code>，顺便把已经不用的 AutoBangumi 挂载去掉了：</p>
+<pre><code class="yaml">services:
+  jellyfin:
+    image: jellyfin/jellyfin:12.1
+    container_name: jellyfin-server-1
+    network_mode: host
+    restart: unless-stopped
+    devices:
+      - /dev/dri:/dev/dri          # DS920+ 核显直通，QSV/VAAPI 靠它
+    environment:
+      - MALLOC_TRIM_THRESHOLD_=131072
+      - LC_ALL=en_US.UTF-8
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US:en
+    volumes:
+      - /volume1/docker/jellyfin/config:/config
+      - /volume1/docker/jellyfin/cache:/cache
+      - /volume2/Video:/video:rw
+</code></pre>
+<p>网络保持 host 模式（和旧容器一致），这样 8096 端口和 DLNA 发现的行为都不变，也不用写 <code>ports:</code>。</p>
+<h2 id="第一次尝试：直接上-12-1，被拒"><a href="#第一次尝试：直接上-12-1，被拒" class="headerlink" title="第一次尝试：直接上 12.1，被拒"></a>第一次尝试：直接上 12.1，被拒</h2><p>最简单粗暴的做法是把 image 直接改成 <code>jellyfin/jellyfin:12.1</code> 启动。容器起来了，但结果很迷惑：<strong>网页全站 503，所有路径都被重定向到 <code>/startup/logger</code></strong>，<code>/health</code> 返回 503 Unhealthy，而 <code>/System/Info/Public</code> 又能正常返回版本号。</p>
+<p>翻日志才看到真正的原因：</p>
+<pre><code>[FTL] InternalCodeMigration: Error: &quot;Your database does not meet the required standard.
+      Only upgrades from server version 10.9.11 or above are supported.
+      Please upgrade first to server version 10.10.7 before attempting to upgrade afterwards to 10.11&quot;
+[ERR] Migration &quot;20250420193000_MigrateLibraryDbCompatibilityCheck&quot; failed
+[FTL] Main: Error while starting server
+[ERR] Health check &quot;StartupCheck&quot; with status Unhealthy ... &quot;Server is could not complete startup. Check logs.&quot;
+</code></pre><p>也就是说 nyanmisaka 那个镜像的库确实是 10.8 档，而 12.1 的迁移例程明确拒绝从 10.9.11 以下直接升。而且这道校验是纯检查、不改库（失败后日志里有 <code>Attempt to rollback librarydb</code> / <code>Attempt to rollback JellyfinDb</code>）。</p>
+<p>官方报错里已经把路指出来了：先升到 10.10.7。</p>
+<h2 id="升级路径：10-8-→-10-10-7-→-10-11-11-→-12-1"><a href="#升级路径：10-8-→-10-10-7-→-10-11-11-→-12-1" class="headerlink" title="升级路径：10.8 → 10.10.7 → 10.11.11 → 12.1"></a>升级路径：10.8 → 10.10.7 → 10.11.11 → 12.1</h2><p>每一跳的做法都一样：改 compose 里的 image、<code>docker compose up -d</code>、等日志出现 <code>Startup complete</code>、验证、再 <code>docker compose down</code> 换下一跳。</p>
+<p>其中 10.11 那跳有个大动作：<strong>它把 <code>library.db</code> 合并进了 <code>jellyfin.db</code></strong>。数据目录里会多出 <code>library.db.old</code>（合并前的原库）、<code>SQLiteBackups</code> 目录和 <code>database.xml</code>（新版数据库层的配置文件），<code>jellyfin.db</code> 从 200 多 KB 涨到 100 多 MB，原来那个 80 MB 的独立 <code>library.db</code> 就消失了。这是 10.11 的设计，不是故障。</p>
+<p>到 12.1 之后，日志里能看到这轮迁移的全部动作：</p>
+<pre><code>[INF] Jellyfin.Server.Migrations.JellyfinMigrationService: There are 30 migrations for stage AppInitialisation.
+[INF] InternalCodeMigration: Migration &quot;20260910120000_MigrateRatingLevels&quot; was successfully applied
+[INF] Main: Migrations have been applied, optimizing the database... This might take a while
+[INF] Jellyfin.Database.Providers.Sqlite.SqliteDatabaseProvider: jellyfin.db optimized successfully!
+[INF] Main: Startup complete 0:01:12
+</code></pre><p>一共 72 条迁移成功执行，之前一直卡住的那道 <code>MigrateLibraryDbCompatibilityCheck</code> 这次顺利通过。</p>
+<h2 id="中途踩的坑：从-SMB-读运行中的数据库"><a href="#中途踩的坑：从-SMB-读运行中的数据库" class="headerlink" title="中途踩的坑：从 SMB 读运行中的数据库"></a>中途踩的坑：从 SMB 读运行中的数据库</h2><p>中间为了留个”在线快照”当回滚点，我从 Windows 侧用 SQLite 的 <code>VACUUM INTO</code> 去读正在运行的 <code>jellyfin.db</code>。结果是这次升级里最严重的一次事故：<strong>两秒之后 Jellyfin 开始狂报数据库损坏</strong>。</p>
+<pre><code>[ERR] Microsoft.EntityFrameworkCore.Update: An exception occurred in the database while saving changes
+      ---&gt; Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 11: &#39;database disk image is malformed&#39;
+[ERR] Emby.Server.Implementations.ScheduledTasks.TaskManager: Error executing Scheduled Task
+      at Emby.Server.Implementations.Data.CleanDatabaseScheduledTask.CleanDeadItems
+</code></pre><p>几分钟内累积了 86 次，元数据保存和数据库清理任务全部失败。最坑的是<strong>界面上完全看不出来</strong>：网页照样能打开、<code>/health</code> 照样返回 200，因为它坏的是写路径（读还有缓存撑着）。判断方法只能是看日志，以及看数据库文件的时间戳——正常写入时 <code>jellyfin.db</code> 和 <code>-wal</code> 的时间戳会持续推进，而损坏时全都冻结了。</p>
+<p>原因是大肥鱼没注意到 <strong>10.11 起 Jellyfin 改用了 WAL 模式</strong>（日志里能看到 <code>database locking mode has been set to: NoLock</code>，数据目录里多出 <code>jellyfin.db-wal</code> 和 <code>jellyfin.db-shm</code>）。WAL 依赖共享内存做锁协调，而 SQLite 官方明确不建议把 WAL 模式的数据放在网络文件系统上——前面几次”在线快照”成功过，纯粹是因为那时候还是旧的事务日志模式，没有 WAL 文件，方法本身一直是错的。</p>
+<p>确认损坏的办法是拿一份<strong>停机后的副本</strong>跑 <code>PRAGMA integrity_check</code>——它连校验都跑不起来，直接抛 <code>database disk image is malformed</code>；而同一批备份里的旧库校验结果都是 <code>ok</code>。</p>
+<p>恢复过程：停容器 → 用之前验证过的快照还原 <code>config</code>（还原后逐文件比对哈希，确认字节一致）→ 重新走升级。数据没丢，媒体文件全程没被动过。</p>
+<h2 id="在群晖-Container-Manager-上踩的两个坑"><a href="#在群晖-Container-Manager-上踩的两个坑" class="headerlink" title="在群晖 Container Manager 上踩的两个坑"></a>在群晖 Container Manager 上踩的两个坑</h2><p><strong>1. 删项目会把镜像一起删掉。</strong> 当时为了停止服务在项目里点了”删除”，结果容器和镜像一起没了，10.10.7 的镜像就是这么消失的，后来要回滚还得重新拉。以后只记一条：<strong>停服务用”停止”，改版本用”构建”，明确后续不用再”删除”。</strong></p>
+<p><strong>2. 别用项目菜单那个”启动”按钮。</strong> 它启动的是已经存在的容器对象，而 image 在容器创建时就固定了。所以会出现”compose 文件改成了新版本，点启动跑起来的还是旧版本”这种迷惑现象——必须用 <code>docker compose up -d</code>（或项目里的”构建”）让它按新镜像重建容器。</p>
+<h2 id="验收标准"><a href="#验收标准" class="headerlink" title="验收标准"></a>验收标准</h2><p>实际用的是这几条：</p>
+<ul>
+<li>日志里出现 <code>Startup complete</code>，且<strong>没有任何 <code>[FTL]</code></strong></li>
+<li>日志里没有 <code>does not meet the required standard</code>（这是库版本不够的信号）</li>
+<li>日志里没有 <code>malformed</code> / <code>SQLite Error</code>（这是库损坏的信号）</li>
+<li>数据库文件的时间戳在持续推进（写入确实在落盘）</li>
+<li><code>/health</code> 返回 200 Healthy，而不是 503</li>
+<li><strong>观察时间要够长</strong>：那次损坏是在启动完成 3 分半之后才开始的，看一两眼根本发现不了</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>整个升级实际上是三级台阶：11.11 那次数据库合并是最大的一次结构变动，12.1 那次是迁移条数最多的一次。升级完成后 12.1.0 正常运行，媒体库、用户、观看记录都还在。</p>
+<p>三条经验后续升级其他容器也注意下：</p>
+<ol>
+<li><strong>跨大版本升级要看官方指定的路径</strong>，Jellyfin 会在报错信息里直接告诉你”先升到哪个版本”，别硬跳。</li>
+<li><strong>Jellyfin 10.11 之后不要从外部碰数据库文件</strong>（包括只读）。备份只在<strong>停机后</strong>做文件级复制，而且必须把 <code>-wal</code> 文件一起复制，否则会丢掉还没落盘的已提交数据；需要校验就复制成副本再校验。</li>
+<li><strong>升级前后都用日志和文件时间戳验收</strong>，不要依赖界面能不能打开。</li>
+</ol>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://jellyfin.org/docs/general/installation/container/" target="_blank" rel="noopener">Container | Jellyfin</a></li>
+<li><a href="https://jellyfin.org/posts/jellyfin-release-12.0/" target="_blank" rel="noopener">Jellyfin 12.0 发布说明</a></li>
+<li><a href="https://github.com/jellyfin/jellyfin/releases/tag/v12.0" target="_blank" rel="noopener">Release 12.0 · jellyfin/jellyfin</a></li>
+<li><a href="https://www.sqlite.org/wal.html" target="_blank" rel="noopener">Write-Ahead Logging - SQLite</a></li>
+<li><a href="https://hub.docker.com/r/jellyfin/jellyfin/tags" target="_blank" rel="noopener">jellyfin/jellyfin - Docker Hub tags</a></li>
+</ul>
+</the>]]></content>
+      
+        <categories>
+            
+            <category> docker </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> docker </tag>
+            
+            <tag> Jellyfin </tag>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Vaultwarden 升级：Bitwarden 客户端兼容问题修复]]></title>
       <url>https://longxuan.ren/2026/08/27/VaultwardenUpdate/</url>
       <content type="html"><![CDATA[<p><excerpt in index | 摘要><br>Chrome 上的 Bitwarden 插件突然打不开了，一直转圈 loading，网页端也是一样。排查了一圈发现是 Bitwarden 客户端升级到 2026.7.0 后与服务端版本不兼容，把 Vaultwarden 升级到 1.37.0 就好了，顺便把容器改成了 docker-compose 项目管理，以后升级就简单了 <a id="more"></a></excerpt></p>

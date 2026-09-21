@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="App Store 下载的 Jellyfin 客户端只支持 12 以上的服务端，而我一直在用的 nyanmisaka/jellyfin 镜像停在 2024 年 3 月构建的版本上（10.8 一档），新版客户端直接没法用，只能升级。结果发现官方 12.1 不让一步升上去——旧数据库就是 10.8 时代的，12.1 直接拒绝迁移。中间还因为大肥鱼操作失误把数据库读坏了，又从备份回滚了一次。最后按 10">
+<meta name="keywords" content="docker,Jellyfin,NAS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1">
+<meta property="og:url" content="https://longxuan.ren/2026/09/20/JellyfinUpdate/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="App Store 下载的 Jellyfin 客户端只支持 12 以上的服务端，而我一直在用的 nyanmisaka/jellyfin 镜像停在 2024 年 3 月构建的版本上（10.8 一档），新版客户端直接没法用，只能升级。结果发现官方 12.1 不让一步升上去——旧数据库就是 10.8 时代的，12.1 直接拒绝迁移。中间还因为大肥鱼操作失误把数据库读坏了，又从备份回滚了一次。最后按 10">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2026-09-21T17:02:40.510Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1">
+<meta name="twitter:description" content="App Store 下载的 Jellyfin 客户端只支持 12 以上的服务端，而我一直在用的 nyanmisaka/jellyfin 镜像停在 2024 年 3 月构建的版本上（10.8 一档），新版客户端直接没法用，只能升级。结果发现官方 12.1 不让一步升上去——旧数据库就是 10.8 时代的，12.1 直接拒绝迁移。中间还因为大肥鱼操作失误把数据库读坏了，又从备份回滚了一次。最后按 10">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Anaconda/">Anaconda</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitwarden/">Bitwarden</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CEF/">CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jellyfin/">Jellyfin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-command/">Linux command</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NAS/">NAS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Obsidian/">Obsidian</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PS5/">PS5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Travis/">Travis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vaultwarden/">Vaultwarden</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/conda/">conda</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/evernote/">evernote</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/">markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/onnxruntime/">onnxruntime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/paddlepaddle/">paddlepaddle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/workflows/">workflows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-JellyfinUpdate" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2026/09/20/JellyfinUpdate/" class="article-date">
+      <time datetime="2026-09-20T21:30:00.000Z" itemprop="datePublished">2026-09-20</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/docker/">docker</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jellyfin/">Jellyfin</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NAS/">NAS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>App Store 下载的 Jellyfin 客户端只支持 12 以上的服务端，而我一直在用的 nyanmisaka/jellyfin 镜像停在 2024 年 3 月构建的版本上（10.8 一档），新版客户端直接没法用，只能升级。结果发现官方 12.1 不让一步升上去——旧数据库就是 10.8 时代的，12.1 直接拒绝迁移。中间还因为大肥鱼操作失误把数据库读坏了，又从备份回滚了一次。最后按 10.8 → 10.10.7 → 10.11.11 → 12.1 的路径升级成功 <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<p>Jellyfin 在自己的 NAS 上跑了三年多，用的是 nyanmisaka/jellyfin 这个第三方镜像。它最大的好处是自带比较新的 jellyfin-ffmpeg，群晖的核显硬件转码开箱能用。</p>
+<p>这次决定升级的直接原因是客户端：<strong>App Store 下载的 Jellyfin 客户端只支持 12 以上的服务端版本</strong>。而这个镜像的 <code>latest</code> 一直停在 2024 年 3 月构建的版本上（对应 Jellyfin 10.8 一档），看了下作者最新镜像没有到12的，等于新版客户端连我的 NAS 上的旧版服务端是不通的。官方镜像早就到 12.x 了，所以干脆切回官方镜像，一次性把版本拉上来。</p>
+<p>迁移最大的顾虑不是镜像本身，而是数据。Jellyfin 的媒体库、用户、观看记录全都存在 <code>/config</code> 里，而且<strong>数据库里记的是容器内的绝对路径</strong>，所以容器内路径必须一个字符都不改，否则整个库要重建。这次的原则就是：只换镜像，挂载和环境变量尽量照抄。</p>
+<h2 id="先摸清旧容器的配置"><a href="#先摸清旧容器的配置" class="headerlink" title="先摸清旧容器的配置"></a>先摸清旧容器的配置</h2><p>旧容器是用 DSM Container Manager 直接创建的，从容器详情里把配置抄出来：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>映像</td>
+<td><code>nyanmisaka/jellyfin:latest</code>（构建于 2024.03.19）</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>host / host</td>
+</tr>
+<tr>
+<td>存储</td>
+<td><code>/volume2/Video</code> → <code>/video</code>、<code>/volume1/docker/jellyfin/config</code> → <code>/config</code>、<code>/volume1/docker/jellyfin/cache</code> → <code>/cache</code></td>
+</tr>
+<tr>
+<td>环境变量</td>
+<td><code>MALLOC_TRIM_THRESHOLD_=131072</code>、<code>LC_ALL</code>/<code>LANG</code>=<code>en_US.UTF-8</code>、<code>LANGUAGE=en_US:en</code></td>
+</tr>
+<tr>
+<td>内核</td>
+<td>DS920+</td>
+</tr>
+</tbody>
+</table>
+<p>顺便清掉了几个”当初抄教程带进来、其实没用”的配置：<code>NVIDIA_DRIVER_CAPABILITIES=compute,video,utility</code>（这台机器是 Intel 核显，没有 N 卡）、<code>HEALTHCHECK_URL</code>（非标准变量，官方镜像不读）。另外旧容器里显式写了 <code>PATH</code>，这个也没抄——官方镜像自带 PATH，硬编码反而可能在新版本镜像加了新路径之后把 ffmpeg 找丢。</p>
+<p>整理成 <code>docker-compose.yml</code>，顺便把已经不用的 AutoBangumi 挂载去掉了：</p>
+<pre><code class="yaml">services:
+  jellyfin:
+    image: jellyfin/jellyfin:12.1
+    container_name: jellyfin-server-1
+    network_mode: host
+    restart: unless-stopped
+    devices:
+      - /dev/dri:/dev/dri          # DS920+ 核显直通，QSV/VAAPI 靠它
+    environment:
+      - MALLOC_TRIM_THRESHOLD_=131072
+      - LC_ALL=en_US.UTF-8
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US:en
+    volumes:
+      - /volume1/docker/jellyfin/config:/config
+      - /volume1/docker/jellyfin/cache:/cache
+      - /volume2/Video:/video:rw
+</code></pre>
+<p>网络保持 host 模式（和旧容器一致），这样 8096 端口和 DLNA 发现的行为都不变，也不用写 <code>ports:</code>。</p>
+<h2 id="第一次尝试：直接上-12-1，被拒"><a href="#第一次尝试：直接上-12-1，被拒" class="headerlink" title="第一次尝试：直接上 12.1，被拒"></a>第一次尝试：直接上 12.1，被拒</h2><p>最简单粗暴的做法是把 image 直接改成 <code>jellyfin/jellyfin:12.1</code> 启动。容器起来了，但结果很迷惑：<strong>网页全站 503，所有路径都被重定向到 <code>/startup/logger</code></strong>，<code>/health</code> 返回 503 Unhealthy，而 <code>/System/Info/Public</code> 又能正常返回版本号。</p>
+<p>翻日志才看到真正的原因：</p>
+<pre><code>[FTL] InternalCodeMigration: Error: &quot;Your database does not meet the required standard.
+      Only upgrades from server version 10.9.11 or above are supported.
+      Please upgrade first to server version 10.10.7 before attempting to upgrade afterwards to 10.11&quot;
+[ERR] Migration &quot;20250420193000_MigrateLibraryDbCompatibilityCheck&quot; failed
+[FTL] Main: Error while starting server
+[ERR] Health check &quot;StartupCheck&quot; with status Unhealthy ... &quot;Server is could not complete startup. Check logs.&quot;
+</code></pre><p>也就是说 nyanmisaka 那个镜像的库确实是 10.8 档，而 12.1 的迁移例程明确拒绝从 10.9.11 以下直接升。而且这道校验是纯检查、不改库（失败后日志里有 <code>Attempt to rollback librarydb</code> / <code>Attempt to rollback JellyfinDb</code>）。</p>
+<p>官方报错里已经把路指出来了：先升到 10.10.7。</p>
+<h2 id="升级路径：10-8-→-10-10-7-→-10-11-11-→-12-1"><a href="#升级路径：10-8-→-10-10-7-→-10-11-11-→-12-1" class="headerlink" title="升级路径：10.8 → 10.10.7 → 10.11.11 → 12.1"></a>升级路径：10.8 → 10.10.7 → 10.11.11 → 12.1</h2><p>每一跳的做法都一样：改 compose 里的 image、<code>docker compose up -d</code>、等日志出现 <code>Startup complete</code>、验证、再 <code>docker compose down</code> 换下一跳。</p>
+<p>其中 10.11 那跳有个大动作：<strong>它把 <code>library.db</code> 合并进了 <code>jellyfin.db</code></strong>。数据目录里会多出 <code>library.db.old</code>（合并前的原库）、<code>SQLiteBackups</code> 目录和 <code>database.xml</code>（新版数据库层的配置文件），<code>jellyfin.db</code> 从 200 多 KB 涨到 100 多 MB，原来那个 80 MB 的独立 <code>library.db</code> 就消失了。这是 10.11 的设计，不是故障。</p>
+<p>到 12.1 之后，日志里能看到这轮迁移的全部动作：</p>
+<pre><code>[INF] Jellyfin.Server.Migrations.JellyfinMigrationService: There are 30 migrations for stage AppInitialisation.
+[INF] InternalCodeMigration: Migration &quot;20260910120000_MigrateRatingLevels&quot; was successfully applied
+[INF] Main: Migrations have been applied, optimizing the database... This might take a while
+[INF] Jellyfin.Database.Providers.Sqlite.SqliteDatabaseProvider: jellyfin.db optimized successfully!
+[INF] Main: Startup complete 0:01:12
+</code></pre><p>一共 72 条迁移成功执行，之前一直卡住的那道 <code>MigrateLibraryDbCompatibilityCheck</code> 这次顺利通过。</p>
+<h2 id="中途踩的坑：从-SMB-读运行中的数据库"><a href="#中途踩的坑：从-SMB-读运行中的数据库" class="headerlink" title="中途踩的坑：从 SMB 读运行中的数据库"></a>中途踩的坑：从 SMB 读运行中的数据库</h2><p>中间为了留个”在线快照”当回滚点，我从 Windows 侧用 SQLite 的 <code>VACUUM INTO</code> 去读正在运行的 <code>jellyfin.db</code>。结果是这次升级里最严重的一次事故：<strong>两秒之后 Jellyfin 开始狂报数据库损坏</strong>。</p>
+<pre><code>[ERR] Microsoft.EntityFrameworkCore.Update: An exception occurred in the database while saving changes
+      ---&gt; Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 11: &#39;database disk image is malformed&#39;
+[ERR] Emby.Server.Implementations.ScheduledTasks.TaskManager: Error executing Scheduled Task
+      at Emby.Server.Implementations.Data.CleanDatabaseScheduledTask.CleanDeadItems
+</code></pre><p>几分钟内累积了 86 次，元数据保存和数据库清理任务全部失败。最坑的是<strong>界面上完全看不出来</strong>：网页照样能打开、<code>/health</code> 照样返回 200，因为它坏的是写路径（读还有缓存撑着）。判断方法只能是看日志，以及看数据库文件的时间戳——正常写入时 <code>jellyfin.db</code> 和 <code>-wal</code> 的时间戳会持续推进，而损坏时全都冻结了。</p>
+<p>原因是大肥鱼没注意到 <strong>10.11 起 Jellyfin 改用了 WAL 模式</strong>（日志里能看到 <code>database locking mode has been set to: NoLock</code>，数据目录里多出 <code>jellyfin.db-wal</code> 和 <code>jellyfin.db-shm</code>）。WAL 依赖共享内存做锁协调，而 SQLite 官方明确不建议把 WAL 模式的数据放在网络文件系统上——前面几次”在线快照”成功过，纯粹是因为那时候还是旧的事务日志模式，没有 WAL 文件，方法本身一直是错的。</p>
+<p>确认损坏的办法是拿一份<strong>停机后的副本</strong>跑 <code>PRAGMA integrity_check</code>——它连校验都跑不起来，直接抛 <code>database disk image is malformed</code>；而同一批备份里的旧库校验结果都是 <code>ok</code>。</p>
+<p>恢复过程：停容器 → 用之前验证过的快照还原 <code>config</code>（还原后逐文件比对哈希，确认字节一致）→ 重新走升级。数据没丢，媒体文件全程没被动过。</p>
+<h2 id="在群晖-Container-Manager-上踩的两个坑"><a href="#在群晖-Container-Manager-上踩的两个坑" class="headerlink" title="在群晖 Container Manager 上踩的两个坑"></a>在群晖 Container Manager 上踩的两个坑</h2><p><strong>1. 删项目会把镜像一起删掉。</strong> 当时为了停止服务在项目里点了”删除”，结果容器和镜像一起没了，10.10.7 的镜像就是这么消失的，后来要回滚还得重新拉。以后只记一条：<strong>停服务用”停止”，改版本用”构建”，明确后续不用再”删除”。</strong></p>
+<p><strong>2. 别用项目菜单那个”启动”按钮。</strong> 它启动的是已经存在的容器对象，而 image 在容器创建时就固定了。所以会出现”compose 文件改成了新版本，点启动跑起来的还是旧版本”这种迷惑现象——必须用 <code>docker compose up -d</code>（或项目里的”构建”）让它按新镜像重建容器。</p>
+<h2 id="验收标准"><a href="#验收标准" class="headerlink" title="验收标准"></a>验收标准</h2><p>实际用的是这几条：</p>
+<ul>
+<li>日志里出现 <code>Startup complete</code>，且<strong>没有任何 <code>[FTL]</code></strong></li>
+<li>日志里没有 <code>does not meet the required standard</code>（这是库版本不够的信号）</li>
+<li>日志里没有 <code>malformed</code> / <code>SQLite Error</code>（这是库损坏的信号）</li>
+<li>数据库文件的时间戳在持续推进（写入确实在落盘）</li>
+<li><code>/health</code> 返回 200 Healthy，而不是 503</li>
+<li><strong>观察时间要够长</strong>：那次损坏是在启动完成 3 分半之后才开始的，看一两眼根本发现不了</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>整个升级实际上是三级台阶：11.11 那次数据库合并是最大的一次结构变动，12.1 那次是迁移条数最多的一次。升级完成后 12.1.0 正常运行，媒体库、用户、观看记录都还在。</p>
+<p>三条经验后续升级其他容器也注意下：</p>
+<ol>
+<li><strong>跨大版本升级要看官方指定的路径</strong>，Jellyfin 会在报错信息里直接告诉你”先升到哪个版本”，别硬跳。</li>
+<li><strong>Jellyfin 10.11 之后不要从外部碰数据库文件</strong>（包括只读）。备份只在<strong>停机后</strong>做文件级复制，而且必须把 <code>-wal</code> 文件一起复制，否则会丢掉还没落盘的已提交数据；需要校验就复制成副本再校验。</li>
+<li><strong>升级前后都用日志和文件时间戳验收</strong>，不要依赖界面能不能打开。</li>
+</ol>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://jellyfin.org/docs/general/installation/container/" target="_blank" rel="noopener">Container | Jellyfin</a></li>
+<li><a href="https://jellyfin.org/posts/jellyfin-release-12.0/" target="_blank" rel="noopener">Jellyfin 12.0 发布说明</a></li>
+<li><a href="https://github.com/jellyfin/jellyfin/releases/tag/v12.0" target="_blank" rel="noopener">Release 12.0 · jellyfin/jellyfin</a></li>
+<li><a href="https://www.sqlite.org/wal.html" target="_blank" rel="noopener">Write-Ahead Logging - SQLite</a></li>
+<li><a href="https://hub.docker.com/r/jellyfin/jellyfin/tags" target="_blank" rel="noopener">jellyfin/jellyfin - Docker Hub tags</a></li>
+</ul>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2026/09/20/JellyfinUpdate/">Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>2,238</p>
+        <p><span>发布时间:</span>2026-09-20, 21:30:00</p>
+        <p><span>最后更新:</span>2026-09-21, 17:02:40</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2026/09/20/JellyfinUpdate/" title="Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1">https://longxuan.ren/2026/09/20/JellyfinUpdate/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://longxuan.ren/2026/09/20/JellyfinUpdate/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2026/08/27/VaultwardenUpdate/">
+                    Vaultwarden 升级：Bitwarden 客户端兼容问题修复
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#先摸清旧容器的配置"><span class="toc-number">1.</span> <span class="toc-text">先摸清旧容器的配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第一次尝试：直接上-12-1，被拒"><span class="toc-number">2.</span> <span class="toc-text">第一次尝试：直接上 12.1，被拒</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#升级路径：10-8-→-10-10-7-→-10-11-11-→-12-1"><span class="toc-number">3.</span> <span class="toc-text">升级路径：10.8 → 10.10.7 → 10.11.11 → 12.1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#中途踩的坑：从-SMB-读运行中的数据库"><span class="toc-number">4.</span> <span class="toc-text">中途踩的坑：从 SMB 读运行中的数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在群晖-Container-Manager-上踩的两个坑"><span class="toc-number">5.</span> <span class="toc-text">在群晖 Container Manager 上踩的两个坑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#验收标准"><span class="toc-number">6.</span> <span class="toc-text">验收标准</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-number">8.</span> <span class="toc-text">参考链接</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2026/08/27/VaultwardenUpdate/" title="下一篇: Vaultwarden 升级：Bitwarden 客户端兼容问题修复">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2026/09/20/JellyfinUpdate/">Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2026/08/27/VaultwardenUpdate/">Vaultwarden 升级：Bitwarden 客户端兼容问题修复</a></li><li class="post-list-item"><a class="post-list-link" href="/2025/02/22/BitwardenUse/">密码库迁移到 Bitwarden</a></li><li class="post-list-item"><a class="post-list-link" href="/2025/02/09/ObsidianUse/">Obsidian 使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/06/16/evernote2md/">印象笔记转换 markdown</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/06/12/PythonPaddlepaddle-gpu/">Python 安装 onnxruntime-gpu、paddlepaddle-gpu 报错处理</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/05/25/PythonAnaconda/">Python Anaconda 使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/03/25/DockerCommand/">docker 常用命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/03/03/NASDomainAndNginx/">NAS 域名访问和 Nginx 反代理</a></li><li class="post-list-item"><a class="post-list-link" href="/2023/07/04/LinuxCommond/">Linux 常用命令记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2023/05/22/HexoGithubAction/">Hexo 3.5.0 迁移到 Github Action 踩坑记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2023/05/21/Game_PS5_Remote_Play/">PS5 远程玩游戏</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2026 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>86.4k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>
