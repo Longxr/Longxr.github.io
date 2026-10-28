@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="玖零儛">
+
+
+
+<meta name="description" content="自动化运行游戏每天开机也嫌麻烦了，让电脑自己开机自己玩(￣▽￣)”">
+<meta name="keywords" content="Windows,VSCode,BIOS,任务计划程序,自动化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Win11 定时开机自动跑脚本：从 BIOS RTC 到 VSCode 终端插件">
+<meta property="og:url" content="https://longxuan.ren/2026/09/24/Win11AutoRunScript/index.html">
+<meta property="og:site_name" content="Longxr&#39;s blog">
+<meta property="og:description" content="自动化运行游戏每天开机也嫌麻烦了，让电脑自己开机自己玩(￣▽￣)”">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2026-10-28T16:50:21.586Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Win11 定时开机自动跑脚本：从 BIOS RTC 到 VSCode 终端插件">
+<meta name="twitter:description" content="自动化运行游戏每天开机也嫌麻烦了，让电脑自己开机自己玩(￣▽￣)”">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Longxr&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Win11 定时开机自动跑脚本：从 BIOS RTC 到 VSCode 终端插件 | Longxr&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+<link rel="stylesheet" href="/css/prettify.css" type="text/css">
+
+<script src="https://Longxr.github.io/js/prettify.min.js"></script>
+<script>
+$(window).load(function(){
+ $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })
+</script>
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">玖零儛</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">一鼓作气，再而卒</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AAC/">AAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AE/">AE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Anaconda/">Anaconda</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Audio/">Audio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BIOS/">BIOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitwarden/">Bitwarden</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CEF/">CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Capture/">Capture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Continuous-integration/">Continuous integration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSHOW/">DSHOW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DXGI/">DXGI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GDI/">GDI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/H264/">H264</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jellyfin/">Jellyfin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keycode/">Keycode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-command/">Linux command</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MP4/">MP4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/">Mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Merge/">Merge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mingw32/">Mingw32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NAS/">NAS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Obsidian/">Obsidian</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PS5/">PS5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyQt5/">PyQt5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm/">Pycharm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QDialog/">QDialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QListView/">QListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QProgressbar/">QProgressbar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QPropertyAnimation/">QPropertyAnimation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QSS/">QSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QWidget/">QWidget</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt5-12-0/">Qt5.12.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QtAddressBar/">QtAddressBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React-Native/">React-Native</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcut/">Shortcut</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Travis/">Travis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VS2017/">VS2017</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VSCode/">VSCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vaultwarden/">Vaultwarden</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUV/">YUV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bilibili/">bilibili</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clang-format/">clang format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/conda/">conda</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/defer/">defer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/evernote/">evernote</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffmpeg/">ffmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffplay/">ffplay</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ffprobe/">ffprobe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flv/">flv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdelivr/">jsdelivr</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/libyuv/">libyuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/">markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mingw/">mingw</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msvc/">msvc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/onnxruntime/">onnxruntime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/paddlepaddle/">paddlepaddle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/parent/">parent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pro/">pro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static-build/">static build</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/workflows/">workflows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yuv/">yuv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zerotier/">zerotier</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zsh/">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/任务计划程序/">任务计划程序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网穿透/">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快捷键/">快捷键</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自动化/">自动化</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">撸章，做视频，捏小人，码代码...</div>
+                </section>
+                
+            </div>
+        </div>
+
+        
+    </header>               
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">玖零儛</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">玖零儛</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">一鼓作气，再而卒</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:longxuanren@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/jiu0wu/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Longxr" title="GitHub"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="http://www.jianshu.com/u/fa0aa5b06c8c" title="简书"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="http://space.bilibili.com/2572438/#!/" title="bilibili"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="tencent://message/?menu=yes&uin=1175243067&websitename=im.qq.com" title="QQ"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Win11AutoRunScript" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2026/09/24/Win11AutoRunScript/" class="article-date">
+      <time datetime="2026-09-24T22:50:00.000Z" itemprop="datePublished">2026-09-24</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Win11 定时开机自动跑脚本：从 BIOS RTC 到 VSCode 终端插件
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/操作技巧/">操作技巧</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BIOS/">BIOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VSCode/">VSCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/任务计划程序/">任务计划程序</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/自动化/">自动化</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in index | 摘要><br>自动化运行游戏每天开机也嫌麻烦了，让电脑自己开机自己玩(￣▽￣)” <a id="more"></a></excerpt></p>
+<the rest of contents | 余下全文>
+
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>要的东西很具体：</p>
+<ul>
+<li>每天早上到点，机器自己自动开机</li>
+<li>自动打开 VSCode，运行我自动化运行游戏的脚本，通过 VSCode 是正好可以看运行状态和终端日志</li>
+<li>全程不要人干预，因为那个点正好是起床时间，顺便也可以当个闹钟。</li>
+</ul>
+<p>主要步骤拆解为：BIOS 设定时开机、开机跳过锁屏、任务计划设开机启动 VSCode、插件设置自动跑命令。4个步骤串行执行，有一环卡住的话就要起床手动操作了。</p>
+<h2 id="第一环：定时开机"><a href="#第一环：定时开机" class="headerlink" title="第一环：定时开机"></a>第一环：定时开机</h2><p>Win11 里没有”定时开机”这个开关。任务计划程序里那个”唤醒计算机运行此任务”也帮不上忙：它依赖 ACPI 的唤醒定时器，只能把机器从睡眠/休眠里叫醒。</p>
+<p>关机状态要上电，只能让主板来做。进 BIOS，在电源管理里找 <code>RTC Wake</code> / <code>Resume By RTC</code> / <code>Auto On Time</code> 这一类名字，不同厂商叫法不一样。</p>
+<p>这块板子上有几个容易选错的项：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>含义</th>
+<th>怎么选</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RTC Wake</td>
+<td>到点给电，真正的定时开机</td>
+<td>启用</td>
+</tr>
+<tr>
+<td>Wake by LAN</td>
+<td>收到网络包才开机</td>
+<td>关掉</td>
+</tr>
+<tr>
+<td>Fixed Time</td>
+<td>每天固定时刻</td>
+<td>选这个</td>
+</tr>
+<tr>
+<td>Dynamic Time</td>
+<td>相对时间/延迟开机</td>
+<td>别选</td>
+</tr>
+</tbody>
+</table>
+<p><code>Date</code> 填 0 表示每天，再填时、分、秒。<code>Fixed Time</code> 和 <code>Dynamic Time</code> 不是两个开关，是同一个闹钟的两种计时方式，后者按相对时间算，拿来设定时开机只会把时间搞乱。</p>
+<p><code>Wake by LAN</code> 和 <code>RTC Wake</code> 不建议同时开：两者都启用时，有些主板会让 RTC 的设定被网络事件盖掉；反过来，局域网里的广播包也可能在你不想要的时候把机器叫起来。真要远程开机，更稳的是留 RTC Wake，再用”通电自启”（AC Power Loss → Power On）配一个能远程控制的插座。</p>
+<p>时间不用换算时区，直接填北京时间。Windows 默认是<strong>把本地时间写进 RTC</strong> 的（这一点和 Linux 默认用 UTC 相反），所以 BIOS 里看到的就是系统里的时间。要保证的只有一件事：系统时间本身是准的。</p>
+<p>还有一条硬约束：<strong>插座不能断电</strong>。定时开机靠的是主板上那个一直在走的时钟，拔了电源或者关掉插排，计时就没了。</p>
+<h2 id="第二环：开机之后把-VSCode-拉起来"><a href="#第二环：开机之后把-VSCode-拉起来" class="headerlink" title="第二环：开机之后把 VSCode 拉起来"></a>第二环：开机之后把 VSCode 拉起来</h2><p>任务计划程序（<code>taskschd.msc</code>）里建任务，触发器选”登录时”，操作填：</p>
+<pre><code>程序或脚本: C:\Users\&lt;user&gt;\AppData\Local\Programs\Microsoft VS Code\Code.exe
+添加参数:   &quot;D:\workspace\GithubCode\python-data-process&quot;
+起始于:     D:\workspace\GithubCode\python-data-process
+</code></pre><p>这里有个坑人的选项：<strong>“不管用户是否登录都要运行”</strong>。</p>
+<p>它听起来正是”锁屏也能跑”的答案，实际上勾上之后，VSCode 的窗口根本不会出现在桌面上。这个选项把任务放进非交互会话（session 0）执行，进程确实起来了，但没有桌面可画——它是给服务型任务用的，不是给”帮我把编辑器打开”用的。<strong>想看见窗口只有一个前提：已经有人登录，而且桌面会话没锁。</strong> </p>
+<h2 id="第三环：让-VSCode-一打开就执行命令"><a href="#第三环：让-VSCode-一打开就执行命令" class="headerlink" title="第三环：让 VSCode 一打开就执行命令"></a>第三环：让 VSCode 一打开就执行命令</h2><h3 id="装错的那个插件"><a href="#装错的那个插件" class="headerlink" title="装错的那个插件"></a>装错的那个插件</h3><p>我一开始装的是 <code>saurabh.terminal-manager</code> 1.0.6。按教程在项目里建了 <code>.vscode/terminal-manager.json</code>，写了 <code>runAutomatically: true</code>，重载窗口，终端一动不动。</p>
+<p>后来才搞清楚它是什么：一个<strong>终端配置切换器</strong>——预定义几套 shell（CMD / PowerShell / Bash），在侧边栏点一下切过去。配置在 <code>%APPDATA%\Code\User\globalStorage\saurabh.terminal-manager\terminals.json</code>，字段是 <code>shellPath</code> / <code>shellArgs</code>，既没有 <code>commands</code> 也没有 <code>runAutomatically</code>。项目里那个 JSON 它根本不读。</p>
+<h3 id="能用的那个"><a href="#能用的那个" class="headerlink" title="能用的那个"></a>能用的那个</h3><p>真正能做”打开项目就执行命令”的是 <code>fabiospampinato.vscode-terminals</code>，商店显示名也叫 <strong>Terminals Manager</strong>。别搜名字，直接按 ID 装：</p>
+<pre><code>ext install fabiospampinato.vscode-terminals
+</code></pre><p>它读项目根目录下的 <code>.vscode/terminals.json</code>：</p>
+<pre><code class="json">{
+  &quot;autorun&quot;: true,
+  &quot;terminals&quot;: [
+    {
+      &quot;name&quot;: &quot;AutoGame&quot;,
+      &quot;cwd&quot;: &quot;D:/workspace/GithubCode/python-data-process&quot;,
+      &quot;commands&quot;: [
+        &quot;cd auto_game&quot;,
+        &quot;python ./main.py --all&quot;
+      ],
+      &quot;focus&quot;: true
+    }
+  ]
+}
+</code></pre>
+<p>几个实际用到的点：</p>
+<ul>
+<li><code>autorun</code> 是全局开关，默认 <code>false</code>，不写就什么都不发生；也可以按终端单独设。触发时机是”VSCode 启动”和”项目被加入工作区”。</li>
+<li><code>cwd</code> 是终端的初始目录，<code>commands</code> 会按顺序敲进终端、每条都回车。</li>
+<li>文件按 <strong>JSONC</strong> 解析，注释和尾逗号都能留。</li>
+<li>路径用正斜杠，省掉转义的问题。</li>
+<li><code>focus: true</code> 把焦点给这个终端，方便看输出；不想抢焦点可以换成 <code>open: true</code>。</li>
+</ul>
+<h2 id="第四环：锁屏，以及自动登录"><a href="#第四环：锁屏，以及自动登录" class="headerlink" title="第四环：锁屏，以及自动登录"></a>第四环：锁屏，以及自动登录</h2><p>定时开机不会顺便帮你解锁。机器起来了，停在锁屏界面，而第三环的插件要往终端里写命令，它需要一个已登录、没锁的桌面会话。</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>代价</th>
+<th>适用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自动登录</td>
+<td>开机跳过锁屏，碰到机器的人直接进桌面</td>
+<td>家里的专用台式机</td>
+</tr>
+<tr>
+<td>“不管用户是否登录都要运行”</td>
+<td>进程能跑，GUI 不可见</td>
+<td>纯后台任务</td>
+</tr>
+<tr>
+<td>不做 GUI，改无头执行</td>
+<td>看不到实时输出</td>
+<td>真正要无人值守的任务</td>
+</tr>
+</tbody>
+</table>
+<p>实现操作踩了下面几个坑：</p>
+<h3 id="注册表三件套，填-PIN-不行"><a href="#注册表三件套，填-PIN-不行" class="headerlink" title="注册表三件套，填 PIN 不行"></a>注册表三件套，填 PIN 不行</h3><p>Winlogon 下的三件套：</p>
+<pre><code>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+  AutoAdminLogon   REG_SZ  1
+  DefaultUserName  REG_SZ  xxx@outlook.com
+  DefaultPassword  REG_SZ  &lt;密码&gt;
+</code></pre><p>照着”PIN 也能填”的教程做，重启后卡在登录界面：</p>
+<blockquote>
+<p>目前无法连接，请检查网络后再试一次。</p>
+</blockquote>
+<p>原因不复杂：<strong>自动登录走的是 LSA 里的账户密码凭证，PIN 不是密码。</strong> PIN 是 Windows Hello 用 TPM 在本地校验的便捷凭证，没办法替账户密码去做身份验证。系统拿着一个”看起来像密码”的 PIN 去微软账户那边验证，开机那一瞬间网络还没就绪，就报”无法连接”。同一个账户、同一个 PIN，手动敲能进、自动登录进不去，差别就在这里。</p>
+<p>两条出路：<code>DefaultPassword</code> 填微软账户的在线密码（代价是密码明文躺在注册表里），或者换 Sysinternals 的 Autologon。</p>
+<h3 id="Autologon"><a href="#Autologon" class="headerlink" title="Autologon"></a>Autologon</h3><p>界面就三个框：用户名、域（本地机器留空）、密码。它和手改注册表做的是同一件事，但密码作为 <strong>LSA secret</strong> 加密存放，不是明文；这也意味着有管理员权限的人依然能解出来，它只防”顺手看见”。</p>
+<p>三个细节：</p>
+<ul>
+<li>它不校验填进去的凭证，填错了下次开机才知道；</li>
+<li>开机时按住 <code>Shift</code> 可以临时跳过这一次自动登录，算是个逃生口；</li>
+<li>微软账户登录的话，用户名填邮箱，密码填账户在线密码，不是 PIN。</li>
+</ul>
+<p>自动登录的安全边界很直白：<strong>谁碰到这台机器，谁就是这台机器的主人。</strong> 这台是放在家里的台式工作机，才敢这么干；笔记本、要带出门的机器不要开。手动 <code>Win+L</code> 锁屏依然有效，自动登录只影响开机那一次。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>“串联型”需求，单看每一步都是对的，但没有人替你验证”这一步到底有没有生效”。真正省时间的做法是先把链路上的四件事单独跑通，再全部串行执行完成一个完整需求。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://learn.microsoft.com/en-us/sysinternals/downloads/autologon" target="_blank" rel="noopener">Autologon - Sysinternals</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/secauthn/protecting-the-automatic-logon-password" target="_blank" rel="noopener">Protecting the Automatic Logon Password</a></li>
+<li><a href="https://github.com/fabiospampinato/vscode-terminals" target="_blank" rel="noopener">fabiospampinato/vscode-terminals</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=fabiospampinato.vscode-terminals" target="_blank" rel="noopener">Terminals Manager - Visual Studio Marketplace</a></li>
+<li><a href="https://code.visualstudio.com/docs/configure/profiles" target="_blank" rel="noopener">Profiles in Visual Studio Code</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page" target="_blank" rel="noopener">Task Scheduler - Win32 apps</a></li>
+</ul>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2026/09/24/Win11AutoRunScript/">Win11 定时开机自动跑脚本：从 BIOS RTC 到 VSCode 终端插件</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">玖零儛</a></p>
+        <p><span class="post-count">文章字数:</span>1,896</p>
+        <p><span>发布时间:</span>2026-09-24, 22:50:00</p>
+        <p><span>最后更新:</span>2026-10-28, 16:50:21</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2026/09/24/Win11AutoRunScript/" title="Win11 定时开机自动跑脚本：从 BIOS RTC 到 VSCode 终端插件">https://longxuan.ren/2026/09/24/Win11AutoRunScript/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://longxuan.ren/2026/09/24/Win11AutoRunScript/　　作者: 玖零儛" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2026/09/20/JellyfinUpdate/">
+                    Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1
+                </a>
+            </div>
+        
+    </nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需求"><span class="toc-number">1.</span> <span class="toc-text">需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第一环：定时开机"><span class="toc-number">2.</span> <span class="toc-text">第一环：定时开机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第二环：开机之后把-VSCode-拉起来"><span class="toc-number">3.</span> <span class="toc-text">第二环：开机之后把 VSCode 拉起来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第三环：让-VSCode-一打开就执行命令"><span class="toc-number">4.</span> <span class="toc-text">第三环：让 VSCode 一打开就执行命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#装错的那个插件"><span class="toc-number">4.1.</span> <span class="toc-text">装错的那个插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#能用的那个"><span class="toc-number">4.2.</span> <span class="toc-text">能用的那个</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第四环：锁屏，以及自动登录"><span class="toc-number">5.</span> <span class="toc-text">第四环：锁屏，以及自动登录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#注册表三件套，填-PIN-不行"><span class="toc-number">5.1.</span> <span class="toc-text">注册表三件套，填 PIN 不行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Autologon"><span class="toc-number">5.2.</span> <span class="toc-text">Autologon</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-number">7.</span> <span class="toc-text">参考链接</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+        #header .beian {
+            display: none;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Win11 定时开机自动跑脚本：从 BIOS RTC 到 VSCode 终端插件　| Longxr's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2132535';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2026/09/20/JellyfinUpdate/" title="下一篇: Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2026/09/24/Win11AutoRunScript/">Win11 定时开机自动跑脚本：从 BIOS RTC 到 VSCode 终端插件</a></li><li class="post-list-item"><a class="post-list-link" href="/2026/09/20/JellyfinUpdate/">Jellyfin 升级：从 nyanmisaka 镜像迁移到官方 12.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2026/08/27/VaultwardenUpdate/">Vaultwarden 升级：Bitwarden 客户端兼容问题修复</a></li><li class="post-list-item"><a class="post-list-link" href="/2025/02/22/BitwardenUse/">密码库迁移到 Bitwarden</a></li><li class="post-list-item"><a class="post-list-link" href="/2025/02/09/ObsidianUse/">Obsidian 使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/06/16/evernote2md/">印象笔记转换 markdown</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/06/12/PythonPaddlepaddle-gpu/">Python 安装 onnxruntime-gpu、paddlepaddle-gpu 报错处理</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/05/25/PythonAnaconda/">Python Anaconda 使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/03/25/DockerCommand/">docker 常用命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2024/03/03/NASDomainAndNginx/">NAS 域名访问和 Nginx 反代理</a></li><li class="post-list-item"><a class="post-list-link" href="/2023/07/04/LinuxCommond/">Linux 常用命令记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2023/05/22/HexoGithubAction/">Hexo 3.5.0 迁移到 Github Action 踩坑记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2023/05/21/Game_PS5_Remote_Play/">PS5 远程玩游戏</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/24/CEF-Build-On-Windows/">windows平台编译CEF支持MP3、MP4</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/11/Qt5-12-5-static-build/">Qt5.12.5 静态编译以及裁剪大小对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/YUV-Rotate/">YUV图像旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/Qt-Widget-NativeWindow/">Qt Widget与原生窗口的对比</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/06/Qt-Global-Shortcut/">Qt全局热键实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/28/H264-Analyze/">H264码流分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/26/Windows-ScreenCapture/">windows桌面采集（GDI、DSHOW、DXGI对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/20/Go-C-Memory-Align/">golang 和 C++ 的内存对齐</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/Go-slice/">golang学习--slice</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/19/Go-Use-Qt/">Go语言使用Qt开发界面</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Languages-Define-Inner-Func/">不同语言在函数内部定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/22/flvs2mp4-go/">ffmpeg将多个flv文件合成为mp4（golang版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/Remote-Access-Server/">远程办公内网搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/20/flvs2mp4-python/">ffmpeg将多个flv文件合成为mp4（python版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/Go-defer/">golang学习--defer</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/10/Replace-Jianshu-Url/">更换博客图床</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/07/QtCreator-Code-Format/">QtCreator代码格式化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/Qt-Use-Tips/">Qt使用技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/23/Qt-Video-Drawbox/">Qt在视频画面上绘制动态矩形</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/Qt-OpenGL-LightingMaps/">基于Qt的OpenGL学习（9）—— 材质、光照贴图</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/14/Qt-OpenGL-BasicLighting/">基于Qt的OpenGL学习（8）—— 基础光照</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/13/Qt-OpenGL-Colors/">基于Qt的OpenGL学习（7）—— 颜色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Qt-OpenGL-Camera/">基于Qt的OpenGL学习（6）—— 摄像机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Coordinate-Systems/">基于Qt的OpenGL学习（5）—— 坐标系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/09/Qt-OpenGL-Transform/">基于Qt的OpenGL学习（4）—— 变换</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Textures/">基于Qt的OpenGL学习（3）—— 纹理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-Shader/">基于Qt的OpenGL学习（2）—— 着色器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/08/Qt-OpenGL-HelloTriangle/">基于Qt的OpenGL学习（1）—— Hello Triangle</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/25/Qt-Android-environment/">Qt5.12.4 Android环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/05/ffmpeg-command/">ffmpeg相关常用命令及可选参数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/04/Qt-use-Protobuf/">Qt-msvc使用Protocol Buffers</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/ffmpeg-get-raw-h264/">ffmpeg从MP4中提取H264裸流（新旧API对比）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/17/Qt-Android-Keycode-Map/">Qt键盘-Android键盘映射</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/Continuous-integration-of-Qt-programs/">Qt程序的持续集成</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/Qt5-12-0-VS2017-environment/">Qt5.12.0 + VS2017 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/08/ffmpeg-H264-to-YUV/">ffmpeg解码H264裸流为YUV数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/Github-DownLoad-Big-File/">Github仓库过大、文件过多下载方案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/27/PythonC-Merge/">Python合并C++文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/30/Sublime-Common-Plugin/">Sublime通用插件记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Qt-mingw-msvc/">Qt-mingw工程、Qt-msvc工程、VS工程相互转换</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/17/ffmpeg-Audio-Capture-Encoder/">ffmpeg音频采集、编码</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/06/Windows-PyQt5-Pycharm/">超详细Windows + Python + PyQt5 + Pycharm 环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/Qt-Mingw-ffmpeg/">Qt-Mingw-ffmpeg</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/Qt-NSIS/">Qt-NSIS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/02/QtAddressBar/">QtAddressBar</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/24/Qt-QSS/">Qt-QSS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/13/Qt-TsFileTranslateTool/">Qt-TsFileTranslateTool</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Qt-AutoLayout/">Qt-AutoLayout</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/MultiProjectManage/">Qt多项目管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/Qt-CustomProgressbar/">Qt自定义进度条</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/16/Qt-Animation/">Qt之动画效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/Qt-ListView/">Qt之QListView使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/Qt-CustomDialog/">Qt自定义Dialog</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/29/QtEnvironmentConstruction/">Qt环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/26/AE-Skills-Curves/">AE操作小技巧-曲线篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/10/Hexo-Travis-CI/">Hexo使用Travis CI自动化部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/08/BilibiliAreaRestriction/">bilibili区域限制解除的三种方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/05/Git-ssh-MultiAccount/">git使用ssh多账号配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/25/oh-my-zsh-git/">oh-my-zsh git</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/24/Sublime-React-Native/">Sublime插件React-Native篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/21/PythonLearn/">Python学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/20/AE-Plugns-Notes/">AE蛋疼插件问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/13/Mac-Skills/">Mac操作小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/11/Hexo-Notes/">Hexo博客搭建中的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/Hexo-Blog-Construction/">Hexo个人博客搭建</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2017-2026 玖零儛
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <span>| </span>
+                    <span title="本站总字数统计">
+                         <span><i class="fa fa-map" aria-hidden="true"></i></span>
+                        <span class="post-count"><b>88.3k</b></span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+
+  <!-- 鼠标线条 -->
+  <script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":false}});</script></body>
+</html>
